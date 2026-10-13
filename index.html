@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Точка опоры — бесплатно для студентов</title>
+<meta name="description" content="Бесплатное приложение для студентов. Авторы: Елена Осинцева и Тимур Хайретдинов. Финансы, психология, поддержка." />
+<meta name="author" content="Елена Осинцева, Тимур Хайретдинов" />
+<meta property="og:title" content="Точка опоры — поддержка студентов" />
+<meta property="og:description" content="Бесплатное приложение. Авторы: Елена Осинцева и Тимур Хайретдинов." />
+<meta property="og:type" content="website" />
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icon.svg" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Точка опоры" />
+<style>
+  :root{
+    --bg:#0b0b12; --bg-2:#12121c;
+    --card:rgba(255,255,255,.06); --card-2:rgba(255,255,255,.09);
+    --stroke:rgba(255,255,255,.12);
+    --text:#f2f2f7; --muted:#a1a1b5;
+    --accent:#7c5cff; --accent-2:#4ad6c8; --accent-3:#ff5c8a; --warning:#ffb547;
+    --radius:20px; --radius-s:14px;
+    --ff:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.5;-webkit-font-smoothing:antialiased}
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.25), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(74,214,200,.18), transparent 60%),
+      radial-gradient(800px 600px at 50% 110%, rgba(255,92,138,.15), transparent 60%),
+      var(--bg);
+    min-height:100vh; padding-bottom:40px;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .container{max-width:1180px;margin:0 auto;padding:0 20px}
+
+  /* HEADER */
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.7);border-bottom:1px solid var(--stroke)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(124,92,255,.5)}
+  .nav-links{display:flex;gap:26px;font-size:15px;color:var(--muted)}
+  .nav-links a:hover{color:var(--text)}
+  .nav-user{display:flex;gap:10px;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--stroke);font-size:13.5px;font-weight:600}
+  .pill .num{color:var(--accent-2)}
+  .pill.fire .num{color:var(--warning)}
+
+  /* BTN */
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:12px;font-size:14px;font-weight:600;transition:.2s transform,.2s background,.2s opacity;border:1px solid transparent}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-ghost{background:var(--card);border-color:var(--stroke)}
+  .btn-ghost:hover{background:var(--card-2)}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),#5f3dff);box-shadow:0 10px 30px rgba(124,92,255,.45)}
+  .btn-primary:hover{opacity:.95}
+  .btn-danger{background:linear-gradient(135deg,#ff5c8a,#ff3d6e);box-shadow:0 10px 30px rgba(255,92,138,.4)}
+
+  /* HERO */
+  .hero{padding:70px 0 30px;text-align:center}
+  .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:var(--card);border:1px solid var(--stroke);font-size:13px;color:var(--muted);margin-bottom:22px}
+  .badge .dot{width:8px;height:8px;border-radius:50%;background:var(--accent-2);box-shadow:0 0 12px var(--accent-2)}
+  h1{font-size:clamp(34px,5.5vw,62px);line-height:1.08;font-weight:800;letter-spacing:-.02em;max-width:920px;margin:0 auto 18px}
+  h1 .grad{background:linear-gradient(135deg,#b8a6ff,#4ad6c8 50%,#ff5c8a);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--muted);font-size:clamp(15px,1.6vw,19px);max-width:640px;margin:0 auto 34px}
+
+  .state-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;max-width:900px;margin:0 auto}
+  .state{padding:22px 16px;border-radius:var(--radius);background:var(--card);border:1px solid var(--stroke);text-align:left;transition:.25s;display:flex;flex-direction:column;gap:10px}
+  .state:hover{transform:translateY(-4px);background:var(--card-2)}
+  .state .emoji{font-size:26px}
+  .state .title{font-weight:700;font-size:15px}
+  .state .desc{font-size:13px;color:var(--muted)}
+
+  /* SECTION */
+  section{padding:50px 0}
+  .section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:28px;flex-wrap:wrap}
+  h2{font-size:clamp(24px,3vw,36px);font-weight:800;letter-spacing:-.01em}
+  .section-head p{color:var(--muted);font-size:15px;max-width:560px}
+
+  /* MODULES */
+  .modules{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .module{padding:26px;border-radius:var(--radius);background:var(--card);border:1px solid var(--stroke);position:relative;overflow:hidden;transition:.25s;display:flex;flex-direction:column;gap:14px;min-height:300px}
+  .module:hover{transform:translateY(-5px);background:var(--card-2)}
+  .module .icn{width:52px;height:52px;border-radius:14px;display:grid;place-items:center;font-size:24px;background:var(--card-2);border:1px solid var(--stroke)}
+  .module h3{font-size:20px;font-weight:800}
+  .module p{color:var(--muted);font-size:14px}
+  .module ul{list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;margin-top:2px}
+  .module ul li{display:flex;gap:8px;align-items:flex-start}
+  .module ul li::before{content:"→";color:var(--glow);font-weight:700}
+  .module .go{margin-top:auto;font-weight:700;font-size:14px;color:var(--glow);display:inline-flex;gap:6px;align-items:center}
+  .module .progress-bar{margin-top:10px;height:6px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}
+  .module .progress-fill{height:100%;width:0%;background:var(--glow);transition:width .4s}
+  .module .progress-text{font-size:12px;color:var(--muted);margin-top:6px}
+  .module.fin{--glow:#4ad6c8} .module.psy{--glow:#7c5cff} .module.sup{--glow:#ff5c8a}
+
+  /* STEPS */
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+  .step{padding:22px;border-radius:var(--radius-s);background:var(--card);border:1px solid var(--stroke)}
+  .step .num{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));font-weight:800;font-size:14px;margin-bottom:12px}
+  .step h4{font-size:16px;margin-bottom:6px}
+  .step p{color:var(--muted);font-size:13.5px}
+
+  /* WE ARE NEAR */
+  .near{border-radius:var(--radius);padding:40px 36px;background:linear-gradient(135deg,rgba(74,214,200,.14),rgba(124,92,255,.12));border:1px solid var(--stroke);text-align:center;position:relative;overflow:hidden}
+  .near h2{font-size:clamp(24px,3.2vw,38px);margin-bottom:12px;position:relative}
+  .near .lead{color:var(--muted);font-size:clamp(15px,1.6vw,18px);max-width:640px;margin:0 auto 28px;position:relative}
+  .near-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;max-width:900px;margin:0 auto;position:relative}
+  .promise{padding:20px 18px;border-radius:var(--radius-s);background:rgba(255,255,255,.05);border:1px solid var(--stroke);text-align:left;display:flex;flex-direction:column;gap:10px;transition:.25s}
+  .promise:hover{transform:translateY(-3px);background:rgba(255,255,255,.08)}
+  .promise .emo{font-size:22px}
+  .promise b{font-size:15.5px}
+  .promise span{font-size:13.5px;color:var(--muted)}
+  .near .sign{margin-top:26px;font-size:14.5px;color:var(--muted);position:relative}
+  .near .sign b{color:var(--accent-2)}
+
+  /* PRACTICE */
+  .practice{border-radius:var(--radius);background:linear-gradient(135deg,rgba(124,92,255,.18),rgba(74,214,200,.12));border:1px solid var(--stroke);padding:32px;display:grid;grid-template-columns:1.3fr 1fr;gap:26px;align-items:center}
+  .practice .tag{display:inline-block;padding:4px 10px;border-radius:999px;font-size:12px;background:rgba(255,255,255,.1);border:1px solid var(--stroke);margin-bottom:14px;color:var(--muted)}
+  .practice h3{font-size:clamp(20px,2.4vw,28px);font-weight:800;margin-bottom:10px}
+  .practice p{color:var(--muted);font-size:15px;margin-bottom:16px}
+  .practice .actions{display:flex;gap:10px;flex-wrap:wrap}
+  .done-state{font-size:13px;color:var(--accent-2);margin-top:10px;display:none}
+  .stats-list{display:flex;flex-direction:column;gap:10px;font-size:14px}
+  .stat{display:flex;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--stroke)}
+  .stat span:last-child{color:var(--accent-2);font-weight:700}
+
+  /* QUIZ */
+  .quiz{padding:30px;border-radius:var(--radius);background:var(--card);border:1px solid var(--stroke)}
+  .quiz h3{font-size:22px;margin-bottom:8px}
+  .quiz .q-sub{color:var(--muted);font-size:14px;margin-bottom:20px}
+  .quiz-options{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .opt{padding:18px;border-radius:var(--radius-s);text-align:left;background:var(--card-2);border:1px solid var(--stroke);font-size:14.5px;transition:.2s}
+  .opt:hover{border-color:var(--accent);transform:translateY(-2px)}
+  .opt.selected{border-color:var(--accent);background:rgba(124,92,255,.18)}
+  .quiz-result{margin-top:18px;padding:16px;border-radius:var(--radius-s);background:rgba(74,214,200,.12);border:1px solid rgba(74,214,200,.35);font-size:14.5px;display:none}
+  .quiz-result b{color:var(--accent-2)}
+
+  /* SUPPORT */
+  .support{border-radius:var(--radius);background:linear-gradient(135deg,rgba(255,92,138,.16),rgba(255,181,71,.08));border:1px solid rgba(255,92,138,.35);padding:32px;display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:center}
+  .support h3{font-size:clamp(20px,2.6vw,30px);font-weight:800;margin-bottom:8px}
+  .support p{color:var(--muted);font-size:15px;margin-bottom:14px}
+  .support .actions{display:flex;gap:10px;flex-wrap:wrap}
+  .hotline-list{display:flex;flex-direction:column;gap:10px;font-size:14px}
+  .hotline{display:flex;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--stroke)}
+  .hotline span:last-child{color:var(--accent-2);font-weight:700}
+
+  /* COMMUNITY */
+  .community{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .story{padding:22px;border-radius:var(--radius-s);background:var(--card);border:1px solid var(--stroke);display:flex;flex-direction:column;gap:12px}
+  .story .avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));display:grid;place-items:center;font-weight:800;font-size:15px}
+  .story p{font-size:14.5px}
+  .story .meta{font-size:12.5px;color:var(--muted)}
+
+  /* TEAM */
+  .team{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:820px;margin:0 auto}
+  .person{padding:26px;border-radius:var(--radius);background:var(--card);border:1px solid var(--stroke);display:flex;gap:18px;align-items:flex-start;transition:.25s}
+  .person:hover{transform:translateY(-4px);background:var(--card-2)}
+  .person .ava{width:64px;height:64px;border-radius:20px;flex-shrink:0;display:grid;place-items:center;font-weight:800;font-size:22px;color:#fff;box-shadow:0 10px 26px rgba(0,0,0,.35)}
+  .person.one .ava{background:linear-gradient(135deg,#7c5cff,#4ad6c8)}
+  .person.two .ava{background:linear-gradient(135deg,#ff5c8a,#ffb547)}
+  .person h4{font-size:18px;margin-bottom:4px}
+  .person .role{font-size:13px;color:var(--accent-2);font-weight:600;margin-bottom:10px}
+  .person p{font-size:14px;color:var(--muted);line-height:1.55}
+  .person .tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+  .person .tag{font-size:11.5px;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid var(--stroke);color:var(--muted)}
+
+  /* CTA */
+  .cta{text-align:center;padding:56px 32px;border-radius:26px;background:linear-gradient(135deg,rgba(124,92,255,.22),rgba(74,214,200,.14));border:1px solid var(--stroke)}
+  .cta h2{margin-bottom:12px}
+  .cta p{color:var(--muted);margin-bottom:22px;font-size:15.5px}
+  .cta .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--stroke);padding:40px 0 30px;margin-top:40px;color:var(--muted);font-size:14px}
+  .foot{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr 1.2fr;gap:26px}
+  .foot h5{color:var(--text);font-size:14px;margin-bottom:12px}
+  .foot ul{list-style:none;display:flex;flex-direction:column;gap:10px}
+  .foot a:hover{color:var(--text)}
+  .author-item{font-size:13.5px;line-height:1.45}
+  .author-item .lbl{color:var(--muted);font-size:12px;display:block}
+  .author-item .name{color:var(--text);font-weight:700}
+  .copyright{margin-top:26px;padding-top:20px;border-top:1px solid var(--stroke);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:13px}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;padding:14px 22px;border-radius:14px;font-weight:600;font-size:14.5px;box-shadow:0 20px 40px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.35s;z-index:100}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* RESPONSIVE */
+  @media (max-width:960px){
+    .state-grid,.steps{grid-template-columns:repeat(2,1fr)}
+    .modules,.community{grid-template-columns:1fr}
+    .practice,.support,.team{grid-template-columns:1fr}
+    .near-grid{grid-template-columns:1fr}
+    .foot{grid-template-columns:1fr 1fr}
+    .nav-links{display:none}
+    .person{flex-direction:column}
+  }
+  @media (max-width:520px){
+    .state-grid,.steps,.quiz-options,.foot{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <a class="logo" href="#"><div class="logo-mark"></div>Точка опоры</a>
+    <nav class="nav-links">
+      <a href="#modules">Модули</a>
+      <a href="#steps">Как это работает</a>
+      <a href="#practice">Практика дня</a>
+      <a href="#support">Поддержка</a>
+      <a href="notebook.html">Тетрадь</a>
+    </nav>
+    <div class="nav-user">
+      <button class="btn btn-primary" id="installBtn" style="display:none">⬇ Установить</button>
+      <div class="pill fire" title="Серия дней">🔥 <span class="num" id="navStreak">0</span></div>
+      <div class="pill" title="Опыт">⭐ <span class="num" id="navXP">0</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="hero container">
+  <div class="badge"><span class="dot"></span> Бесплатно навсегда · Работает офлайн</div>
+  <h1 id="heroTitle">Прокачай себя <span class="grad">за 5 минут в день</span></h1>
+  <p class="sub" id="heroSub">Финансы, эмоции и поддержка — без скучных лекций. Только практика, которая реально работает в студенческой жизни.</p>
+
+  <div class="state-grid">
+    <a href="#modules" class="state"><div class="emoji">💸</div><div class="title">Деньги поют романсы</div><div class="desc">Как дожить до стипендии</div></a>
+    <a href="#modules" class="state"><div class="emoji">🧠</div><div class="title">В голове бардак</div><div class="desc">Тревога, мысли, выгорание</div></a>
+    <a href="#modules" class="state"><div class="emoji">😮‍💨</div><div class="title">Горю на учёбе</div><div class="desc">Сессия и дедлайны</div></a>
+    <a href="#support" class="state"><div class="emoji">🆘</div><div class="title">Нужна поддержка</div><div class="desc">Помощь рядом, анонимно</div></a>
+  </div>
+</section>
+
+<section class="container" id="modules">
+  <div class="section-head">
+    <div><h2>Три модуля. Много практики.</h2><p>Уроки по 10–15 минут. После каждого — задание, которое можно сделать сразу.</p></div>
+  </div>
+  <div class="modules">
+    <div class="module fin" data-module="fin">
+      <div class="icn">💰</div>
+      <h3>Финансы</h3>
+      <p>Как дожить до стипендии и накопить на мечту.</p>
+      <ul><li>Бюджет студента</li><li>Куда уходят деньги</li><li>Накопления с 1000 ₽</li><li>Мошенники и долги</li></ul>
+      <div class="progress-bar"><div class="progress-fill" id="prog-fin"></div></div>
+      <div class="progress-text" id="progText-fin">0 из 8 уроков</div>
+      <a href="module-fin.html" class="go">Начать модуль →</a>
+    </div>
+    <div class="module psy" data-module="psy">
+      <div class="icn">🧠</div>
+      <h3>Психология</h3>
+      <p>Тревога, выгорание, прокрастинация — это нормально.</p>
+      <ul><li>Эмоции и дневник</li><li>Техники заземления</li><li>Синдром самозванца</li><li>Сессия без срыва</li></ul>
+      <div class="progress-bar"><div class="progress-fill" id="prog-psy"></div></div>
+      <div class="progress-text" id="progText-psy">0 из 8 уроков</div>
+      <a href="module-psy.html" class="go">Начать модуль →</a>
+    </div>
+    <div class="module sup" data-module="sup">
+      <div class="icn">🆘</div>
+      <h3>Поддержка</h3>
+      <p>Когда нужна помощь — она рядом.</p>
+      <ul><li>Красные флаги</li><li>Как поговорить с другом</li><li>Горячие линии</li><li>Безопасный план</li></ul>
+      <div class="progress-bar"><div class="progress-fill" id="prog-sup"></div></div>
+      <div class="progress-text" id="progText-sup">0 из 6 уроков</div>
+      <a href="module-sup.html" class="go">Начать модуль →</a>
+    </div>
+  </div>
+</section>
+
+<section class="container" id="steps">
+  <div class="section-head"><div><h2>Как это работает</h2><p>Четыре шага — и ты уже в процессе. Без лекций и «воды».</p></div></div>
+  <div class="steps">
+    <div class="step"><div class="num">1</div><h4>Выбери модуль</h4><p>Финансы, психология или поддержка — с того, что болит сейчас.</p></div>
+    <div class="step"><div class="num">2</div><h4>Пройди урок</h4><p>10–15 минут. Карточки, короткое видео, суть без воды.</p></div>
+    <div class="step"><div class="num">3</div><h4>Сделай практику</h4><p>Задание прямо в рабочей тетради. Сохраняется на устройстве.</p></div>
+    <div class="step"><div class="num">4</div><h4>Отслеживай прогресс</h4><p>XP, дни подряд, достижения. Видно, как ты растёшь.</p></div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="near">
+    <h2>Мы рядом 💛</h2>
+    <p class="lead">Это пространство не про «надо» и «ты должен». Оно про тебя. Здесь можно ошибаться, пробовать, падать и идти дальше — без осуждения.</p>
+    <div class="near-grid">
+      <div class="promise"><div class="emo">🤝</div><b>Без осуждения</b><span>Нет «правильных» и «неправильных» чувств. Есть ты — и то, с чем можно разобраться.</span></div>
+      <div class="promise"><div class="emo">🎯</div><b>Практика, а не лекции</b><span>Меньше теории. Больше того, что можно сделать прямо сейчас — за 5 минут.</span></div>
+      <div class="promise"><div class="emo">🛟</div><b>Поддержка в любой момент</b><span>Если станет тяжело — горячие линии и анонимный чат всегда на виду.</span></div>
+    </div>
+    <p class="sign">Ты не один. И ты справишься — <b>шаг за шагом</b>.</p>
+    <p class="sign" style="margin-top:10px;font-size:13px">Авторы проекта: <b>Елена Осинцева</b> и <b>Тимур Хайретдинов</b></p>
+  </div>
+</section>
+
+<!-- ДНИ ПОДРЯД -->
+<section class="container" style="padding:20px 0">
+  <div id="streakWidget"></div>
+</section>
+
+<section class="container" id="practice">
+  <div class="practice">
+    <div>
+      <div class="tag">Практика дня</div>
+      <h3>Выпиши 3 траты, которые были импульсивными за сегодня</h3>
+      <p>Задача на 2 минуты. Запиши в рабочую тетрадь — и не осуждай себя. Это просто наблюдение.</p>
+      <div class="actions">
+        <button class="btn btn-primary" id="practiceBtn" onclick="doPractice()">Выполнил ✓</button>
+        <a href="notebook.html" class="btn btn-ghost">Открыть тетрадь</a>
+      </div>
+      <div class="done-state" id="doneMsg">Отлично! +10 XP. Возвращайся завтра 🔥</div>
+    </div>
+    <div class="stats-list">
+      <div class="stat"><span>Текущий ритм</span><span id="statStreak">0 дней</span></div>
+      <div class="stat"><span>Всего XP</span><span id="statXP">0</span></div>
+      <div class="stat"><span>Практик выполнено</span><span id="statPractices">0</span></div>
+      <div class="stat"><span>Первый запуск</span><span id="statSince">—</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="quiz">
+    <h3>Не знаешь, с чего начать?</h3>
+    <p class="q-sub">Ответь честно — мы подскажем модуль. Ответ сохранится.</p>
+    <div class="quiz-options">
+      <button class="opt" data-module="fin">💸 «Не хватает денег до конца месяца»</button>
+      <button class="opt" data-module="psy">🧠 «Постоянно тревожусь и не могу расслабиться»</button>
+      <button class="opt" data-module="psy">😮‍💨 «Всё откладываю, потом паника из-за дедлайнов»</button>
+      <button class="opt" data-module="sup">🆘 «Мне плохо, и я не знаю, к кому идти»</button>
+    </div>
+    <div class="quiz-result" id="quizResult"></div>
+  </div>
+</section>
+
+<section class="container" id="support">
+  <div class="support">
+    <div>
+      <h3>Если тебе плохо прямо сейчас</h3>
+      <p>Ты не один. Это бесплатно, анонимно и круглосуточно. Не оставайся с этим один на один.</p>
+      <div class="actions">
+        <a href="tel:88002000122" class="btn btn-danger">📞 Позвонить</a>
+        <a href="#" class="btn btn-ghost">💬 Анонимный чат</a>
+      </div>
+    </div>
+    <div class="hotline-list">
+      <div class="hotline"><span>Детский телефон доверия</span><span>8 800 2000 122</span></div>
+      <div class="hotline"><span>Психологическая помощь МЧС</span><span>8 495 989 50 50</span></div>
+      <div class="hotline"><span>Кризисная линия</span><span>8 800 333 44 33</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ДОСТИЖЕНИЯ -->
+<section class="container" style="padding:20px 0">
+  <div id="achievementsWidget"></div>
+</section>
+
+<section class="container">
+  <div class="section-head"><div><h2>Сообщество</h2><p>Реальные истории студентов. Без осуждения.</p></div></div>
+  <div class="community">
+    <div class="story"><div class="avatar">А</div><p>«Наконец-то разобралась с бюджетом. Оказывается, я тратила 6000 ₽ в месяц на доставку еды».</p><div class="meta">Аня, 2 курс · Финансы</div></div>
+    <div class="story"><div class="avatar">М</div><p>«Дыхание 4-7-8 реально помогло перед экзаменом. Раньше трясло, сейчас — просто волнение».</p><div class="meta">Марк, 1 курс · Психология</div></div>
+    <div class="story"><div class="avatar">К</div><p>«Помог другу поговорить о его состоянии. Скрипты из модуля поддержки — то, что нужно».</p><div class="meta">Кира, 3 курс · Поддержка</div></div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="section-head" style="justify-content:center;text-align:center;flex-direction:column;align-items:center">
+    <h2>Те, кто с тобой</h2>
+    <p>Живые люди, а не безликая платформа. Авторы уроков и практик — преподаватели, которые отвечают на вопросы.</p>
+  </div>
+  <div class="team">
+    <div class="person one">
+      <div class="ava">ЕО</div>
+      <div>
+        <h4>Елена Осинцева</h4>
+        <div class="role">Автор проекта · Куратор модуля «Психология»</div>
+        <p>Помогает разбираться с эмоциями, тревогой и выгоранием. Собирает практики, которые работают в сессию и в жизни.</p>
+        <div class="tags"><span class="tag">Эмоции</span><span class="tag">Тревога</span><span class="tag">Тетради</span></div>
+      </div>
+    </div>
+    <div class="person two">
+      <div class="ava">ТХ</div>
+      <div>
+        <h4>Тимур Хайретдинов</h4>
+        <div class="role">Автор проекта · Куратор модуля «Финансы»</div>
+        <p>Учит обращаться с деньгами без скуки: бюджет, накопления, безопасность. Объясняет так, чтобы понятно с первого раза.</p>
+        <div class="tags"><span class="tag">Бюджет</span><span class="tag">Накопления</span><span class="tag">Безопасность</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="cta">
+    <h2>Начни прямо сейчас</h2>
+    <p>Бесплатно навсегда. Прогресс сохраняется на твоём устройстве. Никакой регистрации и спама.</p>
+    <div class="actions">
+      <a href="#practice" class="btn btn-primary">Выполнить практику дня</a>
+      <a href="#modules" class="btn btn-ghost">Смотреть модули</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="foot">
+      <div>
+        <a class="logo" href="#" style="margin-bottom:12px"><div class="logo-mark"></div>Точка опоры</a>
+        <p style="margin-top:10px;max-width:320px;font-size:13.5px">Помогаем студентам разобраться с деньгами, эмоциями и поддержкой. Практика вместо лекций. Бесплатно.</p>
+      </div>
+      <div>
+        <h5>Модули</h5>
+        <ul>
+          <li><a href="module-fin.html">Финансы</a></li>
+          <li><a href="module-psy.html">Психология</a></li>
+          <li><a href="module-sup.html">Поддержка</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Инструменты</h5>
+        <ul>
+          <li><a href="notebook.html">Тетрадь</a></li>
+          <li><a href="breathing.html">Дыхание</a></li>
+          <li><a href="budget.html">Калькулятор бюджета</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Помощь</h5>
+        <ul>
+          <li><a href="#support">Горячие линии</a></li>
+          <li><a href="#">Анонимный чат</a></li>
+          <li><a href="#">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h5>Авторы</h5>
+        <ul>
+          <li class="author-item"><span class="lbl">Преподаватель</span><span class="name">Елена Осинцева</span></li>
+          <li class="author-item"><span class="lbl">Преподаватель</span><span class="name">Тимур Хайретдинов</span></li>
+        </ul>
+      </div>
+    </div>
+    <div class="copyright">
+      <span>© 2026 Точка опоры · Бесплатно для студентов.</span>
+      <span>Авторы: Елена Осинцева, Тимур Хайретдинов</span>
+    </div>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   ХРАНИЛИЩЕ ПРОГРЕССА
+   ============================================================ */
+const Store = {
+  KEY: 'tochka_opory_v1',
+  data: null,
+
+  defaults(){
+    return {
+      xp: 0,
+      streak: 0,
+      lastVisit: null,
+      createdAt: Date.now(),
+      practicesDone: {},
+      lessonsDone: { fin: [], psy: [], sup: [] },
+      quizResult: null,
+      visits: 0
+    };
+  },
+
+  load(){
+    try {
+      const raw = localStorage.getItem(this.KEY);
+      const parsed = raw ? JSON.parse(raw) : null;
+      this.data = Object.assign(this.defaults(), parsed || {});
+    } catch(e){
+      this.data = this.defaults();
+    }
+    return this.data;
+  },
+
+  save(){
+    try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); }
+    catch(e){ console.warn('Не удалось сохранить', e); }
+  },
+
+  todayKey(){
+    const d = new Date();
+    return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+  },
+
+  yesterdayKey(){
+    const d = new Date();
+    d.setDate(d.getDate() - 1);
+    return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
+  },
+
+  updateStreak(){
+    const today = this.todayKey();
+    if (this.data.lastVisit === today) return this.data.streak;
+    this.data.streak = (this.data.lastVisit === this.yesterdayKey()) ? this.data.streak + 1 : 1;
+    this.data.lastVisit = today;
+    this.data.visits += 1;
+    this.save();
+    return this.data.streak;
+  },
+
+  addXP(n){
+    this.data.xp = Math.max(0, this.data.xp + n);
+    this.save();
+  },
+
+  practiceDoneToday(){ return !!this.data.practicesDone[this.todayKey()]; },
+
+  markPractice(){
+    if (this.practiceDoneToday()) return false;
+    this.data.practicesDone[this.todayKey()] = true;
+    this.addXP(10);
+    return true;
+  },
+
+  countPractices(){ return Object.keys(this.data.practicesDone).length; },
+
+  setQuiz(moduleId){
+    this.data.quizResult = moduleId;
+    this.save();
+  },
+
+  setModuleProgress(moduleId, done, total){
+    const p = total ? Math.round(done/total*100) : 0;
+    const fill = document.getElementById('prog-' + moduleId);
+    const text = document.getElementById('progText-' + moduleId);
+    if (fill) fill.style.width = p + '%';
+    if (text) text.textContent = done + ' из ' + total + ' уроков';
+  }
+};
+
+/* ============================================================
+   ИНИЦИАЛИЗАЦИЯ
+   ============================================================ */
+function formatSince(ts){
+  const d = new Date(ts);
+  const months = ['янв','фев','мар','апр','мая','июн','июл','авг','сен','окт','ноя','дек'];
+  return d.getDate() + ' ' + months[d.getMonth()];
+}
+
+function showToast(text){
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+function renderProgress(){
+  const d = Store.data;
+  document.getElementById('navXP').textContent = d.xp;
+  document.getElementById('navStreak').textContent = d.streak;
+  document.getElementById('statXP').textContent = d.xp;
+  document.getElementById('statStreak').textContent = d.streak + (d.streak === 1 ? ' день' : (d.streak < 5 ? ' дня' : ' дней'));
+  document.getElementById('statPractices').textContent = Store.countPractices();
+  document.getElementById('statSince').textContent = formatSince(d.createdAt);
+
+  const finDone = (d.lessonsDone.fin || []).length;
+  const psyDone = (d.lessonsDone.psy || []).length;
+  const supDone = (d.lessonsDone.sup || []).length;
+  Store.setModuleProgress('fin', finDone, 8);
+  Store.setModuleProgress('psy', psyDone, 8);
+  Store.setModuleProgress('sup', supDone, 6);
+}
+
+function greetUser(){
+  const v = Store.data.visits;
+  if (v > 1){
+    const h = new Date().getHours();
+    const timeGreet = h < 6 ? 'Доброй ночи' : h < 12 ? 'Доброе утро' : h < 18 ? 'Добрый день' : 'Добрый вечер';
+    document.getElementById('heroTitle').innerHTML =
+      timeGreet + ', с возвращением 💛<br><span class="grad">Продолжаем?</span>';
+    document.getElementById('heroSub').textContent =
+      'Твой прогресс сохранён. Ритм: ' + Store.data.streak + ' · XP: ' + Store.data.xp + '. Один шаг — и дальше.';
+  }
+}
+
+function restorePracticeState(){
+  if (Store.practiceDoneToday()){
+    const btn = document.getElementById('practiceBtn');
+    btn.textContent = 'Выполнено ✓';
+    btn.style.background = 'linear-gradient(135deg,#4ad6c8,#2fbfae)';
+    btn.disabled = true;
+    btn.style.opacity = .8;
+    btn.style.cursor = 'default';
+    document.getElementById('doneMsg').style.display = 'block';
+  }
+}
+
+const recommend = {
+  fin: 'Начни с модуля <b>«Финансы»</b>. Первый урок — «Куда уходят деньги». 15 минут и всё станет понятнее.',
+  psy: 'Тебе подойдёт модуль <b>«Психология»</b>. Начни с урока про тревогу и техники заземления.',
+  sup: 'Загляни в <b>«Поддержку»</b>. Там горячие линии, безопасный план и скрипты разговора. Ты не один.'
+};
+
+function showQuizRecommendation(id){
+  const r = document.getElementById('quizResult');
+  r.innerHTML = recommend[id] + ' <a href="#modules" style="color:#4ad6c8;text-decoration:underline">Перейти →</a>';
+  r.style.display = 'block';
+}
+
+function restoreQuiz(){
+  if (!Store.data.quizResult) return;
+  const id = Store.data.quizResult;
+  document.querySelectorAll('.opt').forEach(o => {
+    if (o.dataset.module === id) o.classList.add('selected');
+  });
+  showQuizRecommendation(id);
+}
+
+function doPractice(){
+  const added = Store.markPractice();
+  if (!added) return;
+  const btn = document.getElementById('practiceBtn');
+  btn.textContent = 'Выполнено ✓';
+  btn.style.background = 'linear-gradient(135deg,#4ad6c8,#2fbfae)';
+  btn.disabled = true;
+  btn.style.opacity = .8;
+  btn.style.cursor = 'default';
+  document.getElementById('doneMsg').style.display = 'block';
+  renderProgress();
+  showToast('+10 XP · Ритм ' + Store.data.streak + ' 🔥');
+}
+
+/* ============================================================
+   СТАРТ
+   ============================================================ */
+Store.load();
+Store.updateStreak();
+Store.save();
+
+renderProgress();
+greetUser();
+restorePracticeState();
+restoreQuiz();
+
+document.querySelectorAll('.opt').forEach(o => {
+  o.addEventListener('click', () => {
+    document.querySelectorAll('.opt').forEach(x => x.classList.remove('selected'));
+    o.classList.add('selected');
+    Store.setQuiz(o.dataset.module);
+    showQuizRecommendation(o.dataset.module);
+  });
+});
+
+/* ============================================================
+   PWA: SERVICE WORKER + УСТАНОВКА
+   ============================================================ */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('SW зарегистрирован:', reg.scope))
+      .catch(err => console.warn('SW ошибка:', err));
+  });
+}
+
+let deferredPrompt = null;
+const installBtn = document.getElementById('installBtn');
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  if (installBtn) installBtn.style.display = 'inline-flex';
+});
+
+if (installBtn) {
+  installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    console.log('Установка:', outcome);
+    deferredPrompt = null;
+    installBtn.style.display = 'none';
+  });
+}
+
+window.addEventListener('appinstalled', () => {
+  if (installBtn) installBtn.style.display = 'none';
+  showToast('Приложение установлено 🎉');
+});
+</script>
+
+<script src="onboarding.js"></script>
+<script src="streak.js"></script>
+<script src="achievements.js"></script>
+</body>
+</html>

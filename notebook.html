@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Рабочая тетрадь — Точка опоры</title>
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#0b0b12; --card:rgba(255,255,255,.06); --card-2:rgba(255,255,255,.09);
+    --stroke:rgba(255,255,255,.12); --text:#f2f2f7; --muted:#a1a1b5;
+    --accent:#7c5cff; --accent-2:#4ad6c8; --accent-3:#ff5c8a; --warning:#ffb547;
+    --fin:#4ad6c8; --psy:#7c5cff; --sup:#ff5c8a;
+    --radius:20px; --radius-s:14px;
+    --ff:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.55;-webkit-font-smoothing:antialiased}
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.22), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(74,214,200,.18), transparent 60%),
+      radial-gradient(800px 600px at 50% 110%, rgba(255,92,138,.12), transparent 60%),
+      var(--bg);
+    min-height:100vh; padding-bottom:60px;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .container{max-width:1000px;margin:0 auto;padding:0 20px}
+
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.75);border-bottom:1px solid var(--stroke)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px;max-width:1100px;margin:0 auto;padding:0 20px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(124,92,255,.5)}
+  .nav-user{display:flex;gap:10px;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--stroke);font-size:13.5px;font-weight:600}
+  .pill .num{color:var(--accent-2)}
+  .pill.fire .num{color:var(--warning)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:10px 18px;border-radius:12px;font-size:14px;font-weight:600;transition:.2s;border:1px solid transparent;cursor:pointer}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-ghost{background:var(--card);border-color:var(--stroke)}
+  .btn-ghost:hover{background:var(--card-2)}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),#5f3dff);box-shadow:0 10px 30px rgba(124,92,255,.4)}
+  .btn-sm{padding:8px 14px;font-size:13px;border-radius:10px}
+
+  .hero{padding:50px 0 20px}
+  .crumbs{font-size:13.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+  .crumbs a:hover{color:var(--text)}
+  .crumbs .sep{opacity:.5}
+  h1{font-size:clamp(30px,4.5vw,46px);font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:12px}
+  h1 .grad{background:linear-gradient(135deg,#b8a6ff,#4ad6c8 50%,#ff5c8a);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero .sub{color:var(--muted);font-size:15.5px;max-width:600px;margin-bottom:28px}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:30px}
+  .stat{padding:18px 20px;border-radius:var(--radius-s);background:var(--card);border:1px solid var(--stroke)}
+  .stat .lbl{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+  .stat .val{font-size:24px;font-weight:800}
+  .stat .val.fin{color:var(--fin)}
+  .stat .val.psy{color:var(--psy)}
+  .stat .val.sup{color:var(--sup)}
+
+  .toolbar{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:24px}
+  .filters{display:flex;gap:8px;flex-wrap:wrap}
+  .filter{padding:9px 16px;border-radius:999px;font-size:13.5px;font-weight:600;background:var(--card);border:1px solid var(--stroke);color:var(--muted);transition:.2s;cursor:pointer}
+  .filter:hover{color:var(--text)}
+  .filter.active{background:rgba(124,92,255,.18);border-color:rgba(124,92,255,.5);color:var(--text)}
+  .actions{display:flex;gap:8px;flex-wrap:wrap}
+
+  .entries{display:flex;flex-direction:column;gap:18px}
+  .entry{border-radius:var(--radius);background:var(--card);border:1px solid var(--stroke);overflow:hidden;transition:.25s}
+  .entry:hover{background:var(--card-2)}
+  .entry-head{padding:20px 24px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--stroke)}
+  .entry-title{display:flex;align-items:center;gap:14px;min-width:0}
+  .entry-badge{width:44px;height:44px;border-radius:12px;display:grid;place-items:center;font-size:20px;flex-shrink:0;background:rgba(255,255,255,.05);border:1px solid var(--stroke)}
+  .entry-badge.fin{background:rgba(74,214,200,.15);border-color:rgba(74,214,200,.4)}
+  .entry-badge.psy{background:rgba(124,92,255,.15);border-color:rgba(124,92,255,.4)}
+  .entry-badge.sup{background:rgba(255,92,138,.15);border-color:rgba(255,92,138,.4)}
+  .entry-title .mod{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+  .entry-title h3{font-size:17px;font-weight:700;line-height:1.3}
+  .entry-actions{display:flex;gap:8px;flex-shrink:0}
+  .entry-body{padding:22px 24px;display:flex;flex-direction:column;gap:20px}
+  .section h4{font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .field{display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:12px;background:rgba(0,0,0,.2);border:1px solid var(--stroke)}
+  .field + .field{margin-top:10px}
+  .field .lbl{font-size:12.5px;color:var(--muted);font-weight:600}
+  .field .val{font-size:14.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word;color:var(--text)}
+  .test-result{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 18px;border-radius:12px;background:linear-gradient(135deg,rgba(74,214,200,.12),rgba(124,92,255,.08));border:1px solid rgba(74,214,200,.3)}
+  .test-result .lbl{font-size:13px;color:var(--muted)}
+  .test-result .val{font-size:20px;font-weight:800;color:var(--fin)}
+  .test-result .val.mid{color:var(--warning)}
+
+  .empty{padding:70px 30px;text-align:center;border-radius:var(--radius);background:var(--card);border:1px dashed var(--stroke)}
+  .empty .big{font-size:56px;margin-bottom:14px}
+  .empty h3{font-size:22px;margin-bottom:10px;font-weight:800}
+  .empty p{color:var(--muted);font-size:15px;max-width:460px;margin:0 auto 22px}
+  .empty .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;padding:14px 22px;border-radius:14px;font-weight:600;font-size:14.5px;box-shadow:0 20px 40px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.35s;z-index:100}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  footer{border-top:1px solid var(--stroke);padding:34px 0 30px;margin-top:60px;color:var(--muted);font-size:13.5px}
+  .copyright{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;max-width:1000px;margin:0 auto;padding:0 20px}
+
+  @media (max-width:760px){
+    .stats{grid-template-columns:repeat(2,1fr)}
+    .entry-head{padding:16px 18px}
+    .entry-body{padding:18px}
+  }
+  @media (max-width:520px){
+    .stats{grid-template-columns:1fr}
+    .toolbar{flex-direction:column;align-items:stretch}
+    .actions .btn{flex:1}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><div class="logo-mark"></div>Точка опоры</a>
+    <div class="nav-user">
+      <div class="pill fire" title="Серия дней">🔥 <span class="num" id="navStreak">0</span></div>
+      <div class="pill" title="Опыт">⭐ <span class="num" id="navXP">0</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="container hero">
+  <div class="crumbs">
+    <a href="index.html">Главная</a>
+    <span class="sep">/</span>
+    <span>Рабочая тетрадь</span>
+  </div>
+  <h1>Твоя <span class="grad">рабочая тетрадь</span></h1>
+  <p class="sub">Всё, что ты писал(а) в уроках: практики, рефлексии, результаты тестов. Сохраняется на устройстве. Никто не видит, кроме тебя.</p>
+
+  <div class="stats">
+    <div class="stat"><div class="lbl">Всего записей</div><div class="val" id="statTotal">0</div></div>
+    <div class="stat"><div class="lbl">Финансы</div><div class="val fin" id="statFin">0</div></div>
+    <div class="stat"><div class="lbl">Психология</div><div class="val psy" id="statPsy">0</div></div>
+    <div class="stat"><div class="lbl">Поддержка</div><div class="val sup" id="statSup">0</div></div>
+  </div>
+
+  <div class="toolbar">
+    <div class="filters" id="filters">
+      <button class="filter active" data-filter="all">Все</button>
+      <button class="filter" data-filter="fin">💰 Финансы</button>
+      <button class="filter" data-filter="psy">🧠 Психология</button>
+      <button class="filter" data-filter="sup">🆘 Поддержка</button>
+    </div>
+    <div class="actions">
+      <button class="btn btn-ghost btn-sm" onclick="exportTxt()">⬇ Скачать .txt</button>
+      <button class="btn btn-ghost btn-sm" onclick="copyAll()">📋 Копировать</button>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="entries" id="entries"></div>
+</section>
+
+<footer>
+  <div class="copyright">
+    <span>© 2026 Точка опоры · Бесплатно для студентов.</span>
+    <span>Авторы: Елена Осинцева, Тимур Хайретдинов</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const LESSONS_INDEX = {
+  'fin-1':{module:'fin',title:'Куда уходят деньги'},
+  'fin-2':{module:'fin',title:'Бюджет студента'},
+  'fin-3':{module:'fin',title:'Доходы: подработка, фриланс, стипендия'},
+  'fin-4':{module:'fin',title:'Накопления с 1000 ₽'},
+  'fin-5':{module:'fin',title:'Долги и кредитки'},
+  'fin-6':{module:'fin',title:'Мошенники и безопасность'},
+  'fin-7':{module:'fin',title:'Инвестиции простыми словами'},
+  'fin-8':{module:'fin',title:'Финансовая цель'},
+  'psy-1':{module:'psy',title:'Эмоции: зачем они нужны'},
+  'psy-2':{module:'psy',title:'Тревога перед экзаменом'},
+  'psy-3':{module:'psy',title:'Стресс и выгорание'},
+  'psy-4':{module:'psy',title:'Прокрастинация'},
+  'psy-5':{module:'psy',title:'Самооценка и синдром самозванца'},
+  'psy-6':{module:'psy',title:'Личные границы'},
+  'psy-7':{module:'psy',title:'Токсичные отношения'},
+  'psy-8':{module:'psy',title:'Сессия без нервного срыва'},
+  'sup-1':{module:'sup',title:'Когда нужна помощь'},
+  'sup-2':{module:'sup',title:'Как поговорить с другом'},
+  'sup-3':{module:'sup',title:'Горячие линии'},
+  'sup-4':{module:'sup',title:'Юридическая помощь студентам'},
+  'sup-5':{module:'sup',title:'Как пережить потерю'},
+  'sup-6':{module:'sup',title:'Безопасный план'}
+};
+
+const MODULE_NAMES = { fin:'Финансы', psy:'Психология', sup:'Поддержка' };
+const MODULE_EMOJI = { fin:'💰', psy:'🧠', sup:'🆘' };
+
+const FIELD_LABELS = {
+  day1:'День 1 — траты', day2:'День 2 — траты', day3:'День 3 — траты', pattern:'Что заметил?',
+  income:'Доходы', fixed:'Обязательные траты', wants:'Желания', savings:'Отложу',
+  skills:'Что умею', variant1:'Вариант 1', variant2:'Вариант 2', firstStep:'Первый шаг',
+  goal:'Цель', sum:'Сумма', deadline:'Срок', monthly:'В месяц', where:'Куда откладывать',
+  hasDebt:'Есть долги?', expensive:'Самый дорогой долг', plan:'План', rule:'Моё правило',
+  case1:'Ситуация 1', case2:'Ситуация 2', case3:'Ситуация 3',
+  cushion:'Подушка безопасности', debt:'Долги', risk:'Уровень риска',
+  situation1:'Ситуация 1', situation2:'Ситуация 2', emotion1:'Что почувствовал(а)', emotion2:'Что почувствовал(а)',
+  breathing:'Дыхание 4-7-8', grounding:'Заземление 5-4-3-2-1', beforeExam:'Перед экзаменом',
+  tired:'Усталость', interest:'Что раньше радовало', sleep:'Сон', stage:'Стадия', firstStep:'Первый шаг',
+  task:'Задача', why:'Что за этим стоит', tiny:'Крошечный шаг', when:'Когда',
+  wins:'Мои победы', praise:'За что хвалили', skills2:'Мои навыки', reframe:'Переформулировка',
+  situation:'Ситуация', script:'Мой скрипт',
+  who:'Кто это', feeling:'Что я чувствую', flags:'Красные флаги', step:'Мой шаг',
+  exams:'Экзамены', blocks:'Блоки в день', rest:'День отдыха', ifFail:'Если сорвусь',
+  mood:'Настроение', sleepFood:'Сон и еда', signs:'Признаки', helps:'Что помогает',
+  people:'Люди', prof:'Профессиональная помощь', remove:'Убрать из доступа', reason:'Причина остаться',
+  opener:'Как начну', avoid:'Что не скажу', ifHard:'Если серьёзно',
+  which:'Какая линия', firstWords:'С чего начну', fear:'Что останавливает',
+  rights:'Мои права', loss:'О потере', feelings:'Чувства', support:'К кому обратиться',
+  understood:'Что я понял(а)', willTry:'Что попробую'
+};
+
+const Store = {
+  KEY:'tochka_opory_v1', data:null,
+  load(){
+    try { const raw = localStorage.getItem(this.KEY); this.data = raw ? JSON.parse(raw) : {}; }
+    catch(e){ this.data = {}; }
+    ['practiceAnswers','reflections','testResults','lessonsDone'].forEach(k=>{
+      if (!this.data[k]) this.data[k] = (k==='lessonsDone') ? { fin:[], psy:[], sup:[] } : {};
+    });
+    return this.data;
+  }
+};
+
+function showToast(t){ const el=document.getElementById('toast'); el.textContent=t; el.classList.add('show'); clearTimeout(el._tid); el._tid=setTimeout(()=>el.classList.remove('show'),2200); }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function hasText(v){ return v && String(v).trim().length > 0; }
+function lessonTitle(id){ return (LESSONS_INDEX[id] && LESSONS_INDEX[id].title) || id; }
+function lessonModule(id){ return (LESSONS_INDEX[id] && LESSONS_INDEX[id].module) || id.split('-')[0]; }
+
+function collectEntries(){
+  const d = Store.data;
+  const ids = new Set([
+    ...Object.keys(d.practiceAnswers||{}),
+    ...Object.keys(d.reflections||{}),
+    ...Object.keys(d.testResults||{}),
+    ...((d.lessonsDone&&d.lessonsDone.fin)||[]),
+    ...((d.lessonsDone&&d.lessonsDone.psy)||[]),
+    ...((d.lessonsDone&&d.lessonsDone.sup)||[])
+  ]);
+  const entries = [];
+  ids.forEach(id => {
+    const practice = d.practiceAnswers[id] || {};
+    const reflection = d.reflections[id] || {};
+    const test = d.testResults[id] || null;
+    const done = (d.lessonsDone[lessonModule(id)]||[]).indexOf(id) !== -1;
+    const hasAny = Object.keys(practice).some(k=>hasText(practice[k])) ||
+                   Object.keys(reflection).some(k=>hasText(reflection[k])) ||
+                   (test && test.completed) || done;
+    if (!hasAny) return;
+    entries.push({ id, module:lessonModule(id), title:lessonTitle(id), done, practice, reflection, test });
+  });
+  const modOrder = { fin:1, psy:2, sup:3 };
+  entries.sort((a,b)=>{
+    const mo = modOrder[a.module] - modOrder[b.module];
+    if (mo !== 0) return mo;
+    return (parseInt(a.id.split('-')[1])||0) - (parseInt(b.id.split('-')[1])||0);
+  });
+  return entries;
+}
+
+let currentFilter = 'all';
+let allEntries = [];
+
+function renderHeaderStats(){
+  const d = Store.data;
+  document.getElementById('navXP').textContent = d.xp || 0;
+  document.getElementById('navStreak').textContent = d.streak || 0;
+  const counts = { fin:0, psy:0, sup:0 };
+  allEntries.forEach(e => { counts[e.module] = (counts[e.module]||0) + 1; });
+  document.getElementById('statTotal').textContent = allEntries.length;
+  document.getElementById('statFin').textContent = counts.fin;
+  document.getElementById('statPsy').textContent = counts.psy;
+  document.getElementById('statSup').textContent = counts.sup;
+}
+
+function renderEntry(e){
+  const mod = e.module;
+  const emoji = MODULE_EMOJI[mod] || '📘';
+  const modName = MODULE_NAMES[mod] || mod;
+
+  let practiceHtml = '';
+  const practiceFilled = Object.keys(e.practice||{}).filter(k=>hasText(e.practice[k]));
+  if (practiceFilled.length){
+    practiceHtml = `<div class="section"><h4>✏️ Практика</h4>${practiceFilled.map(k=>`
+      <div class="field"><div class="lbl">${escapeHtml(FIELD_LABELS[k]||k)}</div><div class="val">${escapeHtml(e.practice[k])}</div></div>
+    `).join('')}</div>`;
+  }
+
+  let reflectionHtml = '';
+  const refFilled = Object.keys(e.reflection||{}).filter(k=>hasText(e.reflection[k]));
+  if (refFilled.length){
+    reflectionHtml = `<div class="section"><h4>💭 Рефлексия</h4>${refFilled.map(k=>`
+      <div class="field"><div class="lbl">${escapeHtml(FIELD_LABELS[k]||k)}</div><div class="val">${escapeHtml(e.reflection[k])}</div></div>
+    `).join('')}</div>`;
+  }
+
+  let testHtml = '';
+  if (e.test && e.test.completed){
+    const ok = e.test.correct === e.test.total;
+    testHtml = `<div class="section"><h4>🧠 Тест</h4><div class="test-result">
+      <span class="lbl">Правильных ответов</span>
+      <span class="val ${ok?'':'mid'}">${e.test.correct} / ${e.test.total}</span>
+    </div></div>`;
+  }
+
+  const body = (practiceHtml||reflectionHtml||testHtml)
+    ? `<div class="entry-body">${practiceHtml}${reflectionHtml}${testHtml}</div>`
+    : `<div class="entry-body"><div class="section"><h4>📭 Пока пусто</h4><div class="field"><div class="val">Загляни в урок, чтобы заполнить.</div></div></div></div>`;
+
+  return `<div class="entry" data-module="${mod}">
+    <div class="entry-head">
+      <div class="entry-title">
+        <div class="entry-badge ${mod}">${emoji}</div>
+        <div>
+          <div class="mod">${escapeHtml(modName)}${e.done?' · ✓ Пройден':''}</div>
+          <h3>${escapeHtml(e.title)}</h3>
+        </div>
+      </div>
+      <div class="entry-actions"><a href="lesson.html?id=${e.id}" class="btn btn-ghost btn-sm">Открыть урок →</a></div>
+    </div>
+    ${body}
+  </div>`;
+}
+
+function render(){
+  const container = document.getElementById('entries');
+  const filtered = currentFilter === 'all' ? allEntries : allEntries.filter(e=>e.module===currentFilter);
+
+  if (!allEntries.length){
+    container.innerHTML = `<div class="empty">
+      <div class="big">📓</div>
+      <h3>Тетрадь пока пуста</h3>
+      <p>Пройди первый урок, заполни практику — и всё появится здесь. Сохраняется автоматически, только на твоём устройстве.</p>
+      <div class="actions">
+        <a href="module-fin.html" class="btn btn-primary">Начать с финансов →</a>
+        <a href="index.html#modules" class="btn btn-ghost">Все модули</a>
+      </div>
+    </div>`;
+    return;
+  }
+  if (!filtered.length){
+    container.innerHTML = `<div class="empty">
+      <div class="big">🔍</div>
+      <h3>В этом модуле пока пусто</h3>
+      <p>Пройди хотя бы один урок из этого модуля, чтобы записи появились здесь.</p>
+      <div class="actions"><a href="index.html#modules" class="btn btn-primary">К модулям →</a></div>
+    </div>`;
+    return;
+  }
+  container.innerHTML = filtered.map(renderEntry).join('');
+}
+
+document.getElementById('filters').addEventListener('click', (e) => {
+  const btn = e.target.closest('.filter');
+  if (!btn) return;
+  document.querySelectorAll('.filter').forEach(f=>f.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = btn.dataset.filter;
+  render();
+});
+
+function buildTextDump(){
+  const lines = [];
+  lines.push('ТОЧКА ОПОРЫ — РАБОЧАЯ ТЕТРАДЬ');
+  lines.push('Авторы: Елена Осинцева, Тимур Хайретдинов');
+  lines.push('Дата: ' + new Date().toLocaleString('ru-RU'));
+  lines.push('='.repeat(60), '');
+  const source = currentFilter==='all' ? allEntries : allEntries.filter(e=>e.module===currentFilter);
+  if (!source.length){ lines.push('(Нет записей.)'); return lines.join('\n'); }
+  source.forEach(e => {
+    lines.push('━'.repeat(60));
+    lines.push(`МОДУЛЬ: ${MODULE_NAMES[e.module]||e.module}`);
+    lines.push(`УРОК: ${e.title} (${e.id})`);
+    if (e.done) lines.push('СТАТУС: пройден ✓');
+    lines.push('');
+    Object.keys(e.practice||{}).filter(k=>hasText(e.practice[k])).forEach(k=>{
+      lines.push(`  ${FIELD_LABELS[k]||k}:`);
+      lines.push('    ' + String(e.practice[k]).replace(/\n/g,'\n    '), '');
+    });
+    Object.keys(e.reflection||{}).filter(k=>hasText(e.reflection[k])).forEach(k=>{
+      lines.push(`  РЕФЛЕКСИЯ — ${FIELD_LABELS[k]||k}:`);
+      lines.push('    ' + String(e.reflection[k]).replace(/\n/g,'\n    '), '');
+    });
+    if (e.test && e.test.completed) lines.push(`  ТЕСТ: ${e.test.correct} / ${e.test.total}`, '');
+  });
+  lines.push('━'.repeat(60), 'Конец выгрузки.');
+  return lines.join('\n');
+}
+
+function exportTxt(){
+  if (!allEntries.length){ showToast('Тетрадь пуста'); return; }
+  const blob = new Blob([buildTextDump()], { type:'text/plain;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const d = new Date();
+  a.download = 'tochka-opory-notebook-' + d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0') + '.txt';
+  document.body.appendChild(a); a.click(); document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast('Файл скачан ⬇');
+}
+
+async function copyAll(){
+  if (!allEntries.length){ showToast('Тетрадь пуста'); return; }
+  const text = buildTextDump();
+  try { await navigator.clipboard.writeText(text); showToast('Скопировано 📋'); }
+  catch(e){
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); showToast('Скопировано 📋'); }
+    catch(err){ showToast('Не удалось скопировать'); }
+    document.body.removeChild(ta);
+  }
+}
+
+Store.load();
+allEntries = collectEntries();
+renderHeaderStats();
+render();
+
+if ('serviceWorker' in navigator){ window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
+</script>
+</body>
+</html>

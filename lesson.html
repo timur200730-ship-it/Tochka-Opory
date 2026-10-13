@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Урок — Точка опоры</title>
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#0b0b12;
+    --card:rgba(255,255,255,.06); --card-2:rgba(255,255,255,.09);
+    --stroke:rgba(255,255,255,.12);
+    --text:#f2f2f7; --muted:#a1a1b5;
+    --accent:#7c5cff; --accent-2:#4ad6c8; --accent-3:#ff5c8a; --warning:#ffb547;
+    --ok:#4ad6c8; --err:#ff5c8a;
+    --radius:20px; --radius-s:14px;
+    --ff:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --mod:#4ad6c8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.55;-webkit-font-smoothing:antialiased}
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.22), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(74,214,200,.18), transparent 60%),
+      var(--bg);
+    min-height:100vh; padding-bottom:80px;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  textarea,input{font-family:inherit}
+  .container{max-width:820px;margin:0 auto;padding:0 20px}
+
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.75);border-bottom:1px solid var(--stroke)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px;max-width:1100px;margin:0 auto;padding:0 20px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(124,92,255,.5)}
+  .nav-user{display:flex;gap:10px;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--stroke);font-size:13.5px;font-weight:600}
+  .pill .num{color:var(--ok)}
+  .pill.fire .num{color:var(--warning)}
+  .close-link{font-size:13.5px;color:var(--muted);padding:8px 12px;border-radius:10px;border:1px solid transparent;transition:.2s}
+  .close-link:hover{color:var(--text);background:var(--card)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:12px;font-size:14.5px;font-weight:600;transition:.2s;border:1px solid transparent}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-ghost{background:var(--card);border-color:var(--stroke)}
+  .btn-ghost:hover{background:var(--card-2)}
+  .btn-primary{background:linear-gradient(135deg,var(--mod),#2fbfae);color:#08110f;box-shadow:0 10px 30px rgba(74,214,200,.3)}
+  .btn-primary:hover{opacity:.95}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+
+  .crumbs{padding:24px 0 10px;font-size:13.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .crumbs a:hover{color:var(--text)}
+  .crumbs .sep{opacity:.5}
+
+  .lesson-head{padding:14px 0 28px}
+  .lesson-tag{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:var(--card);border:1px solid var(--stroke);font-size:12.5px;color:var(--muted);margin-bottom:16px}
+  .lesson-tag .dot{width:8px;height:8px;border-radius:50%;background:var(--mod);box-shadow:0 0 10px var(--mod)}
+  .lesson-head h1{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.02em;line-height:1.12;margin-bottom:14px}
+  .lesson-head .goal{padding:18px 20px;border-radius:var(--radius-s);background:linear-gradient(135deg,rgba(74,214,200,.12),rgba(124,92,255,.08));border:1px solid rgba(74,214,200,.3);font-size:14.5px;line-height:1.55}
+  .lesson-head .goal b{color:var(--mod)}
+
+  .stepper{display:flex;gap:8px;margin:28px 0 30px;flex-wrap:wrap}
+  .step-pill{display:flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:var(--card);border:1px solid var(--stroke);font-size:13px;font-weight:600;color:var(--muted);transition:.25s}
+  .step-pill .ico{font-size:14px}
+  .step-pill.active{background:linear-gradient(135deg,rgba(74,214,200,.2),rgba(124,92,255,.15));border-color:rgba(74,214,200,.5);color:var(--text)}
+  .step-pill.done{color:var(--ok);border-color:rgba(74,214,200,.4)}
+
+  .block{display:none;animation:fadeIn .35s ease}
+  .block.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  .block h2{font-size:clamp(22px,2.6vw,28px);font-weight:800;margin-bottom:14px;letter-spacing:-.01em}
+  .block .block-sub{color:var(--muted);font-size:14.5px;margin-bottom:22px;max-width:600px}
+
+  .theory-cards{display:flex;flex-direction:column;gap:14px;margin-bottom:24px}
+  .tcard{padding:22px 24px;border-radius:var(--radius-s);background:var(--card);border:1px solid var(--stroke);transition:.2s}
+  .tcard:hover{background:var(--card-2)}
+  .tcard .t-head{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+  .tcard .t-emoji{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:20px;background:rgba(74,214,200,.14);border:1px solid rgba(74,214,200,.3);flex-shrink:0}
+  .tcard h3{font-size:16.5px;font-weight:700}
+  .tcard p{font-size:14.5px;color:var(--muted);line-height:1.65}
+  .tcard p + p{margin-top:8px}
+  .tcard b{color:var(--text)}
+  .tcard ul{margin:10px 0 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;font-size:14.5px;color:var(--muted)}
+  .tcard ul li{display:flex;gap:10px;align-items:flex-start}
+  .tcard ul li::before{content:"•";color:var(--mod);font-weight:800}
+
+  .cross-link{margin-bottom:18px;padding:16px;border-radius:14px;background:rgba(124,92,255,.12);border:1px solid rgba(124,92,255,.35);text-align:center;font-size:14.5px}
+  .cross-link a{color:#b8a6ff;font-weight:700}
+  .cross-link.fin{background:rgba(74,214,200,.12);border-color:rgba(74,214,200,.35)}
+  .cross-link.fin a{color:#4ad6c8}
+
+  .practice-box{padding:26px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(124,92,255,.14),rgba(74,214,200,.1));border:1px solid var(--stroke);margin-bottom:22px}
+  .practice-box .p-head{display:flex;gap:10px;align-items:center;margin-bottom:14px}
+  .practice-box .p-head .emoji{font-size:22px}
+  .practice-box .p-head h3{font-size:17px;font-weight:800}
+  .practice-box label{display:block;font-size:13.5px;font-weight:600;margin:14px 0 8px;color:var(--text)}
+  .practice-box label .hint{color:var(--muted);font-weight:500;font-size:12.5px;margin-left:6px}
+  .practice-box textarea,
+  .practice-box input[type="text"],
+  .practice-box input[type="number"]{width:100%;padding:14px 16px;border-radius:12px;font-size:14.5px;background:rgba(0,0,0,.25);border:1px solid var(--stroke);color:var(--text);resize:vertical;min-height:80px;transition:.2s}
+  .practice-box textarea:focus,
+  .practice-box input:focus{outline:none;border-color:var(--mod);background:rgba(0,0,0,.35)}
+  .saved-hint{font-size:12.5px;color:var(--ok);margin-top:8px;opacity:0;transition:.3s}
+  .saved-hint.show{opacity:1}
+
+  .quiz-q{padding:22px 24px;border-radius:var(--radius-s);background:var(--card);border:1px solid var(--stroke);margin-bottom:14px}
+  .quiz-q .q-num{font-size:12px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+  .quiz-q .q-text{font-size:15.5px;font-weight:600;margin-bottom:14px;line-height:1.5}
+  .quiz-q .q-opts{display:flex;flex-direction:column;gap:8px}
+  .q-opt{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--stroke);cursor:pointer;font-size:14.5px;transition:.2s;text-align:left}
+  .q-opt:hover{border-color:var(--mod);background:rgba(74,214,200,.08)}
+  .q-opt .marker{width:22px;height:22px;border-radius:50%;border:2px solid var(--muted);flex-shrink:0;display:grid;place-items:center;font-size:12px;color:transparent;font-weight:800}
+  .q-opt.selected{border-color:var(--mod);background:rgba(74,214,200,.1)}
+  .q-opt.selected .marker{border-color:var(--mod);background:var(--mod);color:#08110f}
+  .q-opt.correct{border-color:var(--ok);background:rgba(74,214,200,.16)}
+  .q-opt.correct .marker{border-color:var(--ok);background:var(--ok);color:#08110f}
+  .q-opt.wrong{border-color:var(--err);background:rgba(255,92,138,.12)}
+  .q-opt.wrong .marker{border-color:var(--err);background:var(--err);color:#fff}
+  .q-opt.locked{cursor:default;pointer-events:none}
+  .q-explain{margin-top:12px;padding:12px 16px;border-radius:10px;background:rgba(124,92,255,.1);border:1px solid rgba(124,92,255,.3);font-size:13.5px;color:var(--muted);display:none}
+  .q-explain.show{display:block}
+  .q-explain b{color:var(--text)}
+
+  .quiz-summary{padding:22px;border-radius:var(--radius-s);background:linear-gradient(135deg,rgba(74,214,200,.14),rgba(124,92,255,.1));border:1px solid rgba(74,214,200,.35);margin-top:18px;display:none}
+  .quiz-summary.show{display:block}
+  .quiz-summary h4{font-size:17px;margin-bottom:6px}
+  .quiz-summary p{font-size:14.5px;color:var(--muted)}
+  .quiz-summary b{color:var(--text);font-size:18px}
+
+  .reflect-box{padding:26px;border-radius:var(--radius);background:var(--card);border:1px solid var(--stroke);margin-bottom:20px}
+  .reflect-box label{display:block;font-size:14.5px;font-weight:600;margin-bottom:10px}
+  .reflect-box textarea{width:100%;padding:14px 16px;border-radius:12px;font-size:14.5px;background:rgba(0,0,0,.25);border:1px solid var(--stroke);color:var(--text);resize:vertical;min-height:90px;transition:.2s;margin-bottom:18px}
+  .reflect-box textarea:focus{outline:none;border-color:var(--accent);background:rgba(0,0,0,.35)}
+
+  .finish-box{padding:34px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(74,214,200,.18),rgba(124,92,255,.14));border:1px solid rgba(74,214,200,.4);text-align:center}
+  .finish-box .big{font-size:56px;margin-bottom:12px;line-height:1}
+  .finish-box h3{font-size:clamp(22px,3vw,28px);font-weight:800;margin-bottom:10px}
+  .finish-box p{color:var(--muted);font-size:15px;margin-bottom:22px;max-width:520px;margin-left:auto;margin-right:auto}
+  .finish-box .stats{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:24px}
+  .finish-box .st{padding:10px 18px;border-radius:12px;background:rgba(0,0,0,.25);border:1px solid var(--stroke);font-size:13.5px;font-weight:600}
+  .finish-box .st b{color:var(--ok)}
+  .finish-box .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+  .step-nav{display:flex;justify-content:space-between;gap:12px;margin-top:28px;flex-wrap:wrap}
+  .step-nav .btn{flex:1;min-width:160px}
+
+  .top-progress{position:sticky;top:64px;z-index:40;height:4px;background:rgba(255,255,255,.05);margin-bottom:-4px}
+  .top-progress .bar{height:100%;width:0;background:linear-gradient(90deg,var(--mod),#7c5cff);transition:width .4s ease}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--mod),#7c5cff);color:#fff;padding:14px 22px;border-radius:14px;font-weight:600;font-size:14.5px;box-shadow:0 20px 40px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.35s;z-index:100}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .error-box{padding:26px;border-radius:var(--radius);background:rgba(255,92,138,.12);border:1px solid rgba(255,92,138,.4);text-align:center;margin-top:40px}
+  .error-box h3{font-size:18px;margin-bottom:10px;color:#ff9dba}
+  .error-box p{color:var(--muted);font-size:14px}
+
+  @media (max-width:600px){
+    .stepper{overflow-x:auto;flex-wrap:nowrap;padding-bottom:4px}
+    .step-pill{white-space:nowrap;font-size:12px;padding:8px 12px}
+    .lesson-head h1{font-size:26px}
+    .finish-box{padding:26px 20px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><div class="logo-mark"></div>Точка опоры</a>
+    <div class="nav-user">
+      <div class="pill fire" title="Серия дней">🔥 <span class="num" id="navStreak">0</span></div>
+      <div class="pill" title="Опыт">⭐ <span class="num" id="navXP">0</span></div>
+      <a href="index.html" class="close-link">✕ Выйти</a>
+    </div>
+  </div>
+</header>
+
+<div class="top-progress"><div class="bar" id="topBar"></div></div>
+
+<main class="container" id="app"></main>
+
+<div class="toast" id="toast"></div>
+
+<!-- Данные уроков -->
+<script src="lessons-data.js"></script>
+<script>
+/* ============================================================
+   ЛОГИКА УРОКА — Точка опоры
+   Авторы: Елена Осинцева, Тимур Хайретдинов
+   ============================================================ */
+
+/* Проверка: подключился ли lessons-data.js */
+if (typeof LESSONS_DB === 'undefined'){
+  document.getElementById('app').innerHTML = `
+    <div class="error-box">
+      <h3>⚠️ Не удалось загрузить уроки</h3>
+      <p>Файл <b>lessons-data.js</b> не подключился. Проверь, что он лежит рядом с <b>lesson.html</b> и называется именно <b>lessons-data.js</b>.</p>
+    </div>`;
+} else {
+
+/* ============================================================
+   ЗАГЛУШКА ДЛЯ УРОКА, КОТОРОГО НЕТ В БАЗЕ
+   ============================================================ */
+function placeholderLesson(id){
+  const parts = id.split('-');
+  const m = parts[0];
+  return {
+    moduleId: m,
+    moduleName: m === 'fin' ? 'Финансы' : m === 'psy' ? 'Психология' : 'Поддержка',
+    moduleColor: m === 'psy' ? '#7c5cff' : m === 'sup' ? '#ff5c8a' : '#4ad6c8',
+    order: parseInt(parts[1]) || 1,
+    title: 'Урок в разработке',
+    minutes: 10,
+    goal: 'Этот урок ещё готовится. Но ты можешь вернуться к предыдущим.',
+    theory: [{ emoji:'⏳', title:'Скоро будет', text:['Мы пишем этот урок. Возвращайся позже.'] }],
+    practice: null, quiz: null, reflection: null,
+    isPlaceholder: true
+  };
+}
+
+/* ============================================================
+   ХРАНИЛИЩЕ ПРОГРЕССА
+   ============================================================ */
+const Store = {
+  KEY: 'tochka_opory_v1',
+  data: null,
+  defaults(){
+    return {
+      xp:0, streak:0, lastVisit:null, createdAt:Date.now(),
+      practicesDone:{},
+      lessonsDone:{ fin:[], psy:[], sup:[] },
+      practiceAnswers:{}, reflections:{}, testResults:{}, lessonStage:{},
+      quizResult:null, visits:0
+    };
+  },
+  load(){
+    try {
+      const raw = localStorage.getItem(this.KEY);
+      const parsed = raw ? JSON.parse(raw) : null;
+      this.data = Object.assign(this.defaults(), parsed || {});
+    } catch(e){ this.data = this.defaults(); }
+    ['lessonsDone','practiceAnswers','reflections','testResults','lessonStage'].forEach(k=>{
+      if (!this.data[k]) this.data[k] = {};
+    });
+    ['fin','psy','sup'].forEach(m=>{
+      if (!this.data.lessonsDone[m]) this.data.lessonsDone[m] = [];
+    });
+    return this.data;
+  },
+  save(){ try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch(e){} },
+  isDone(id){ return (this.data.lessonsDone[this._moduleOf(id)] || []).indexOf(id) !== -1; },
+  markDone(id){
+    const m = this._moduleOf(id);
+    if (this.isDone(id)) return false;
+    if (!this.data.lessonsDone[m]) this.data.lessonsDone[m] = [];
+    this.data.lessonsDone[m].push(id);
+    this.data.xp = (this.data.xp || 0) + 20;
+    this.save();
+    return true;
+  },
+  saveAnswer(id, key, value){
+    if (!this.data.practiceAnswers[id]) this.data.practiceAnswers[id] = {};
+    this.data.practiceAnswers[id][key] = value;
+    this.save();
+  },
+  saveReflection(id, key, value){
+    if (!this.data.reflections[id]) this.data.reflections[id] = {};
+    this.data.reflections[id][key] = value;
+    this.save();
+  },
+  saveTestResult(id, res){
+    this.data.testResults[id] = res;
+    this.save();
+  },
+  setStage(id, stage){
+    this.data.lessonStage[id] = stage;
+    this.save();
+  },
+  getStage(id){ return this.data.lessonStage[id] || 'theory'; },
+  _moduleOf(id){ return id.split('-')[0]; }
+};
+
+/* ============================================================
+   ИНИЦИАЛИЗАЦИЯ
+   ============================================================ */
+const params = new URLSearchParams(location.search);
+const LESSON_ID = params.get('id') || 'fin-1';
+const lesson = LESSONS_DB[LESSON_ID] || placeholderLesson(LESSON_ID);
+
+document.title = lesson.title + ' — Точка опоры';
+document.documentElement.style.setProperty('--mod', lesson.moduleColor);
+
+const STAGES = ['theory', 'practice', 'quiz', 'reflection', 'finish'];
+const STAGE_LABELS = {
+  theory: { ico:'📖', name:'Теория' },
+  practice: { ico:'✏️', name:'Практика' },
+  quiz: { ico:'🧠', name:'Тест' },
+  reflection: { ico:'💭', name:'Рефлексия' },
+  finish: { ico:'🎉', name:'Готово' }
+};
+
+let currentStage = Store.getStage(LESSON_ID);
+if (lesson.isPlaceholder) currentStage = 'theory';
+
+/* ============================================================
+   УТИЛИТЫ
+   ============================================================ */
+function showToast(text){
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+function renderHeader(){
+  document.getElementById('navXP').textContent = Store.data.xp || 0;
+  document.getElementById('navStreak').textContent = Store.data.streak || 0;
+}
+
+function renderStepper(){
+  const active = STAGES.indexOf(currentStage);
+  return `<div class="stepper">${STAGES.map((s,i)=>{
+    const cls = i < active ? 'done' : i === active ? 'active' : '';
+    const ico = i < active ? '✓' : STAGE_LABELS[s].ico;
+    return `<div class="step-pill ${cls}"><span class="ico">${ico}</span>${STAGE_LABELS[s].name}</div>`;
+  }).join('')}</div>`;
+}
+
+function renderCrossLink(){
+  if (!lesson.crossLink) return '';
+  const cls = lesson.crossLink.type === 'fin' ? 'cross-link fin' : 'cross-link';
+  return `<div class="${cls}">${lesson.crossLink.text}</div>`;
+}
+
+/* ============================================================
+   ЭТАП: ТЕОРИЯ
+   ============================================================ */
+function renderTheory(){
+  const cards = lesson.theory.map(c => {
+    const paragraphs = (c.text || []).map(t => `<p>${t}</p>`).join('');
+    const list = c.list ? `<ul>${c.list.map(li => `<li>${li}</li>`).join('')}</ul>` : '';
+    const footer = c.footer ? `<p style="margin-top:12px">${c.footer}</p>` : '';
+    return `
+      <div class="tcard">
+        <div class="t-head"><div class="t-emoji">${c.emoji}</div><h3>${c.title}</h3></div>
+        ${paragraphs}${list}${footer}
+      </div>
+    `;
+  }).join('');
+  return `
+    <div class="block active">
+      <h2>Теория</h2>
+      <p class="block-sub">Коротко и по делу. 3–4 минуты чтения.</p>
+      <div class="theory-cards">${cards}</div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="goStage('theory')">↺ В начало</button>
+        <button class="btn btn-primary" onclick="goStage('${lesson.isPlaceholder ? 'theory' : 'practice'}')" ${lesson.isPlaceholder ? 'disabled' : ''}>
+          ${lesson.isPlaceholder ? 'Урок в разработке' : 'Перейти к практике →'}
+        </button>
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   ЭТАП: ПРАКТИКА
+   ============================================================ */
+function renderPractice(){
+  if (!lesson.practice){
+    return `
+      <div class="block active">
+        <h2>Практика</h2>
+        <p class="block-sub">Для этого урока практика пока не готова.</p>
+        <div class="step-nav">
+          <button class="btn btn-ghost" onclick="goStage('theory')">← Назад</button>
+          <button class="btn btn-primary" onclick="goStage('quiz')">Дальше →</button>
+        </div>
+      </div>
+    `;
+  }
+  const saved = Store.data.practiceAnswers[LESSON_ID] || {};
+  const fields = lesson.practice.fields.map(f => {
+    const val = (saved[f.key] || '').replace(/</g,'&lt;');
+    const hint = f.hint ? `<span class="hint">${f.hint}</span>` : '';
+    return `
+      <label>${f.label}${hint}</label>
+      <textarea data-field="${f.key}" placeholder="${f.placeholder || ''}" oninput="onFieldInput('${f.key}', this.value)">${val}</textarea>
+    `;
+  }).join('');
+  return `
+    <div class="block active">
+      <h2>Практика</h2>
+      <p class="block-sub">Задание, которое закрепит урок. Ответы сохраняются автоматически.</p>
+      ${renderCrossLink()}
+      <div class="practice-box">
+        <div class="p-head"><div class="emoji">✏️</div><h3>${lesson.practice.intro}</h3></div>
+        ${fields}
+        <div class="saved-hint" id="savedHint">✓ Сохранено</div>
+      </div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="goStage('theory')">← Назад</button>
+        <button class="btn btn-primary" onclick="goStage('quiz')">Перейти к тесту →</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   ЭТАП: ТЕСТ
+   ============================================================ */
+function renderQuiz(){
+  if (!lesson.quiz){
+    return `
+      <div class="block active">
+        <h2>Тест</h2>
+        <p class="block-sub">Тест пока не готов.</p>
+        <div class="step-nav">
+          <button class="btn btn-ghost" onclick="goStage('practice')">← Назад</button>
+          <button class="btn btn-primary" onclick="goStage('reflection')">Дальше →</button>
+        </div>
+      </div>
+    `;
+  }
+
+  const res = Store.data.testResults[LESSON_ID] || null;
+  const selected = (res && res.selected) ? res.selected : {};
+  const completed = !!(res && res.completed);
+
+  const questions = lesson.quiz.map((q, qi) => {
+    const isAnswered = selected[qi] !== undefined;
+    const opts = q.options.map((o, oi) => {
+      let cls = '';
+      if (isAnswered){
+        cls = 'locked';
+        if (o.correct) cls += ' correct';
+        else if (selected[qi] === oi) cls += ' wrong';
+      }
+      return `
+        <button class="q-opt ${cls}" data-q="${qi}" data-o="${oi}" onclick="selectAnswer(${qi}, ${oi}, event)">
+          <span class="marker">✓</span><span>${o.text}</span>
+        </button>
+      `;
+    }).join('');
+    const explain = isAnswered
+      ? `<div class="q-explain show"><b>Пояснение:</b> ${q.explain}</div>`
+      : `<div class="q-explain" id="exp-${qi}"><b>Пояснение:</b> ${q.explain}</div>`;
+    return `
+      <div class="quiz-q">
+        <div class="q-num">Вопрос ${qi+1} из ${lesson.quiz.length}</div>
+        <div class="q-text">${q.q}</div>
+        <div class="q-opts" data-q="${qi}">${opts}</div>
+        ${explain}
+      </div>
+    `;
+  }).join('');
+
+  const answeredCount = Object.keys(selected).length;
+
+  const summary = completed ? `
+    <div class="quiz-summary show">
+      <h4>Результат: <b>${res.correct} из ${res.total}</b></h4>
+      <p>${res.correct === res.total ? 'Идеально! Ты разобрался в теме.' : 'Норм! Тест — это для самопроверки, а не для оценки.'}</p>
+    </div>
+  ` : `
+    <div class="quiz-summary" style="display:block;background:rgba(255,255,255,.05);border-color:var(--stroke)">
+      <p>Отвечено: <b>${answeredCount} из ${lesson.quiz.length}</b>. Ответь на все вопросы, чтобы продолжить.</p>
+    </div>
+  `;
+
+  return `
+    <div class="block active">
+      <h2>Небольшой тест</h2>
+      <p class="block-sub">Проверь себя. ${lesson.quiz.length} вопроса, сразу с пояснениями.</p>
+      ${questions}
+      ${summary}
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="goStage('practice')">← Назад</button>
+        <button class="btn btn-primary" onclick="goStage('reflection')" ${completed ? '' : 'disabled'}>Дальше →</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   ЭТАП: РЕФЛЕКСИЯ
+   ============================================================ */
+function renderReflection(){
+  if (!lesson.reflection){
+    return `
+      <div class="block active">
+        <h2>Рефлексия</h2>
+        <p class="block-sub">Рефлексия пока не готова.</p>
+        <div class="step-nav">
+          <button class="btn btn-ghost" onclick="goStage('quiz')">← Назад</button>
+          <button class="btn btn-primary" onclick="goStage('finish')">Завершить →</button>
+        </div>
+      </div>
+    `;
+  }
+  const saved = Store.data.reflections[LESSON_ID] || {};
+  const qs = lesson.reflection.questions.map(q => {
+    const val = (saved[q.key] || '').replace(/</g,'&lt;');
+    return `
+      <label>${q.label}</label>
+      <textarea data-reflect="${q.key}" placeholder="Пара предложений — этого достаточно..." oninput="onReflectInput('${q.key}', this.value)">${val}</textarea>
+    `;
+  }).join('');
+  return `
+    <div class="block active">
+      <h2>Рефлексия</h2>
+      <p class="block-sub">Коротко закрепи, что понял. Это тоже сохранится.</p>
+      <div class="reflect-box">${qs}</div>
+      <div class="step-nav">
+        <button class="btn btn-ghost" onclick="goStage('quiz')">← Назад</button>
+        <button class="btn btn-primary" onclick="finishLesson()">Завершить урок 🎉</button>
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================
+   ЭТАП: ФИНАЛ
+   ============================================================ */
+function renderFinish(){
+  const nextLesson = findNextLesson();
+  const testRes = Store.data.testResults[LESSON_ID];
+  const hasTest = testRes && testRes.completed;
+  return `
+    <div class="block active">
+      <div class="finish-box">
+        <div class="big">🎉</div>
+        <h3>Урок пройден!</h3>
+        <p>Ты сделал теорию, практику, тест и рефлексию. Это уже огромный шаг.</p>
+        <div class="stats">
+          <div class="st">+20 XP заработано</div>
+          <div class="st">Урок ${lesson.order}</div>
+          ${hasTest ? `<div class="st">Тест: <b>${testRes.correct} / ${testRes.total}</b></div>` : ''}
+        </div>
+        <div class="actions">
+          ${nextLesson
+            ? `<a href="lesson.html?id=${nextLesson}" class="btn btn-primary">Следующий урок →</a>`
+            : `<a href="module-${lesson.moduleId}.html" class="btn btn-primary">Вернуться к модулю →</a>`}
+          <a href="module-${lesson.moduleId}.html" class="btn btn-ghost">К списку уроков</a>
+          <a href="notebook.html" class="btn btn-ghost">📓 В тетрадь</a>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function findNextLesson(){
+  const order = [
+    'fin-1','fin-2','fin-3','fin-4','fin-5','fin-6','fin-7','fin-8',
+    'psy-1','psy-2','psy-3','psy-4','psy-5','psy-6','psy-7','psy-8',
+    'sup-1','sup-2','sup-3','sup-4','sup-5','sup-6'
+  ];
+  const idx = order.indexOf(LESSON_ID);
+  if (idx === -1 || idx >= order.length - 1) return null;
+  return order[idx + 1];
+}
+
+/* ============================================================
+   РЕНДЕР
+   ============================================================ */
+function render(){
+  renderHeader();
+
+  let body = '';
+  if (currentStage === 'theory') body = renderTheory();
+  else if (currentStage === 'practice') body = renderPractice();
+  else if (currentStage === 'quiz') body = renderQuiz();
+  else if (currentStage === 'reflection') body = renderReflection();
+  else body = renderFinish();
+
+  document.getElementById('app').innerHTML = `
+    <div class="crumbs">
+      <a href="index.html">Главная</a>
+      <span class="sep">/</span>
+      <a href="module-${lesson.moduleId}.html">${lesson.moduleName}</a>
+      <span class="sep">/</span>
+      <span>Урок ${lesson.order}</span>
+    </div>
+    <div class="lesson-head">
+      <div class="lesson-tag"><span class="dot"></span> Модуль «${lesson.moduleName}» · Урок ${lesson.order}</div>
+      <h1>${lesson.title}</h1>
+      <div class="goal">🎯 <b>Цель урока:</b> ${lesson.goal}</div>
+    </div>
+    ${lesson.isPlaceholder ? '' : renderStepper()}
+    ${body}
+  `;
+
+  updateTopProgress();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function updateTopProgress(){
+  const i = STAGES.indexOf(currentStage);
+  const percent = ((i+1) / STAGES.length) * 100;
+  document.getElementById('topBar').style.width = percent + '%';
+}
+
+/* ============================================================
+   ДЕЙСТВИЯ
+   ============================================================ */
+function goStage(stage){
+  currentStage = stage;
+  Store.setStage(LESSON_ID, stage);
+  render();
+}
+
+let saveTimer = null;
+function onFieldInput(key, value){
+  Store.saveAnswer(LESSON_ID, key, value);
+  const hint = document.getElementById('savedHint');
+  if (hint){
+    hint.classList.add('show');
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(()=>hint.classList.remove('show'), 1200);
+  }
+}
+
+function onReflectInput(key, value){
+  Store.saveReflection(LESSON_ID, key, value);
+}
+
+function selectAnswer(qi, oi, event){
+  if (!Store.data.testResults[LESSON_ID]){
+    Store.data.testResults[LESSON_ID] = {
+      selected: {},
+      correct: 0,
+      total: lesson.quiz.length,
+      completed: false
+    };
+  }
+  const res = Store.data.testResults[LESSON_ID];
+  if (res.selected[qi] !== undefined) return;
+
+  res.selected[qi] = oi;
+  const q = lesson.quiz[qi];
+  if (q.options[oi].correct) res.correct++;
+
+  if (Object.keys(res.selected).length === lesson.quiz.length){
+    res.completed = true;
+  }
+
+  Store.saveTestResult(LESSON_ID, res);
+
+  // Обновляем UI текущего вопроса
+  const container = event.currentTarget.closest('.q-opts');
+  const allOpts = container.querySelectorAll('.q-opt');
+  allOpts.forEach((el, i) => {
+    el.classList.add('locked');
+    if (q.options[i].correct) el.classList.add('correct');
+    else if (i === oi) el.classList.add('wrong');
+  });
+
+  const exp = document.getElementById('exp-'+qi);
+  if (exp) exp.classList.add('show');
+
+  if (res.completed){
+    setTimeout(() => {
+      render();
+      showToast('Тест пройден: ' + res.correct + ' из ' + res.total);
+    }, 400);
+  } else {
+    const counter = document.querySelector('.quiz-summary p b');
+    if (counter){
+      counter.textContent = Object.keys(res.selected).length + ' из ' + lesson.quiz.length;
+    }
+  }
+}
+
+function finishLesson(){
+  const wasNew = Store.markDone(LESSON_ID);
+  if (wasNew){
+    showToast('+20 XP · Урок пройден 🔥');
+  }
+  goStage('finish');
+}
+
+/* ============================================================
+   СТАРТ
+   ============================================================ */
+Store.load();
+render();
+
+/* PWA */
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+
+}
+</script>
+</body>
+</html>

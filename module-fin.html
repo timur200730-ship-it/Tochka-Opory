@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Финансы — Точка опоры</title>
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#0b0b12; --card:rgba(255,255,255,.06); --card-2:rgba(255,255,255,.09);
+    --stroke:rgba(255,255,255,.12); --text:#f2f2f7; --muted:#a1a1b5;
+    --accent:#7c5cff; --accent-2:#4ad6c8; --warning:#ffb547;
+    --fin:#4ad6c8; --radius:20px; --radius-s:14px;
+    --ff:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.5;-webkit-font-smoothing:antialiased}
+  body{background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.25), transparent 60%),
+    radial-gradient(900px 500px at 100% 10%, rgba(74,214,200,.22), transparent 60%),
+    radial-gradient(800px 600px at 50% 110%, rgba(255,92,138,.12), transparent 60%),
+    var(--bg);
+    min-height:100vh;padding-bottom:60px}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .container{max-width:1100px;margin:0 auto;padding:0 20px}
+
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.7);border-bottom:1px solid var(--stroke)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(124,92,255,.5)}
+  .nav-user{display:flex;gap:10px;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--stroke);font-size:13.5px;font-weight:600}
+  .pill .num{color:var(--accent-2)}
+  .pill.fire .num{color:var(--warning)}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:12px;font-size:14px;font-weight:600;transition:.2s;border:1px solid transparent}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-ghost{background:var(--card);border-color:var(--stroke)}
+  .btn-ghost:hover{background:var(--card-2)}
+  .btn-primary{background:linear-gradient(135deg,var(--fin),#2fbfae);color:#08110f;box-shadow:0 10px 30px rgba(74,214,200,.35)}
+  .btn-primary:hover{opacity:.95}
+  .btn-sm{padding:8px 14px;font-size:13px;border-radius:10px}
+
+  .mod-hero{padding:50px 0 30px}
+  .breadcrumb{display:flex;gap:8px;font-size:13.5px;color:var(--muted);margin-bottom:20px;align-items:center;flex-wrap:wrap}
+  .breadcrumb a:hover{color:var(--text)}
+  .breadcrumb .sep{opacity:.5}
+
+  .mod-head{display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;padding:32px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(74,214,200,.15),rgba(124,92,255,.1));border:1px solid var(--stroke);position:relative;overflow:hidden}
+  .mod-head::before{content:"";position:absolute;inset:0;background:radial-gradient(500px 200px at 0% 0%,rgba(74,214,200,.22),transparent 70%);pointer-events:none}
+  .mod-icn{width:84px;height:84px;border-radius:22px;display:grid;place-items:center;font-size:40px;background:rgba(74,214,200,.18);border:1px solid rgba(74,214,200,.4);position:relative;flex-shrink:0}
+  .mod-info{position:relative}
+  .mod-info h1{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+  .mod-info p{color:var(--muted);font-size:15.5px;max-width:560px}
+  .mod-meta{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+  .mod-meta .m{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--stroke)}
+
+  .curator-card{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:16px;background:rgba(0,0,0,.25);border:1px solid var(--stroke);position:relative}
+  .curator-card .ava{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:16px;background:linear-gradient(135deg,#ff5c8a,#ffb547);color:#fff;flex-shrink:0}
+  .curator-card .who{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .curator-card .nm{font-size:14.5px;font-weight:700}
+
+  .progress-panel{margin-top:22px;padding:24px 28px;border-radius:var(--radius);background:var(--card);border:1px solid var(--stroke);display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center}
+  .progress-panel h3{font-size:17px;margin-bottom:10px;font-weight:700}
+  .progress-bar{height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;position:relative}
+  .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--fin),#7c5cff);transition:width .5s ease;border-radius:999px}
+  .progress-info{display:flex;justify-content:space-between;gap:14px;font-size:13.5px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+  .progress-info b{color:var(--text)}
+  .continue-btn{white-space:nowrap}
+
+  .lessons-head{display:flex;justify-content:space-between;align-items:end;margin:50px 0 22px;gap:20px;flex-wrap:wrap}
+  .lessons-head h2{font-size:clamp(22px,2.8vw,32px);font-weight:800}
+  .lessons-head p{color:var(--muted);font-size:14.5px;margin-top:6px}
+
+  .lessons{display:flex;flex-direction:column;gap:12px}
+  .lesson{display:grid;grid-template-columns:64px 1fr auto;gap:20px;align-items:center;padding:20px 24px;border-radius:var(--radius-s);background:var(--card);border:1px solid var(--stroke);transition:.25s;position:relative}
+  .lesson:hover{transform:translateY(-2px);background:var(--card-2);border-color:rgba(74,214,200,.35)}
+  .lesson.done{border-color:rgba(74,214,200,.5);background:linear-gradient(90deg,rgba(74,214,200,.08),var(--card))}
+  .lesson.done .num{background:linear-gradient(135deg,var(--fin),#2fbfae);color:#08110f}
+  .lesson .num{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-weight:800;font-size:19px;background:rgba(255,255,255,.05);border:1px solid var(--stroke);transition:.25s}
+  .lesson .body h3{font-size:17.5px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .lesson .body p{font-size:13.8px;color:var(--muted);max-width:640px}
+  .lesson .body .meta{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-top:8px;flex-wrap:wrap}
+  .badge-done{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:700;background:rgba(74,214,200,.18);color:var(--fin);border:1px solid rgba(74,214,200,.4)}
+  .badge-new{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:700;background:rgba(124,92,255,.2);color:#b8a6ff;border:1px solid rgba(124,92,255,.4)}
+
+  .lesson .actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+  .link-go{display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:10px;font-size:13.5px;font-weight:700;background:rgba(74,214,200,.16);color:var(--fin);border:1px solid rgba(74,214,200,.35);transition:.2s}
+  .link-go:hover{background:rgba(74,214,200,.26)}
+  .mark-done{display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;font-size:12.5px;font-weight:600;color:var(--muted);background:transparent;border:1px dashed var(--stroke);transition:.2s}
+  .mark-done:hover{color:var(--fin);border-color:rgba(74,214,200,.5);border-style:solid}
+
+  .bottom-panel{margin-top:50px;padding:30px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(74,214,200,.12),rgba(124,92,255,.1));border:1px solid var(--stroke);display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap;align-items:center}
+  .bottom-panel h3{font-size:19px;font-weight:800;margin-bottom:6px}
+  .bottom-panel p{color:var(--muted);font-size:14px}
+  .bottom-panel .actions{display:flex;gap:10px;flex-wrap:wrap}
+
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--fin),#7c5cff);color:#fff;padding:14px 22px;border-radius:14px;font-weight:600;font-size:14.5px;box-shadow:0 20px 40px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.35s;z-index:100}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  footer{border-top:1px solid var(--stroke);padding:36px 0 30px;margin-top:70px;color:var(--muted);font-size:13.5px}
+  .copyright{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+  @media (max-width:860px){
+    .mod-head{grid-template-columns:1fr;text-align:left}
+    .mod-icn{width:64px;height:64px;font-size:32px;border-radius:16px}
+    .progress-panel{grid-template-columns:1fr}
+    .lesson{grid-template-columns:48px 1fr;padding:18px}
+    .lesson .num{width:44px;height:44px;font-size:16px;border-radius:12px}
+    .lesson .actions{grid-column:1/-1;margin-top:8px;justify-content:flex-start}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <a class="logo" href="index.html"><div class="logo-mark"></div>Точка опоры</a>
+    <div class="nav-user">
+      <div class="pill fire" title="Серия дней">🔥 <span class="num" id="navStreak">0</span></div>
+      <div class="pill" title="Опыт">⭐ <span class="num" id="navXP">0</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="container mod-hero">
+  <div class="breadcrumb">
+    <a href="index.html">Главная</a>
+    <span class="sep">/</span>
+    <a href="index.html#modules">Модули</a>
+    <span class="sep">/</span>
+    <span>Финансы</span>
+  </div>
+
+  <div class="mod-head">
+    <div class="mod-icn">💰</div>
+    <div class="mod-info">
+      <h1>Финансы</h1>
+      <p>Как дожить до стипендии, не влезть в долги и накопить на мечту. Без скучных лекций и таблиц в Excel — только то, что реально работает.</p>
+      <div class="mod-meta">
+        <span class="m">📚 8 уроков</span>
+        <span class="m">⏱ 10–15 мин / урок</span>
+        <span class="m">🧠 Практика к каждому уроку</span>
+      </div>
+    </div>
+    <div>
+      <div class="curator-card">
+        <div class="ava">ТХ</div>
+        <div>
+          <div class="who">Куратор модуля</div>
+          <div class="nm">Тимур Хайретдинов</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="progress-panel">
+    <div>
+      <h3>Твой прогресс</h3>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-info">
+        <span>Пройдено: <b id="doneCount">0 / 8</b></span>
+        <span>Осталось: <b id="leftCount">8</b></span>
+        <span>Заработано: <b id="earnedXP">0 XP</b></span>
+      </div>
+    </div>
+    <button class="btn btn-primary continue-btn" id="continueBtn" onclick="continueLesson()">Начать модуль →</button>
+  </div>
+</section>
+
+<section class="container">
+  <div class="lessons-head">
+    <div>
+      <h2>Уроки модуля</h2>
+      <p>Каждый урок — 10–15 минут. После каждого — короткая практика и тест.</p>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="resetModule()">Сбросить прогресс модуля</button>
+  </div>
+  <div class="lessons" id="lessonsList"></div>
+</section>
+
+<section class="container">
+  <div class="bottom-panel">
+    <div>
+      <h3>Дальше — психология и поддержка</h3>
+      <p>Когда закончишь финансы, тебя ждут ещё два модуля. Прогресс сохраняется между ними.</p>
+    </div>
+    <div class="actions">
+      <a href="budget.html" class="btn btn-primary">💰 Калькулятор бюджета</a>
+      <a href="notebook.html" class="btn btn-ghost">📓 Тетрадь</a>
+      <a href="index.html" class="btn btn-ghost">На главную</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container copyright">
+    <span>© 2026 Точка опоры · Бесплатно для студентов.</span>
+    <span>Авторы: Елена Осинцева, Тимур Хайретдинов</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MODULE_ID = 'fin';
+const MODULE_TOTAL = 8;
+
+const LESSONS = [
+  {id:'fin-1', title:'Куда уходят деньги', desc:'Учёт трат за 3 дня. Ты удивишься, куда утекает бюджет.', minutes:12, practice:'Запиши все траты за 3 дня'},
+  {id:'fin-2', title:'Бюджет студента', desc:'Сколько нужно на месяц и как распределить доходы и расходы.', minutes:15, practice:'Составь свой бюджет на месяц'},
+  {id:'fin-3', title:'Доходы: подработка, фриланс, стипендия', desc:'Как найти первую подработку и не попасть на развод.', minutes:14, practice:'Выбери 2 варианта подработки'},
+  {id:'fin-4', title:'Накопления с 1000 ₽', desc:'Как откладывать даже с маленького дохода. Правило 10%.', minutes:12, practice:'Поставь цель и размер накоплений'},
+  {id:'fin-5', title:'Долги и кредитки', desc:'Чем опасны кредитки и микрозаймы. Как не влезть в яму.', minutes:13, practice:'Проверь свои долги'},
+  {id:'fin-6', title:'Мошенники и безопасность', desc:'Как распознать обман в интернете, по телефону и в СМС.', minutes:11, practice:'Мини-тест «Это мошенник?»'},
+  {id:'fin-7', title:'Инвестиции простыми словами', desc:'Что такое акции, облигации и стоит ли начинать.', minutes:15, practice:'Оцени свой уровень риска'},
+  {id:'fin-8', title:'Финансовая цель', desc:'Как накопить на мечту — поездку, технику или подушку.', minutes:13, practice:'Опиши свою цель'}
+];
+
+const Store = {
+  KEY:'tochka_opory_v1', data:null,
+  defaults(){ return { xp:0, streak:0, lastVisit:null, createdAt:Date.now(), practicesDone:{}, lessonsDone:{ fin:[], psy:[], sup:[] }, quizResult:null, visits:0 }; },
+  load(){
+    try { const raw = localStorage.getItem(this.KEY); const parsed = raw ? JSON.parse(raw) : null; this.data = Object.assign(this.defaults(), parsed || {}); }
+    catch(e){ this.data = this.defaults(); }
+    if (!this.data.lessonsDone) this.data.lessonsDone = { fin:[], psy:[], sup:[] };
+    ['fin','psy','sup'].forEach(m=>{ if (!this.data.lessonsDone[m]) this.data.lessonsDone[m] = []; });
+    return this.data;
+  },
+  save(){ try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch(e){} },
+  doneLessons(){ return this.data.lessonsDone[MODULE_ID] || []; },
+  isDone(id){ return this.doneLessons().indexOf(id) !== -1; },
+  markLesson(id){
+    if (this.isDone(id)) return false;
+    this.data.lessonsDone[MODULE_ID].push(id);
+    this.data.xp = (this.data.xp || 0) + 20;
+    this.save();
+    return true;
+  },
+  unmarkLesson(id){
+    const arr = this.data.lessonsDone[MODULE_ID];
+    const i = arr.indexOf(id);
+    if (i === -1) return false;
+    arr.splice(i,1);
+    this.data.xp = Math.max(0, (this.data.xp || 0) - 20);
+    this.save();
+    return true;
+  },
+  resetModule(){
+    const arr = this.data.lessonsDone[MODULE_ID];
+    const lost = arr.length * 20;
+    this.data.lessonsDone[MODULE_ID] = [];
+    this.data.xp = Math.max(0, (this.data.xp || 0) - lost);
+    this.save();
+  }
+};
+
+function showToast(text){
+  const t = document.getElementById('toast');
+  t.textContent = text; t.classList.add('show');
+  clearTimeout(t._tid); t._tid = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+function renderHeader(){
+  document.getElementById('navXP').textContent = Store.data.xp || 0;
+  document.getElementById('navStreak').textContent = Store.data.streak || 0;
+}
+
+function renderLessons(){
+  const list = document.getElementById('lessonsList');
+  list.innerHTML = '';
+  LESSONS.forEach((lesson, idx) => {
+    const done = Store.isDone(lesson.id);
+    const el = document.createElement('div');
+    el.className = 'lesson' + (done ? ' done' : '');
+    el.innerHTML = `
+      <div class="num">${done ? '✓' : (idx+1)}</div>
+      <div class="body">
+        <h3>${lesson.title}${done ? ' <span class="badge-done">✓ Пройден</span>' : (idx===0 ? ' <span class="badge-new">Старт</span>' : '')}</h3>
+        <p>${lesson.desc}</p>
+        <div class="meta"><span>⏱ ${lesson.minutes} мин</span><span>✏️ ${lesson.practice}</span></div>
+      </div>
+      <div class="actions">
+        <a href="lesson.html?id=${lesson.id}" class="link-go">${done ? 'Повторить' : 'Начать'} →</a>
+        <button class="mark-done" onclick="toggleLesson('${lesson.id}', event)">${done ? '↺ Сбросить' : '+ Отметить'}</button>
+      </div>`;
+    list.appendChild(el);
+  });
+}
+
+function renderProgress(){
+  const done = Store.doneLessons().length;
+  const total = MODULE_TOTAL;
+  document.getElementById('progressFill').style.width = Math.round(done/total*100) + '%';
+  document.getElementById('doneCount').textContent = done + ' / ' + total;
+  document.getElementById('leftCount').textContent = (total - done);
+  document.getElementById('earnedXP').textContent = (done * 20) + ' XP';
+  const btn = document.getElementById('continueBtn');
+  if (done === 0) btn.textContent = 'Начать модуль →';
+  else if (done >= total){ btn.textContent = '🎉 Модуль пройден'; btn.disabled = true; btn.style.opacity = .7; btn.style.cursor = 'default'; }
+  else btn.textContent = 'Продолжить →';
+}
+
+function renderAll(){ renderHeader(); renderLessons(); renderProgress(); }
+
+function toggleLesson(id, event){
+  if (event) event.stopPropagation();
+  if (Store.isDone(id)){ Store.unmarkLesson(id); showToast('Урок сброшен'); }
+  else { if (Store.markLesson(id)) showToast('+20 XP · Урок пройден 🔥'); }
+  renderAll();
+}
+
+function continueLesson(){
+  const next = LESSONS.find(l => !Store.isDone(l.id));
+  if (!next) return;
+  window.location.href = 'lesson.html?id=' + next.id;
+}
+
+function resetModule(){
+  if (Store.doneLessons().length === 0){ showToast('Нечего сбрасывать'); return; }
+  if (!confirm('Сбросить прогресс модуля «Финансы»?')) return;
+  Store.resetModule(); renderAll(); showToast('Прогресс сброшен');
+}
+
+Store.load();
+renderAll();
+
+if ('serviceWorker' in navigator){ window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{})); }
+</script>
+</body>
+</html>

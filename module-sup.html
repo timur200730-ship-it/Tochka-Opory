@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Поддержка — Точка опоры</title>
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#0b0b12;
+    --card:rgba(255,255,255,.06); --card-2:rgba(255,255,255,.09);
+    --stroke:rgba(255,255,255,.12);
+    --text:#f2f2f7; --muted:#a1a1b5;
+    --accent:#7c5cff; --accent-2:#4ad6c8; --accent-3:#ff5c8a; --warning:#ffb547;
+    --sup:#ff5c8a;
+    --radius:20px; --radius-s:14px;
+    --ff:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.5;-webkit-font-smoothing:antialiased}
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(255,92,138,.22), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(255,181,71,.12), transparent 60%),
+      radial-gradient(800px 600px at 50% 110%, rgba(124,92,255,.15), transparent 60%),
+      var(--bg);
+    min-height:100vh; padding-bottom:60px;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .container{max-width:1100px;margin:0 auto;padding:0 20px}
+
+  /* HEADER */
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.7);border-bottom:1px solid var(--stroke)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(124,92,255,.5)}
+  .nav-user{display:flex;gap:10px;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--stroke);font-size:13.5px;font-weight:600}
+  .pill .num{color:var(--accent-2)}
+  .pill.fire .num{color:var(--warning)}
+
+  /* BTN */
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:12px;font-size:14px;font-weight:600;transition:.2s;border:1px solid transparent}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-ghost{background:var(--card);border-color:var(--stroke)}
+  .btn-ghost:hover{background:var(--card-2)}
+  .btn-primary{background:linear-gradient(135deg,var(--sup),#ff3d6e);color:#fff;box-shadow:0 10px 30px rgba(255,92,138,.4)}
+  .btn-primary:hover{opacity:.95}
+  .btn-danger{background:linear-gradient(135deg,#ff5c8a,#ff3d6e);color:#fff;box-shadow:0 10px 30px rgba(255,92,138,.4)}
+  .btn-sm{padding:8px 14px;font-size:13px;border-radius:10px}
+
+  /* HERO MODULE */
+  .mod-hero{padding:50px 0 30px}
+  .breadcrumb{display:flex;gap:8px;font-size:13.5px;color:var(--muted);margin-bottom:20px;align-items:center;flex-wrap:wrap}
+  .breadcrumb a:hover{color:var(--text)}
+  .breadcrumb .sep{opacity:.5}
+
+  .mod-head{display:grid;grid-template-columns:auto 1fr auto;gap:24px;align-items:center;padding:32px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(255,92,138,.16),rgba(255,181,71,.08));border:1px solid var(--stroke);position:relative;overflow:hidden}
+  .mod-head::before{content:"";position:absolute;inset:0;background:radial-gradient(500px 200px at 0% 0%,rgba(255,92,138,.22),transparent 70%);pointer-events:none}
+  .mod-icn{width:84px;height:84px;border-radius:22px;display:grid;place-items:center;font-size:40px;background:rgba(255,92,138,.2);border:1px solid rgba(255,92,138,.45);position:relative;flex-shrink:0}
+  .mod-info{position:relative}
+  .mod-info h1{font-size:clamp(28px,3.6vw,44px);font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+  .mod-info p{color:var(--muted);font-size:15.5px;max-width:560px}
+  .mod-meta{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+  .mod-meta .m{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid var(--stroke)}
+
+  .mod-curator{display:flex;flex-direction:column;align-items:flex-end;gap:10px;position:relative;text-align:right}
+  .curator-card{display:flex;gap:12px;align-items:center;padding:12px 16px;border-radius:16px;background:rgba(0,0,0,.25);border:1px solid var(--stroke)}
+  .curator-card .ava{width:44px;height:44px;border-radius:14px;display:grid;place-items:center;font-weight:800;font-size:16px;background:linear-gradient(135deg,#ff5c8a,#ffb547);color:#fff;flex-shrink:0}
+  .curator-card .who{font-size:11.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+  .curator-card .nm{font-size:14.5px;font-weight:700}
+
+  /* SOS BANNER */
+  .sos-banner{margin-top:22px;padding:24px 28px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(255,92,138,.18),rgba(255,181,71,.1));border:1px solid rgba(255,92,138,.4);display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
+  .sos-banner h3{font-size:18px;font-weight:800;margin-bottom:6px}
+  .sos-banner p{color:var(--muted);font-size:14.5px}
+  .sos-banner .actions{display:flex;gap:10px;flex-wrap:wrap}
+
+  /* PROGRESS */
+  .progress-panel{margin-top:22px;padding:24px 28px;border-radius:var(--radius);background:var(--card);border:1px solid var(--stroke);display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center}
+  .progress-panel h3{font-size:17px;margin-bottom:10px;font-weight:700}
+  .progress-bar{height:10px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;position:relative}
+  .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--sup),#ffb547);transition:width .5s ease;border-radius:999px}
+  .progress-info{display:flex;justify-content:space-between;gap:14px;font-size:13.5px;color:var(--muted);margin-top:10px;flex-wrap:wrap}
+  .progress-info b{color:var(--text)}
+  .continue-btn{white-space:nowrap}
+
+  /* LESSONS */
+  .lessons-head{display:flex;justify-content:space-between;align-items:end;margin:50px 0 22px;gap:20px;flex-wrap:wrap}
+  .lessons-head h2{font-size:clamp(22px,2.8vw,32px);font-weight:800}
+  .lessons-head p{color:var(--muted);font-size:14.5px;margin-top:6px}
+
+  .lessons{display:flex;flex-direction:column;gap:12px}
+  .lesson{
+    display:grid;grid-template-columns:64px 1fr auto;gap:20px;align-items:center;
+    padding:20px 24px;border-radius:var(--radius-s);
+    background:var(--card);border:1px solid var(--stroke);
+    transition:.25s;position:relative;overflow:hidden;
+  }
+  .lesson:hover{transform:translateY(-2px);background:var(--card-2);border-color:rgba(255,92,138,.4)}
+  .lesson.done{border-color:rgba(255,92,138,.5);background:linear-gradient(90deg,rgba(255,92,138,.1),var(--card))}
+  .lesson.done .num{background:linear-gradient(135deg,var(--sup),#ff3d6e);color:#fff}
+  .lesson .num{
+    width:56px;height:56px;border-radius:16px;display:grid;place-items:center;
+    font-weight:800;font-size:19px;
+    background:rgba(255,255,255,.05);border:1px solid var(--stroke);
+    transition:.25s;
+  }
+  .lesson .body h3{font-size:17.5px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .lesson .body p{font-size:13.8px;color:var(--muted);max-width:640px}
+  .lesson .body .meta{display:flex;gap:14px;font-size:12.5px;color:var(--muted);margin-top:8px;flex-wrap:wrap}
+  .lesson .body .meta span{display:inline-flex;align-items:center;gap:5px}
+  .badge-done{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:700;background:rgba(255,92,138,.2);color:#ff9dba;border:1px solid rgba(255,92,138,.45)}
+  .badge-new{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:700;background:rgba(74,214,200,.18);color:#4ad6c8;border:1px solid rgba(74,214,200,.4)}
+
+  .lesson .actions{display:flex;gap:8px;align-items:center;flex-shrink:0}
+  .link-go{
+    display:inline-flex;align-items:center;gap:6px;padding:10px 16px;border-radius:10px;
+    font-size:13.5px;font-weight:700;background:rgba(255,92,138,.2);color:#ff9dba;
+    border:1px solid rgba(255,92,138,.45);transition:.2s;
+  }
+  .link-go:hover{background:rgba(255,92,138,.32)}
+  .mark-done{
+    display:inline-flex;align-items:center;gap:6px;padding:8px 12px;border-radius:10px;
+    font-size:12.5px;font-weight:600;color:var(--muted);background:transparent;
+    border:1px dashed var(--stroke);transition:.2s;
+  }
+  .mark-done:hover{color:#ff9dba;border-color:rgba(255,92,138,.5);border-style:solid}
+
+  /* HOTLINES */
+  .hotlines-panel{margin-top:50px;padding:32px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(255,92,138,.14),rgba(255,181,71,.08));border:1px solid rgba(255,92,138,.35)}
+  .hotlines-panel h2{font-size:clamp(20px,2.6vw,28px);font-weight:800;margin-bottom:8px}
+  .hotlines-panel .lead{color:var(--muted);font-size:14.5px;margin-bottom:20px;max-width:640px}
+  .hotlines{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+  .hotline{padding:16px 18px;border-radius:14px;background:var(--card);border:1px solid var(--stroke);display:flex;justify-content:space-between;gap:14px;align-items:center}
+  .hotline .name{font-size:14px;font-weight:600}
+  .hotline .desc{font-size:12.5px;color:var(--muted);margin-top:3px}
+  .hotline .num{font-size:14px;font-weight:800;color:var(--sup);white-space:nowrap}
+  .hotline a:hover{opacity:.85}
+
+  /* BOTTOM */
+  .bottom-panel{margin-top:50px;padding:30px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(124,92,255,.14),rgba(255,92,138,.1));border:1px solid var(--stroke);display:flex;justify-content:space-between;gap:22px;flex-wrap:wrap;align-items:center}
+  .bottom-panel h3{font-size:19px;font-weight:800;margin-bottom:6px}
+  .bottom-panel p{color:var(--muted);font-size:14px}
+  .bottom-panel .actions{display:flex;gap:10px;flex-wrap:wrap}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--sup),#ffb547);color:#fff;padding:14px 22px;border-radius:14px;font-weight:600;font-size:14.5px;box-shadow:0 20px 40px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.35s;z-index:100}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--stroke);padding:36px 0 30px;margin-top:70px;color:var(--muted);font-size:13.5px}
+  .copyright{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+  /* RESPONSIVE */
+  @media (max-width:860px){
+    .mod-head{grid-template-columns:1fr;text-align:left}
+    .mod-curator{align-items:flex-start;text-align:left}
+    .mod-icn{width:64px;height:64px;font-size:32px;border-radius:16px}
+    .progress-panel,.sos-banner{grid-template-columns:1fr}
+    .lesson{grid-template-columns:48px 1fr;padding:18px}
+    .lesson .num{width:44px;height:44px;font-size:16px;border-radius:12px}
+    .lesson .actions{grid-column:1 / -1;margin-top:8px;justify-content:flex-start}
+    .hotlines{grid-template-columns:1fr}
+  }
+  @media (max-width:520px){
+    .lesson{grid-template-columns:1fr;gap:12px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container nav">
+    <a class="logo" href="index.html"><div class="logo-mark"></div>Точка опоры</a>
+    <div class="nav-user">
+      <div class="pill fire" title="Серия дней">🔥 <span class="num" id="navStreak">0</span></div>
+      <div class="pill" title="Опыт">⭐ <span class="num" id="navXP">0</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="container mod-hero">
+  <div class="breadcrumb">
+    <a href="index.html">Главная</a>
+    <span class="sep">/</span>
+    <a href="index.html#modules">Модули</a>
+    <span class="sep">/</span>
+    <span>Поддержка</span>
+  </div>
+
+  <div class="mod-head">
+    <div class="mod-icn">🆘</div>
+    <div class="mod-info">
+      <h1>Поддержка</h1>
+      <p>Модуль о том, что делать, когда тяжело — самому или близкому. Горячие линии, скрипты разговора, юридическая помощь и безопасный план. Без осуждения и без «соберись».</p>
+      <div class="mod-meta">
+        <span class="m">📚 6 уроков</span>
+        <span class="m">⏱ 10–15 мин / урок</span>
+        <span class="m">🛟 Реальные контакты и скрипты</span>
+      </div>
+    </div>
+    <div class="mod-curator">
+      <div class="curator-card">
+        <div class="ava">ЕО</div>
+        <div>
+          <div class="who">Куратор модуля</div>
+          <div class="nm">Елена Осинцева</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SOS BANNER -->
+  <div class="sos-banner">
+    <div>
+      <h3>Если плохо прямо сейчас — не жди</h3>
+      <p>Это бесплатно, анонимно и круглосуточно. Звонок займёт 5 минут, но может изменить всё.</p>
+    </div>
+    <div class="actions">
+      <a href="tel:88002000122" class="btn btn-danger">📞 8 800 2000 122</a>
+      <a href="index.html#support" class="btn btn-ghost">Все контакты</a>
+    </div>
+  </div>
+
+  <div class="progress-panel">
+    <div>
+      <h3>Твой прогресс</h3>
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-info">
+        <span>Пройдено: <b id="doneCount">0 / 6</b></span>
+        <span>Осталось: <b id="leftCount">6</b></span>
+        <span>Заработано: <b id="earnedXP">0 XP</b></span>
+      </div>
+    </div>
+    <button class="btn btn-primary continue-btn" id="continueBtn" onclick="continueLesson()">Начать модуль →</button>
+  </div>
+</section>
+
+<section class="container">
+  <div class="lessons-head">
+    <div>
+      <h2>Уроки модуля</h2>
+      <p>Каждый урок — короткий, но важный. С конкретными шагами и контактами.</p>
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="resetModule()">Сбросить прогресс модуля</button>
+  </div>
+
+  <div class="lessons" id="lessonsList"></div>
+</section>
+
+<!-- HOTLINES -->
+<section class="container">
+  <div class="hotlines-panel">
+    <h2>🛟 Горячие линии — сохрани себе</h2>
+    <p class="lead">Это официальные бесплатные службы России. Анонимно. Круглосуточно. Не нужно объяснять, кто ты — просто позвони.</p>
+    <div class="hotlines">
+      <a class="hotline" href="tel:88002000122">
+        <div><div class="name">Детский телефон доверия</div><div class="desc">Для детей, подростков и студентов</div></div>
+        <div class="num">8 800 2000 122</div>
+      </a>
+      <a class="hotline" href="tel:84959895050">
+        <div><div class="name">Психологическая помощь МЧС</div><div class="desc">Круглосуточно, бесплатно</div></div>
+        <div class="num">8 495 989 50 50</div>
+      </a>
+      <a class="hotline" href="tel:88003334433">
+        <div><div class="name">Кризисная линия</div><div class="desc">Помощь в трудной ситуации</div></div>
+        <div class="num">8 800 333 44 33</div>
+      </a>
+      <a class="hotline" href="tel:84956277000">
+        <div><div class="name">Московская служба психологической помощи</div><div class="desc">Для жителей Москвы</div></div>
+        <div class="num">8 495 627 70 00</div>
+      </a>
+      <a class="hotline" href="tel:112">
+        <div><div class="name">Единый номер экстренных служб</div><div class="desc">Если опасность жизни прямо сейчас</div></div>
+        <div class="num">112</div>
+      </a>
+      <a class="hotline" href="https://telefon-doveria.ru" target="_blank" rel="noopener">
+        <div><div class="name">Онлайн-чат доверия</div><div class="desc">Если не можешь говорить голосом</div></div>
+        <div class="num">telefon-doveria.ru</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="bottom-panel">
+    <div>
+      <h3>Ты не один. Даже если сейчас кажется иначе</h3>
+      <p>Модуль «Поддержка» — это не замена специалисту. Если чувствуешь, что нужна настоящая помощь — позвони. Это не слабость, это забота о себе.</p>
+    </div>
+    <div class="actions">
+      <a href="notebook.html" class="btn btn-ghost">📓 Тетрадь</a>
+      <a href="index.html" class="btn btn-primary">На главную</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container copyright">
+    <span>© 2026 Точка опоры · Бесплатно для студентов.</span>
+    <span>Авторы: Елена Осинцева, Тимур Хайретдинов</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const MODULE_ID = 'sup';
+const MODULE_TOTAL = 6;
+
+const LESSONS = [
+  { id: 'sup-1', title: 'Когда нужна помощь', desc: 'Красные флаги: как понять, что справиться самому уже не получится.', minutes: 12, practice: 'Личный чек-лист состояния' },
+  { id: 'sup-2', title: 'Как поговорить с другом', desc: 'Что говорить и чего не говорить, если близкому плохо.', minutes: 14, practice: 'Скрипт разговора' },
+  { id: 'sup-3', title: 'Горячие линии', desc: 'Куда звонить, что говорить и чего ожидать.', minutes: 11, practice: 'Заготовка первого звонка' },
+  { id: 'sup-4', title: 'Юридическая помощь студентам', desc: 'Твои права: отчисления, общежитие, работа, стипендия.', minutes: 15, practice: 'Разбор своей ситуации' },
+  { id: 'sup-5', title: 'Как пережить потерю', desc: 'Горе и утрата. Что нормально и когда нужна помощь.', minutes: 14, practice: 'Дневник состояния' },
+  { id: 'sup-6', title: 'Безопасный план', desc: 'Что делать, если очень плохо. Пошагово, для себя и для друга.', minutes: 13, practice: 'Личный безопасный план' }
+];
+
+const Store = {
+  KEY: 'tochka_opory_v1',
+  data: null,
+  defaults(){
+    return { xp: 0, streak: 0, lastVisit: null, createdAt: Date.now(), practicesDone: {}, lessonsDone: { fin:[], psy:[], sup:[] }, quizResult: null, visits: 0 };
+  },
+  load(){
+    try {
+      const raw = localStorage.getItem(this.KEY);
+      const parsed = raw ? JSON.parse(raw) : null;
+      this.data = Object.assign(this.defaults(), parsed || {});
+    } catch(e){ this.data = this.defaults(); }
+    if (!this.data.lessonsDone) this.data.lessonsDone = { fin:[], psy:[], sup:[] };
+    ['fin','psy','sup'].forEach(m=>{ if (!this.data.lessonsDone[m]) this.data.lessonsDone[m] = []; });
+    return this.data;
+  },
+  save(){ try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch(e){} },
+  doneLessons(){ return this.data.lessonsDone[MODULE_ID] || []; },
+  isDone(id){ return this.doneLessons().indexOf(id) !== -1; },
+  markLesson(id){
+    if (this.isDone(id)) return false;
+    this.data.lessonsDone[MODULE_ID].push(id);
+    this.data.xp = (this.data.xp || 0) + 20;
+    this.save();
+    return true;
+  },
+  unmarkLesson(id){
+    const arr = this.data.lessonsDone[MODULE_ID];
+    const i = arr.indexOf(id);
+    if (i === -1) return false;
+    arr.splice(i,1);
+    this.data.xp = Math.max(0, (this.data.xp || 0) - 20);
+    this.save();
+    return true;
+  },
+  resetModule(){
+    const arr = this.data.lessonsDone[MODULE_ID];
+    const lost = arr.length * 20;
+    this.data.lessonsDone[MODULE_ID] = [];
+    this.data.xp = Math.max(0, (this.data.xp || 0) - lost);
+    this.save();
+  }
+};
+
+function showToast(text){
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+function renderHeader(){
+  document.getElementById('navXP').textContent = Store.data.xp || 0;
+  document.getElementById('navStreak').textContent = Store.data.streak || 0;
+}
+
+function renderLessons(){
+  const list = document.getElementById('lessonsList');
+  list.innerHTML = '';
+  LESSONS.forEach((lesson, idx) => {
+    const done = Store.isDone(lesson.id);
+    const el = document.createElement('div');
+    el.className = 'lesson' + (done ? ' done' : '');
+    el.innerHTML = `
+      <div class="num">${done ? '✓' : (idx + 1)}</div>
+      <div class="body">
+        <h3>
+          ${lesson.title}
+          ${done ? '<span class="badge-done">✓ Пройден</span>' : (idx === 0 ? '<span class="badge-new">Старт</span>' : '')}
+        </h3>
+        <p>${lesson.desc}</p>
+        <div class="meta">
+          <span>⏱ ${lesson.minutes} мин</span>
+          <span>✏️ ${lesson.practice}</span>
+        </div>
+      </div>
+      <div class="actions">
+        <a href="lesson.html?id=${lesson.id}" class="link-go">${done ? 'Повторить' : 'Начать'} →</a>
+        <button class="mark-done" onclick="toggleLesson('${lesson.id}', event)">${done ? '↺ Сбросить' : '+ Отметить'}</button>
+      </div>
+    `;
+    list.appendChild(el);
+  });
+}
+
+function renderProgress(){
+  const done = Store.doneLessons().length;
+  const total = MODULE_TOTAL;
+  document.getElementById('progressFill').style.width = Math.round(done/total*100) + '%';
+  document.getElementById('doneCount').textContent = done + ' / ' + total;
+  document.getElementById('leftCount').textContent = (total - done);
+  document.getElementById('earnedXP').textContent = (done * 20) + ' XP';
+
+  const btn = document.getElementById('continueBtn');
+  if (done === 0) btn.textContent = 'Начать модуль →';
+  else if (done >= total){ btn.textContent = '🎉 Модуль пройден'; btn.disabled = true; btn.style.opacity = .7; btn.style.cursor = 'default'; }
+  else btn.textContent = 'Продолжить →';
+}
+
+function renderAll(){ renderHeader(); renderLessons(); renderProgress(); }
+
+function toggleLesson(id, event){
+  if (event) event.stopPropagation();
+  if (Store.isDone(id)){ Store.unmarkLesson(id); showToast('Урок сброшен'); }
+  else { const added = Store.markLesson(id); if (added) showToast('+20 XP · Урок пройден 🔥'); }
+  renderAll();
+}
+
+function continueLesson(){
+  const next = LESSONS.find(l => !Store.isDone(l.id));
+  if (!next) return;
+  window.location.href = 'lesson.html?id=' + next.id;
+}
+
+function resetModule(){
+  const done = Store.doneLessons().length;
+  if (done === 0){ showToast('Нечего сбрасывать'); return; }
+  if (!confirm('Сбросить прогресс модуля «Поддержка»? Это действие нельзя отменить.')) return;
+  Store.resetModule();
+  renderAll();
+  showToast('Прогресс модуля сброшен');
+}
+
+Store.load();
+renderAll();
+
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(()=>{}); });
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Бюджет — Точка опоры</title>
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#0b0b12;
+    --card:rgba(255,255,255,.06); --card-2:rgba(255,255,255,.09);
+    --stroke:rgba(255,255,255,.12);
+    --text:#f2f2f7; --muted:#a1a1b5;
+    --accent:#7c5cff; --accent-2:#4ad6c8; --accent-3:#ff5c8a; --warning:#ffb547;
+    --ok:#4ad6c8; --err:#ff5c8a;
+    --radius:20px; --radius-s:14px;
+    --ff:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+    --mod:#4ad6c8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.5;-webkit-font-smoothing:antialiased}
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(74,214,200,.2), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(124,92,255,.18), transparent 60%),
+      var(--bg);
+    min-height:100vh; padding-bottom:60px;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  input{font-family:inherit}
+  .container{max-width:1000px;margin:0 auto;padding:0 20px}
+
+  /* HEADER */
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.75);border-bottom:1px solid var(--stroke)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px;max-width:1100px;margin:0 auto;padding:0 20px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(124,92,255,.5)}
+  .nav-user{display:flex;gap:10px;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--stroke);font-size:13.5px;font-weight:600}
+  .pill .num{color:var(--accent-2)}
+
+  /* BTN */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:12px 22px;border-radius:12px;font-size:14.5px;font-weight:600;transition:.2s;border:1px solid transparent;cursor:pointer}
+  .btn:hover{transform:translateY(-1px)}
+  .btn-ghost{background:var(--card);border-color:var(--stroke)}
+  .btn-ghost:hover{background:var(--card-2)}
+  .btn-primary{background:linear-gradient(135deg,var(--accent-2),#2fbfae);color:#08110f;box-shadow:0 10px 30px rgba(74,214,200,.3)}
+  .btn-primary:hover{opacity:.95}
+  .btn-danger{background:rgba(255,92,138,.15);border-color:rgba(255,92,138,.4);color:#ff9dba}
+  .btn-danger:hover{background:rgba(255,92,138,.25)}
+
+  /* CRUMBS */
+  .crumbs{padding:24px 0 8px;font-size:13.5px;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .crumbs a:hover{color:var(--text)}
+  .crumbs .sep{opacity:.5}
+
+  /* HEAD */
+  .page-head{padding:14px 0 26px}
+  .page-head h1{font-size:clamp(28px,4vw,42px);font-weight:800;letter-spacing:-.02em;line-height:1.1;margin-bottom:10px}
+  .page-head h1 .grad{background:linear-gradient(135deg,#b8a6ff,#4ad6c8 50%,#ff5c8a);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .page-head .sub{color:var(--muted);font-size:15px;max-width:640px}
+
+  /* SUMMARY */
+  .summary{
+    padding:28px;border-radius:var(--radius);
+    background:linear-gradient(135deg,rgba(74,214,200,.16),rgba(124,92,255,.12));
+    border:1px solid var(--stroke);
+    display:grid;grid-template-columns:repeat(3,1fr);gap:16px;
+    margin-bottom:26px;position:relative;overflow:hidden;
+  }
+  .summary::before{content:"";position:absolute;inset:0;background:radial-gradient(500px 200px at 0% 0%,rgba(74,214,200,.2),transparent 70%);pointer-events:none}
+  .sum-item{position:relative;display:flex;flex-direction:column;gap:6px;padding:14px 16px;border-radius:14px;background:rgba(0,0,0,.2);border:1px solid var(--stroke)}
+  .sum-item .lbl{font-size:12.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;font-weight:700}
+  .sum-item .val{font-size:26px;font-weight:800;font-variant-numeric:tabular-nums}
+  .sum-item .val.ok{color:var(--ok)}
+  .sum-item .val.err{color:var(--err)}
+  .sum-item .val.neutral{color:var(--text)}
+  .sum-item .sub{font-size:12px;color:var(--muted)}
+
+  .bar-wrap{margin-top:14px;grid-column:1 / -1;position:relative}
+  .bar-label{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);margin-bottom:8px}
+  .bar-track{height:12px;border-radius:999px;background:rgba(0,0,0,.35);overflow:hidden;border:1px solid var(--stroke);position:relative}
+  .bar-fill{height:100%;width:0%;background:linear-gradient(90deg,#4ad6c8,#7c5cff);transition:width .4s ease;border-radius:999px}
+  .bar-fill.over{background:linear-gradient(90deg,#ffb547,#ff5c8a)}
+
+  /* GRID */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+  .panel{
+    padding:24px;border-radius:var(--radius);
+    background:var(--card);border:1px solid var(--stroke);
+  }
+  .panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;gap:12px;flex-wrap:wrap}
+  .panel-head h2{font-size:18px;font-weight:800;display:flex;gap:10px;align-items:center}
+  .panel-head h2 .ico{font-size:22px}
+  .panel-head .total{font-size:15px;color:var(--accent-2);font-weight:800}
+  .panel-head .total.exp{color:var(--warning)}
+
+  .row{display:grid;grid-template-columns:1fr 140px;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--stroke)}
+  .row:last-of-type{border-bottom:none}
+  .row .cat{display:flex;gap:10px;align-items:center;font-size:14.5px}
+  .row .cat .emo{font-size:18px}
+  .row .cat .name{color:var(--text);font-weight:600}
+  .row .cat .hint{font-size:12px;color:var(--muted)}
+  .row input{
+    width:100%;padding:10px 12px;border-radius:10px;font-size:14.5px;
+    background:rgba(0,0,0,.25);border:1px solid var(--stroke);color:var(--text);
+    text-align:right;font-variant-numeric:tabular-nums;transition:.2s;
+  }
+  .row input:focus{outline:none;border-color:var(--mod);background:rgba(0,0,0,.4)}
+  .row input::-webkit-outer-spin-button,
+  .row input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+  .row input[type=number]{-moz-appearance:textfield}
+
+  /* CHART */
+  .chart{margin-top:26px}
+  .chart h3{font-size:15.5px;font-weight:800;margin-bottom:14px}
+  .chart-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+  .chart-row .label{width:130px;font-size:13.5px;color:var(--muted);display:flex;gap:8px;align-items:center}
+  .chart-row .label .emo{font-size:16px}
+  .chart-row .track{flex:1;height:10px;border-radius:999px;background:rgba(255,255,255,.06);overflow:hidden}
+  .chart-row .fill{height:100%;border-radius:999px;transition:width .4s ease}
+  .chart-row .pct{width:52px;text-align:right;font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+
+  /* ADVICE */
+  .advice{margin-top:26px;padding:20px 22px;border-radius:var(--radius-s);border:1px solid var(--stroke);display:flex;gap:16px;align-items:flex-start;background:linear-gradient(135deg,rgba(74,214,200,.1),rgba(124,92,255,.06))}
+  .advice.warn{background:linear-gradient(135deg,rgba(255,181,71,.12),rgba(255,92,138,.06));border-color:rgba(255,181,71,.4)}
+  .advice.err{background:linear-gradient(135deg,rgba(255,92,138,.14),rgba(255,181,71,.06));border-color:rgba(255,92,138,.4)}
+  .advice .ico{font-size:26px;flex-shrink:0}
+  .advice .txt h4{font-size:15.5px;font-weight:800;margin-bottom:4px}
+  .advice .txt p{font-size:14px;color:var(--muted);line-height:1.55}
+
+  /* ACTIONS */
+  .actions{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap}
+  .actions .btn{flex:1;min-width:160px}
+
+  /* TOAST */
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--accent-2),var(--accent));color:#fff;padding:14px 22px;border-radius:14px;font-weight:600;font-size:14.5px;box-shadow:0 20px 40px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.35s;z-index:300}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* FOOTER */
+  footer{border-top:1px solid var(--stroke);padding:34px 0 30px;margin-top:60px;color:var(--muted);font-size:13.5px}
+  .copyright{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;max-width:1000px;margin:0 auto;padding:0 20px}
+
+  /* RESPONSIVE */
+  @media (max-width:760px){
+    .summary{grid-template-columns:1fr}
+    .grid{grid-template-columns:1fr}
+    .row{grid-template-columns:1fr 110px}
+    .chart-row .label{width:100px}
+  }
+  @media (max-width:480px){
+    .actions .btn{min-width:0}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><div class="logo-mark"></div>Точка опоры</a>
+    <div class="nav-user">
+      <div class="pill" title="Опыт">⭐ <span class="num" id="navXP">0</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="crumbs">
+    <a href="index.html">Главная</a>
+    <span class="sep">/</span>
+    <a href="module-fin.html">Финансы</a>
+    <span class="sep">/</span>
+    <span>Калькулятор бюджета</span>
+  </div>
+
+  <div class="page-head">
+    <h1>Твой <span class="grad">бюджет на месяц</span></h1>
+    <p class="sub">Введи доходы и расходы — увидишь, что остаётся и куда уходит больше всего. Данные сохраняются только у тебя на устройстве.</p>
+  </div>
+
+  <div class="summary">
+    <div class="sum-item">
+      <div class="lbl">Доходы</div>
+      <div class="val ok" id="sumIncome">0 ₽</div>
+      <div class="sub">за месяц</div>
+    </div>
+    <div class="sum-item">
+      <div class="lbl">Расходы</div>
+      <div class="val err" id="sumExpense">0 ₽</div>
+      <div class="sub" id="sumExpensePct">0% от дохода</div>
+    </div>
+    <div class="sum-item">
+      <div class="lbl">Остаток</div>
+      <div class="val neutral" id="sumLeft">0 ₽</div>
+      <div class="sub" id="sumLeftHint">Введи данные</div>
+    </div>
+    <div class="bar-wrap">
+      <div class="bar-label">
+        <span>Расходы от дохода</span>
+        <span id="barPct">0%</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" id="barFill"></div></div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-head">
+        <h2><span class="ico">💰</span> Доходы</h2>
+        <div class="total" id="panelIncome">0 ₽</div>
+      </div>
+      <div id="incomeList"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">
+        <h2><span class="ico">🧾</span> Расходы</h2>
+        <div class="total exp" id="panelExpense">0 ₽</div>
+      </div>
+      <div id="expenseList"></div>
+    </div>
+  </div>
+
+  <div class="panel chart" id="chartPanel" style="margin-top:20px;display:none">
+    <h3>📊 Куда уходят деньги</h3>
+    <div id="chartList"></div>
+  </div>
+
+  <div class="advice" id="advice" style="display:none">
+    <div class="ico" id="adviceIco">💡</div>
+    <div class="txt">
+      <h4 id="adviceTitle">Совет</h4>
+      <p id="adviceText"></p>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn btn-primary" id="btnSave">💾 Сохранить бюджет</button>
+    <button class="btn btn-ghost" id="btnExample">Пример заполнения</button>
+    <button class="btn btn-danger" id="btnClear">Очистить</button>
+  </div>
+</main>
+
+<footer>
+  <div class="copyright">
+    <span>© 2026 Точка опоры · Бесплатно для студентов.</span>
+    <span>Авторы: Елена Осинцева, Тимур Хайретдинов</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   КАТЕГОРИИ
+   ============================================================ */
+const INCOME_CATS = [
+  { key:'stipend',  emo:'🎓', name:'Стипендия',           hint:'если есть' },
+  { key:'job',      emo:'💼', name:'Подработка',          hint:'постоянная или сдельная' },
+  { key:'parents',  emo:'👨‍👩‍👧', name:'Помощь родителей',    hint:'если помогают' },
+  { key:'freelance',emo:'💻', name:'Фриланс',             hint:'проекты, заказы' },
+  { key:'other',    emo:'✨', name:'Другое',               hint:'подарки, возвраты' }
+];
+
+const EXPENSE_CATS = [
+  { key:'food',      emo:'🍽', name:'Еда',              hint:'продукты и кафе',    color:'#4ad6c8' },
+  { key:'transport', emo:'🚌', name:'Транспорт',         hint:'проездной, такси',   color:'#7c5cff' },
+  { key:'home',      emo:'🏠', name:'Жильё',             hint:'аренда, общежитие',  color:'#ffb547' },
+  { key:'study',     emo:'📚', name:'Учёба',             hint:'материалы, курсы',   color:'#4ad6c8' },
+  { key:'fun',       emo:'🎮', name:'Развлечения',       hint:'кино, игры, подписки', color:'#ff5c8a' },
+  { key:'health',    emo:'💊', name:'Здоровье',          hint:'аптека, врач',        color:'#7c5cff' },
+  { key:'phone',     emo:'📱', name:'Связь и интернет',  hint:'мобильный, Wi-Fi',    color:'#ffb547' },
+  { key:'other',     emo:'✨', name:'Другое',            hint:'всё остальное',       color:'#a1a1b5' }
+];
+
+/* ============================================================
+   ХРАНИЛИЩЕ
+   ============================================================ */
+const Store = {
+  KEY: 'tochka_opory_v1',
+  data: null,
+  defaults(){
+    return {
+      xp:0, streak:0, lastVisit:null, createdAt:Date.now(),
+      practicesDone:{}, lessonsDone:{ fin:[], psy:[], sup:[] },
+      budget: { income:{}, expense:{} },
+      budgetSaved:false,
+      breathingSessions:[],
+      quizResult:null, visits:0
+    };
+  },
+  load(){
+    try {
+      const raw = localStorage.getItem(this.KEY);
+      const parsed = raw ? JSON.parse(raw) : null;
+      this.data = Object.assign(this.defaults(), parsed || {});
+    } catch(e){ this.data = this.defaults(); }
+    if (!this.data.budget) this.data.budget = { income:{}, expense:{} };
+    if (!this.data.budget.income) this.data.budget.income = {};
+    if (!this.data.budget.expense) this.data.budget.expense = {};
+    return this.data;
+  },
+  save(){ try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch(e){} },
+  addXP(n){ this.data.xp = Math.max(0, (this.data.xp || 0) + n); this.save(); }
+};
+
+/* ============================================================
+   СОСТОЯНИЕ
+   ============================================================ */
+let budget = { income:{}, expense:{} };
+
+/* ============================================================
+   УТИЛИТЫ
+   ============================================================ */
+function fmt(n){
+  n = Math.round(n);
+  if (n === 0) return '0 ₽';
+  return n.toLocaleString('ru-RU') + ' ₽';
+}
+
+function num(v){
+  const x = parseFloat(String(v).replace(/\s/g, '').replace(',', '.'));
+  return isNaN(x) ? 0 : x;
+}
+
+function showToast(text){
+  const t = document.getElementById('toast');
+  t.textContent = text;
+  t.classList.add('show');
+  clearTimeout(t._tid);
+  t._tid = setTimeout(()=>t.classList.remove('show'), 2400);
+}
+
+/* ============================================================
+   ПОЛЯ
+   ============================================================ */
+function renderInputs(){
+  const incomeBox = document.getElementById('incomeList');
+  incomeBox.innerHTML = INCOME_CATS.map(c => `
+    <div class="row">
+      <div class="cat">
+        <span class="emo">${c.emo}</span>
+        <div>
+          <div class="name">${c.name}</div>
+          <div class="hint">${c.hint}</div>
+        </div>
+      </div>
+      <input type="number" inputmode="numeric" min="0" step="100"
+        data-type="income" data-key="${c.key}"
+        value="${budget.income[c.key] || ''}"
+        placeholder="0" />
+    </div>
+  `).join('');
+
+  const expBox = document.getElementById('expenseList');
+  expBox.innerHTML = EXPENSE_CATS.map(c => `
+    <div class="row">
+      <div class="cat">
+        <span class="emo">${c.emo}</span>
+        <div>
+          <div class="name">${c.name}</div>
+          <div class="hint">${c.hint}</div>
+        </div>
+      </div>
+      <input type="number" inputmode="numeric" min="0" step="100"
+        data-type="expense" data-key="${c.key}"
+        value="${budget.expense[c.key] || ''}"
+        placeholder="0" />
+    </div>
+  `).join('');
+
+  document.querySelectorAll('input[data-type]').forEach(inp => {
+    inp.addEventListener('input', onInput);
+  });
+}
+
+function onInput(e){
+  const type = e.target.dataset.type;
+  const key = e.target.dataset.key;
+  budget[type][key] = num(e.target.value);
+  recalc();
+}
+
+/* ============================================================
+   ПЕРЕСЧЁТ
+   ============================================================ */
+function recalc(){
+  let income = 0, expense = 0;
+  Object.values(budget.income).forEach(v => income += num(v));
+  Object.values(budget.expense).forEach(v => expense += num(v));
+
+  const left = income - expense;
+  const pct = income > 0 ? Math.round(expense / income * 100) : 0;
+
+  document.getElementById('sumIncome').textContent = fmt(income);
+  document.getElementById('sumExpense').textContent = fmt(expense);
+  document.getElementById('panelIncome').textContent = fmt(income);
+  document.getElementById('panelExpense').textContent = fmt(expense);
+
+  const leftEl = document.getElementById('sumLeft');
+  leftEl.textContent = (left >= 0 ? '' : '−') + fmt(Math.abs(left));
+  leftEl.className = 'val ' + (left > 0 ? 'ok' : left < 0 ? 'err' : 'neutral');
+
+  document.getElementById('sumExpensePct').textContent = pct + '% от дохода';
+  document.getElementById('barPct').textContent = pct + '%';
+
+  const barFill = document.getElementById('barFill');
+  barFill.style.width = Math.min(pct, 100) + '%';
+  barFill.classList.toggle('over', pct > 100);
+
+  const hint = document.getElementById('sumLeftHint');
+  if (income === 0 && expense === 0) hint.textContent = 'Введи данные';
+  else if (left > 0) hint.textContent = 'Можно отложить';
+  else if (left === 0) hint.textContent = 'Впритык';
+  else hint.textContent = 'Больше, чем доход';
+
+  renderChart(income, expense);
+  renderAdvice(income, expense, left, pct);
+}
+
+/* ============================================================
+   ДИАГРАММА
+   ============================================================ */
+function renderChart(income, expense){
+  const chartPanel = document.getElementById('chartPanel');
+  const list = document.getElementById('chartList');
+
+  if (expense === 0){ chartPanel.style.display = 'none'; return; }
+  chartPanel.style.display = 'block';
+
+  const items = EXPENSE_CATS
+    .map(c => ({ ...c, val: num(budget.expense[c.key]) }))
+    .filter(c => c.val > 0)
+    .sort((a,b) => b.val - a.val);
+
+  list.innerHTML = items.map(c => {
+    const p = Math.round(c.val / expense * 100);
+    return `
+      <div class="chart-row">
+        <div class="label"><span class="emo">${c.emo}</span>${c.name}</div>
+        <div class="track"><div class="fill" style="width:${p}%;background:${c.color}"></div></div>
+        <div class="pct">${p}%</div>
+      </div>
+    `;
+  }).join('');
+}
+
+/* ============================================================
+   СОВЕТ
+   ============================================================ */
+function renderAdvice(income, expense, left, pct){
+  const adv = document.getElementById('advice');
+  const ico = document.getElementById('adviceIco');
+  const title = document.getElementById('adviceTitle');
+  const text = document.getElementById('adviceText');
+
+  if (income === 0 && expense === 0){ adv.style.display = 'none'; return; }
+  adv.classList.remove('warn','err');
+
+  const maxCat = EXPENSE_CATS
+    .map(c => ({ ...c, val: num(budget.expense[c.key]) }))
+    .sort((a,b) => b.val - a.val)[0];
+
+  if (left < 0){
+    adv.classList.add('err');
+    ico.textContent = '⚠️';
+    title.textContent = 'Расходы больше доходов';
+    text.textContent = `Ты тратишь на ${fmt(Math.abs(left))} больше, чем получаешь. Посмотри на самую крупную категорию — «${maxCat.name}» (${fmt(maxCat.val)}). Можно ли её сократить на 10–15%? И не бери в долг, чтобы закрыть разницу.`;
+    adv.style.display = 'flex';
+    return;
+  }
+
+  if (pct > 90){
+    adv.classList.add('warn');
+    ico.textContent = '🟡';
+    title.textContent = 'Почти всё уходит';
+    text.textContent = `Ты тратишь ${pct}% дохода. Свободных денег почти нет. Попробуй правило 10%: в день зарплаты отложи небольшую сумму сразу, а не «если останется». Даже 500 ₽ в месяц создают привычку.`;
+    adv.style.display = 'flex';
+    return;
+  }
+
+  if (pct > 70){
+    ico.textContent = '💡';
+    title.textContent = 'Есть куда расти';
+    text.textContent = `Хороший результат — тратишь ${pct}% дохода. Можно усилить: целься в правило 50/30/20 (необходимое / желания / накопления). Сейчас у тебя остаётся ${fmt(left)} — попробуй отправлять часть в копилку.`;
+    adv.style.display = 'flex';
+    return;
+  }
+
+  ico.textContent = '🟢';
+  title.textContent = 'Отличный баланс';
+  text.textContent = `Ты тратишь всего ${pct}% дохода. Остаётся ${fmt(left)} — это хорошая база. Обязательно откладывай часть: подушка безопасности и мечта сами себя не накопят.`;
+  adv.style.display = 'flex';
+}
+
+/* ============================================================
+   ДЕЙСТВИЯ
+   ============================================================ */
+function saveBudget(){
+  const income = Object.values(budget.income).reduce((a,b)=>a+num(b),0);
+  const expense = Object.values(budget.expense).reduce((a,b)=>a+num(b),0);
+
+  if (income === 0 && expense === 0){
+    showToast('Сначала введи данные');
+    return;
+  }
+
+  Store.data.budget = JSON.parse(JSON.stringify(budget));
+
+  if (!Store.data.budgetSaved){
+    Store.data.budgetSaved = true;
+    Store.addXP(15);
+    showToast('Бюджет сохранён · +15 XP 💾');
+  } else {
+    showToast('Бюджет сохранён 💾');
+  }
+
+  Store.save();
+  renderHeader();
+}
+
+function clearBudget(){
+  if (!confirm('Очистить все поля бюджета?')) return;
+  budget = { income:{}, expense:{} };
+  renderInputs();
+  recalc();
+  showToast('Очищено');
+}
+
+function fillExample(){
+  budget = {
+    income: { stipend:3000, job:12000, parents:8000, freelance:4000, other:0 },
+    expense: { food:9000, transport:1800, home:5000, study:1200, fun:3500, health:800, phone:700, other:1500 }
+  };
+  renderInputs();
+  recalc();
+  showToast('Пример заполнен — поменяй под себя');
+}
+
+function renderHeader(){
+  document.getElementById('navXP').textContent = Store.data.xp || 0;
+}
+
+/* ============================================================
+   СТАРТ
+   ============================================================ */
+Store.load();
+budget = JSON.parse(JSON.stringify(Store.data.budget || { income:{}, expense:{} }));
+
+renderHeader();
+renderInputs();
+recalc();
+
+document.getElementById('btnSave').addEventListener('click', saveBudget);
+document.getElementById('btnClear').addEventListener('click', clearBudget);
+document.getElementById('btnExample').addEventListener('click', fillExample);
+
+if ('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+</script>
+</body>
+</html>
