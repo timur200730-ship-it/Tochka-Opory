@@ -306,6 +306,7 @@ const STAGE_LABELS = {
   finish: { ico:'🎉', name:'Готово' }
 };
 
+Store.load();
 let currentStage = Store.getStage(LESSON_ID);
 if (lesson.isPlaceholder) currentStage = 'theory';
 
