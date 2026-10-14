@@ -288,6 +288,8 @@ const Store = {
 /* ============================================================
    ИНИЦИАЛИЗАЦИЯ
    ============================================================ */
+Store.load();
+  
 const params = new URLSearchParams(location.search);
 const LESSON_ID = params.get('id') || 'fin-1';
 const lesson = LESSONS_DB[LESSON_ID] || placeholderLesson(LESSON_ID);
