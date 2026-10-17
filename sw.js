@@ -17,6 +17,7 @@ const ASSETS = [
   './onboarding.js',
   './streak.js',
   './achievements.js',
+  './daily-widgets.js',
   './manifest.json',
   './icon.svg'
 ];
