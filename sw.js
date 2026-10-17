@@ -2,7 +2,7 @@
    Авторы: Елена Осинцева, Тимур Хайретдинов.
    Кеширует основные файлы, чтобы приложение работало офлайн. */
 
-const CACHE_NAME = 'tochka-opory-v13';
+const CACHE_NAME = 'tochka-opory-v14';
 const ASSETS = [
   './',
   './index.html',
@@ -14,7 +14,8 @@ const ASSETS = [
   './notebook.html',
   './breathing.html',
   './budget.html',
-  './onboarding.js',
+  './scam-game.html',
+   './onboarding.js',
   './streak.js',
   './achievements.js',
   './daily-widgets.js',
