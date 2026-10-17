@@ -1,5 +1,5 @@
 /* ============================================================
-   ДЕРЕВО РОСТА (Премиум-дизайн с анимацией)
+   ДЕРЕВО РОСТА (Реалистичный SVG с генерацией листьев)
    ============================================================ */
 
 (function(){
@@ -19,34 +19,53 @@
     const psy = (d.lessonsDone && d.lessonsDone.psy) ? d.lessonsDone.psy.length : 0;
     const sup = (d.lessonsDone && d.lessonsDone.sup) ? d.lessonsDone.sup.length : 0;
     const total = fin + psy + sup;
-
-    // Высота ствола
-    const trunkHeight = 30 + (total / MAX_LESSONS) * 80;
-    const topY = 190 - trunkHeight;
     
-    // Генерируем слои листвы (от темного к светлому)
-    let leavesBack = '';
-    let leavesFront = '';
-    let flowers = '';
+    // Процент прогресса от 0 до 1
+    const progress = total / MAX_LESSONS;
 
-    // Базовые листья (даже если 0 уроков)
-    leavesBack += `<circle cx="100" cy="${topY}" r="35" fill="#1e3a34" opacity="0.8"/>`;
-    leavesBack += `<circle cx="80" cy="${topY+10}" r="25" fill="#1e3a34" opacity="0.8"/>`;
-    leavesBack += `<circle cx="120" cy="${topY+10}" r="25" fill="#1e3a34" opacity="0.8"/>`;
+    // Параметры дерева
+    const baseY = 180; // Где растет
+    const maxHeight = 100; // Максимальная высота ствола
+    const trunkHeight = 20 + (progress * maxHeight);
+    const topY = baseY - trunkHeight;
+    
+    // Генерируем ветки
+    let branches = '';
+    // Главный ствол
+    branches += `<path d="M 100 ${baseY} Q 95 ${baseY - trunkHeight/2} 100 ${topY}" stroke="#5d4037" stroke-width="${4 + progress*6}" fill="none" stroke-linecap="round" />`;
+    
+    // Боковые ветки (появляются с прогрессом)
+    if (progress > 0.1) {
+      branches += `<path d="M 98 ${topY + trunkHeight*0.4} Q 75 ${topY + trunkHeight*0.3} 70 ${topY + 10}" stroke="#5d4037" stroke-width="3" fill="none" stroke-linecap="round" />`;
+    }
+    if (progress > 0.3) {
+      branches += `<path d="M 102 ${topY + trunkHeight*0.5} Q 125 ${topY + trunkHeight*0.4} 130 ${topY + 15}" stroke="#5d4037" stroke-width="3" fill="none" stroke-linecap="round" />`;
+    }
 
-    for (let i = 0; i < total; i++) {
+    // Генерируем листья (крону)
+    let leaves = '';
+    const leafCount = 5 + Math.floor(progress * 60); // От 5 до 65 листьев
+    const canopyRadius = 10 + (progress * 30); // Радиус кроны растет
+
+    for (let i = 0; i < leafCount; i++) {
+      // Распределяем листья вокруг вершины
       const angle = Math.random() * Math.PI * 2;
-      const dist = Math.random() * 30 + 10;
+      // Чем ближе к центру, тем плотнее листья
+      const dist = Math.random() * canopyRadius; 
       const cx = 100 + Math.cos(angle) * dist;
-      const cy = topY + Math.sin(angle) * dist;
-      const r = 12 + Math.random() * 10;
+      const cy = topY + Math.sin(angle) * dist * 0.8; // Чуть сплюснуто по вертикали
       
-      // Светящиеся листья
-      leavesFront += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="#4ad6c8" opacity="0.9" filter="url(#glow)"/>`;
+      const r = 6 + Math.random() * 6; // Размер листика
       
-      // Розовые цветы (если прогресс > 50%)
-      if (total > 11 && i % 3 === 0) {
-        flowers += `<circle cx="${cx+5}" cy="${cy-5}" r="4" fill="#ff5c8a" filter="url(#glow-pink)"/>`;
+      // Цвета: темно-зеленый, аквамарин, фиолетовый оттенок
+      const colors = ['#2e8b57', '#4ad6c8', '#3cb371'];
+      const color = colors[Math.floor(Math.random() * colors.length)];
+      
+      leaves += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${color}" opacity="0.85" />`;
+      
+      // Розовые цветочки, если прогресс больше 50%
+      if (progress > 0.5 && i % 5 === 0) {
+        leaves += `<circle cx="${cx+3}" cy="${cy-3}" r="3" fill="#ff5c8a" filter="url(#glow-pink)" />`;
       }
     }
 
@@ -74,19 +93,19 @@
       }
       
       .tree-card h3 { font-size: 22px; font-weight: 800; margin-bottom: 6px; letter-spacing: -0.5px; }
-      .tree-card p.sub { font-size: 14px; color: #a1a1b5; margin-bottom: 20px; }
+      .tree-card p.sub { font-size: 14px; color: #a1a1b5; margin-bottom: 10px; }
       
-      .tree-svg { width: 100%; max-width: 280px; height: 260px; overflow: visible; }
+      /* Квадратный SVG, чтобы не было пустоты */
+      .tree-svg { width: 100%; max-width: 220px; aspect-ratio: 1/1; overflow: visible; margin: 0 auto; }
       
-      /* Анимация покачивания */
       @keyframes sway {
         0% { transform: rotate(0deg); }
         50% { transform: rotate(3deg); }
         100% { transform: rotate(0deg); }
       }
-      .tree-group { transform-origin: 100px 190px; animation: sway 6s ease-in-out infinite; }
+      .tree-group { transform-origin: 100px 180px; animation: sway 7s ease-in-out infinite; }
       
-      .tree-msg { font-size: 15px; color: #4ad6c8; margin-top: 10px; font-weight: 700; letter-spacing: 0.3px; }
+      .tree-msg { font-size: 15px; color: #4ad6c8; margin-top: 5px; font-weight: 700; letter-spacing: 0.3px; }
       
       .tree-progress-bar {
         width: 100%; max-width: 240px; height: 8px; border-radius: 999px;
@@ -109,48 +128,25 @@
         
         <svg class="tree-svg" viewBox="0 0 200 200">
           <defs>
-            <!-- Свечение для зеленых листьев -->
-            <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="3" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
-            <!-- Свечение для розовых цветов -->
             <filter id="glow-pink" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="4" result="blur" />
+              <feGaussianBlur stdDeviation="2" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
             </filter>
-            <!-- Градиент для ствола -->
-            <linearGradient id="trunkGrad" x1="0" y1="1" x2="0" y2="0">
-              <stop offset="0%" stop-color="#2c1a12" />
-              <stop offset="100%" stop-color="#5d4037" />
-            </linearGradient>
           </defs>
 
-          <!-- Земля (свечение) -->
-          <ellipse cx="100" cy="190" rx="70" ry="15" fill="rgba(74,214,200,0.1)" />
-          <ellipse cx="100" cy="190" rx="50" ry="10" fill="#1a1a24" />
+          <!-- Земля -->
+          <ellipse cx="100" cy="${baseY}" rx="50" ry="12" fill="rgba(74,214,200,0.1)" />
+          <ellipse cx="100" cy="${baseY}" rx="35" ry="8" fill="#1a1a24" />
           
           <g class="tree-group">
-            <!-- Ствол (изогнутый) -->
-            <path d="M 100 190 Q 90 ${topY + 40} 100 ${topY}" 
-                  stroke="url(#trunkGrad)" stroke-width="${6 + (total/MAX_LESSONS)*6}" 
-                  fill="none" stroke-linecap="round" />
-            <path d="M 100 150 Q 120 ${topY + 20} 110 ${topY - 10}" 
-                  stroke="url(#trunkGrad)" stroke-width="4" 
-                  fill="none" stroke-linecap="round" />
-
-            <!-- Задний слой листвы -->
-            ${leavesBack}
-            <!-- Передний слой (светящиеся) -->
-            ${leavesFront}
-            <!-- Цветы -->
-            ${flowers}
+            ${branches}
+            ${leaves}
           </g>
         </svg>
         
         <div class="tree-msg">${message}</div>
         <div class="tree-progress-bar">
-          <div class="tree-progress-fill" style="width: ${(total/MAX_LESSONS)*100}%"></div>
+          <div class="tree-progress-fill" style="width: ${progress * 100}%"></div>
         </div>
       </div>
     `;
