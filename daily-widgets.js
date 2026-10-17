@@ -1,5 +1,5 @@
 /* ============================================================
-   ЕЖЕДНЕВНЫЕ ВИДЖЕТЫ: Трекер настроения и Совет дня
+   ЕЖЕДНЕВНЫЕ ВИДЖЕТЫ: Трекер настроения и Совет дня (Компактные)
    ============================================================ */
 
 (function(){
@@ -46,20 +46,10 @@
   ];
 
   function loadData() {
-    try {
-      const raw = localStorage.getItem(KEY);
-      return raw ? JSON.parse(raw) : {};
-    } catch(e) { return {}; }
+    try { const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : {}; } catch(e) { return {}; }
   }
-
-  function saveData(data) {
-    try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){}
-  }
-
-  function getTodayKey() {
-    const d = new Date();
-    return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
-  }
+  function saveData(data) { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e){} }
+  function getTodayKey() { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate(); }
 
   function getTipOfDay() {
     const d = new Date();
@@ -71,22 +61,45 @@
   }
 
   const styles = `
-    .daily-wrap { display: grid; grid-template-columns: 1.2fr 1fr; gap: 20px; margin-top: 20px; }
-    @media (max-width: 768px) { .daily-wrap { grid-template-columns: 1fr; } }
+    .daily-panel { 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      background: rgba(255,255,255,.04); 
+      border: 1px solid rgba(255,255,255,.1); 
+      border-radius: 16px; 
+      padding: 12px 20px; 
+      margin: 0 auto 24px; 
+      max-width: 900px; 
+      flex-wrap: wrap; 
+      gap: 16px; 
+      font-family: 'Inter', sans-serif;
+    }
+    .daily-part { display: flex; align-items: center; gap: 12px; }
+    .daily-label { font-size: 13px; font-weight: 600; color: #a1a1b5; white-space: nowrap; }
     
-    .daily-card { padding: 24px; border-radius: 20px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); color: #f2f2f7; font-family: 'Inter', sans-serif; }
-    .daily-title { font-size: 18px; font-weight: 800; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-    
-    .mood-row { display: flex; justify-content: space-between; gap: 8px; }
-    .mood-btn { flex: 1; padding: 12px 0; border-radius: 12px; background: rgba(0,0,0,.2); border: 1px solid rgba(255,255,255,.1); font-size: 24px; cursor: pointer; transition: .2s; }
+    .mood-row { display: flex; gap: 6px; }
+    .mood-btn { 
+      width: 34px; height: 34px; 
+      border-radius: 10px; 
+      background: rgba(0,0,0,.2); 
+      border: 1px solid rgba(255,255,255,.08); 
+      font-size: 18px; 
+      cursor: pointer; 
+      transition: .2s; 
+      display: grid; 
+      place-items: center;
+    }
     .mood-btn:hover { background: rgba(255,255,255,.1); transform: translateY(-2px); }
-    .mood-btn.selected { background: rgba(124,92,255,.3); border-color: #7c5cff; transform: scale(1.1); }
+    .mood-btn.selected { background: rgba(74,214,200,.2); border-color: #4ad6c8; transform: scale(1.05); }
     
-    .mood-history { display: flex; gap: 6px; margin-top: 16px; }
-    .mood-dot { width: 100%; aspect-ratio: 1; border-radius: 6px; background: rgba(255,255,255,.06); display: grid; place-items: center; font-size: 16px; }
-    .mood-dot.filled { background: rgba(124,92,255,.2); border: 1px solid rgba(124,92,255,.4); }
+    .tip-text { font-size: 13.5px; color: #d1d1d6; line-height: 1.4; max-width: 400px; }
+    .tip-emoji { font-size: 20px; }
 
-    .tip-text { font-size: 15px; line-height: 1.6; color: #a1a1b5; font-style: italic; }
+    @media (max-width: 768px) { 
+      .daily-panel { flex-direction: column; align-items: flex-start; }
+      .tip-text { max-width: 100%; }
+    }
   `;
 
   function render() {
@@ -98,33 +111,19 @@
     const today = getTodayKey();
     const todayMood = data.moods[today] || null;
 
-    // Последние 7 дней
-    const last7 = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const k = d.getFullYear() + '-' + (d.getMonth()+1) + '-' + d.getDate();
-      const m = data.moods[k];
-      const moodObj = MOODS.find(x => x.id === m);
-      last7.push(moodObj ? moodObj.emoji : '');
-    }
-
     container.innerHTML = `
       <style>${styles}</style>
-      <div class="daily-wrap">
-        <div class="daily-card">
-          <div class="daily-title">📊 Как ты сегодня?</div>
+      <div class="daily-panel">
+        <div class="daily-part">
+          <span class="daily-label">Как ты сегодня?</span>
           <div class="mood-row">
             ${MOODS.map(m => `<button class="mood-btn ${todayMood === m.id ? 'selected' : ''}" onclick="window.setMood('${m.id}')" title="${m.label}">${m.emoji}</button>`).join('')}
           </div>
-          <div class="mood-history">
-            ${last7.map(emoji => `<div class="mood-dot ${emoji ? 'filled' : ''}">${emoji}</div>`).join('')}
-          </div>
         </div>
         
-        <div class="daily-card">
-          <div class="daily-title">💡 Совет дня</div>
-          <div class="tip-text">«${getTipOfDay()}»</div>
+        <div class="daily-part">
+          <span class="tip-emoji">💡</span>
+          <div class="tip-text"><b>Совет:</b> ${getTipOfDay()}</div>
         </div>
       </div>
     `;
@@ -135,7 +134,7 @@
     if (!data.moods) data.moods = {};
     data.moods[getTodayKey()] = moodId;
     saveData(data);
-    render();
+    render(); // Перерисовываем, чтобы выделился новый смайлик
   };
 
   document.addEventListener('DOMContentLoaded', render);
