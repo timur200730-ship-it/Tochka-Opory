@@ -1,485 +1,123 @@
 /* ============================================================
-   БАЗА УРОКОВ — 22 урока
+   БЕЙДЖИ И ДОСТИЖЕНИЯ
    Авторы: Елена Осинцева, Тимур Хайретдинов
    ============================================================ */
 
-const LESSONS_DB = {
+(function(){
+  const KEY = 'tochka_opory_v1';
 
-/* ==================== ФИНАНСЫ ==================== */
-'fin-1':{moduleId:'fin',moduleName:'Финансы',moduleColor:'#4ad6c8',order:1,title:'Куда уходят деньги',minutes:12,
-goal:'За 12 минут ты <b>увидишь, куда реально утекают твои деньги</b>. Это первый и самый важный шаг — без него любой бюджет не работает.',
-theory:[
-{emoji:'🔍',title:'Проблема не в том, что ты тратишь',text:['Большинство людей думает, что знает свои траты. На самом деле — нет. Исследования показывают: мы <b>недооцениваем расходы на 20–30%</b>. Особенно мелкие: кофе, такси, подписки, доставка.','Это не про «ты плохой». Это про то, как работает мозг — он не запоминает мелочи, а они складываются в приличную сумму.']},
-{emoji:'📝',title:'Что даёт учёт трат за 3 дня',text:['Три дня — это минимум, за который видно <b>паттерн</b>. Ты не просто увидишь цифры. Ты увидишь свои привычки.','Обычно картина такая:'],list:['Одна крупная категория съедает 40–50% бюджета (еда или транспорт).','Есть 2–3 «мелкие» подписки, о которых ты забыл.','Импульсивные траты — это 15–25% всего.','Один-два «слива» — то, что можно легко убрать без страданий.']},
-{emoji:'🎯',title:'Как правильно записывать',text:['Не нужно вести таблицы в Excel. Достаточно простого правила: <b>каждая трата → в заметки</b>. В моменте, а не вечером.','Формат: <b>сумма · на что · категория</b>. Например: <i>250 ₽ · кофе · еда</i>.','Категорий хватит 5–6: еда, транспорт, учёба, развлечения, здоровье, другое.']}
-],
-practice:{intro:'Заполни то, что помнишь за последние 3 дня. Не идеально — примерно. Главное — увидеть картину.',fields:[
-{key:'day1',label:'День 1 — траты',placeholder:'Например: 250 кофе, 400 продукты, 120 метро...',type:'textarea'},
-{key:'day2',label:'День 2 — траты',placeholder:'Например: 1500 подписка, 350 обед, 200 такси...',type:'textarea'},
-{key:'day3',label:'День 3 — траты',placeholder:'Например: 300 кино, 700 продукты, 90 автобус...',type:'textarea'},
-{key:'pattern',label:'Что заметил?',hint:'Какая категория самая большая?',placeholder:'Например: половина ушла на еду вне дома...',type:'textarea'}
-]},
-quiz:[
-{q:'Сколько процентов трат обычно «теряется» из памяти?',options:[{text:'Меньше 5%',correct:false},{text:'Около 20–30%',correct:true},{text:'Больше 70%',correct:false},{text:'Не теряются',correct:false}],explain:'Мы недооцениваем расходы на 20–30%. Особенно мелкие и регулярные.'},
-{q:'Когда лучше записывать трату?',options:[{text:'Вечером',correct:false},{text:'В конце недели',correct:false},{text:'Сразу после траты',correct:true},{text:'Когда вспомню',correct:false}],explain:'Запись «в моменте» даёт точную картину.'},
-{q:'Сколько дней минимум нужно для паттерна?',options:[{text:'1 день',correct:false},{text:'3 дня',correct:true},{text:'Месяц',correct:false},{text:'Год',correct:false}],explain:'Три дня — минимум, чтобы увидеть основную категорию.'},
-{q:'Что делать с результатами учёта?',options:[{text:'Поругать себя',correct:false},{text:'Ничего',correct:false},{text:'Найти 1–2 «слива» и убрать их',correct:true},{text:'Резать всё до нуля',correct:false}],explain:'Цель — найти 1–2 места, которые не жалко убрать.'}
-],
-reflection:{questions:[{key:'understood',label:'Что я понял после этого урока?'},{key:'willTry',label:'Что я попробую сделать в ближайшие 3 дня?'}]}},
+  function loadData(){
+    try {
+      const raw = localStorage.getItem(KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e){ return {}; }
+  }
 
-'fin-2':{moduleId:'fin',moduleName:'Финансы',moduleColor:'#4ad6c8',order:2,title:'Бюджет студента',minutes:15,
-goal:'Научиться <b>планировать месяц вперёд</b>. Бюджет — это не ограничение. Это способ тратить на важное, не влезая в долги.',
-crossLink:{type:'fin',text:'💰 <a href="budget.html">Открыть калькулятор бюджета →</a>'},
-theory:[
-{emoji:'📊',title:'Что такое бюджет',text:['Бюджет — это не «таблица расходов» и не «жёсткая экономия». Бюджет — это <b>план, куда ты осознанно направляешь деньги</b>.','Он не нужен, если у тебя бесконечно много денег. Но пока ты студент — он твой лучший друг.']},
-{emoji:'🧩',title:'Правило 50 / 30 / 20',text:['Простое распределение дохода:'],list:['<b>50% — на необходимое:</b> еда, жильё, транспорт, учёба, связь.','<b>30% — на желания:</b> развлечения, одежда, кафе, подписки.','<b>20% — на будущее:</b> накопления, подушка безопасности.'],footer:'Если доход маленький — сначала обеспечь 50%, потом сократи «желания», но <b>не трогай 20%</b>. Даже 200 ₽ в месяц работают.'},
-{emoji:'📝',title:'Как составить первый бюджет',text:['Не пытайся сразу всё учесть. Начни с простого:'],list:['Шаг 1. Сложи все доходы за месяц.','Шаг 2. Выпиши обязательные траты.','Шаг 3. Что осталось — распредели: часть на желания, часть в копилку.','Шаг 4. В конце месяца сравни план и факт. Не осуждай — просто смотри.']}
-],
-practice:{intro:'Заполни свой бюджет на этот месяц. Числа примерные — главное понять структуру.',fields:[
-{key:'income',label:'Доходы за месяц',placeholder:'Например: стипендия 3000, подработка 15000, от родителей 5000',type:'textarea'},
-{key:'fixed',label:'Обязательные траты',placeholder:'Например: проездной 1500, телефон 500, продукты 8000',type:'textarea'},
-{key:'wants',label:'Желания',placeholder:'Например: кафе 3000, подписки 700, кино 1000',type:'textarea'},
-{key:'savings',label:'Сколько отложу',placeholder:'Например: 1000 ₽ в копилку',type:'textarea'}
-]},
-quiz:[
-{q:'Что означает правило 50 / 30 / 20?',options:[{text:'50% учёба, 30% еда, 20% развлечения',correct:false},{text:'50% необходимое, 30% желания, 20% на будущее',correct:true},{text:'50% накопления, 30% траты, 20% долги',correct:false},{text:'Это про оценки в вузе',correct:false}],explain:'Половина на обязательное, треть на желания, пятая часть на будущее.'},
-{q:'Что делать, если доход маленький?',options:[{text:'Не копить вообще',correct:false},{text:'Отложить хоть 200 ₽ и не трогать',correct:true},{text:'Взять кредит',correct:false},{text:'Занимать у друзей',correct:false}],explain:'Даже маленькая сумма работает. Главное — не трогать.'},
-{q:'Зачем сравнивать план и факт?',options:[{text:'Чтобы поругать себя',correct:false},{text:'Чтобы увидеть, где план был нереалистичным',correct:true},{text:'Чтобы похвастаться',correct:false},{text:'Это бесполезно',correct:false}],explain:'Цель — наблюдение. Какие цифры реальны, а какие — «из головы».'},
-{q:'Что делать с «желаниями», если бюджет не сходится?',options:[{text:'Убрать 20% на будущее',correct:false},{text:'Убрать часть «желаний», но сохранить 20%',correct:true},{text:'Занять у родителей',correct:false},{text:'Забить на бюджет',correct:false}],explain:'Категория «на будущее» — священная.'}
-],
-reflection:{questions:[{key:'understood',label:'Какая цифра в моём бюджете удивила меня больше всего?'},{key:'willTry',label:'Что я изменю в своём бюджете на следующей неделе?'}]}},
+  const BADGES = [
+    { id: 'first_lesson', group: 'Первые шаги', emoji: '🎓', name: 'Первый шаг', desc: 'Пройди первый урок', color: '#4ad6c8',
+      check: (d) => (d.lessonsDone?.fin?.length || 0) + (d.lessonsDone?.psy?.length || 0) + (d.lessonsDone?.sup?.length || 0) >= 1 },
+    { id: 'first_practice', group: 'Первые шаги', emoji: '✏️', name: 'Первая практика', desc: 'Выполни практику дня', color: '#4ad6c8',
+      check: (d) => Object.keys(d.practicesDone || {}).length >= 1 },
+    { id: 'first_notebook', group: 'Первые шаги', emoji: '📓', name: 'Дневник', desc: 'Сделай первую запись в тетрадь', color: '#4ad6c8',
+      check: (d) => Object.keys(d.practiceAnswers || {}).length >= 1 || Object.keys(d.reflections || {}).length >= 1 },
+    { id: 'fin_half', group: 'Финансы', emoji: '💰', name: 'Первые деньги', desc: 'Пройди 4 урока финансов', color: '#4ad6c8',
+      check: (d) => (d.lessonsDone?.fin?.length || 0) >= 4 },
+    { id: 'fin_all', group: 'Финансы', emoji: '🎯', name: 'Финансовый детектив', desc: 'Пройди все 8 уроков финансов', color: '#4ad6c8',
+      check: (d) => (d.lessonsDone?.fin?.length || 0) >= 8 },
+    { id: 'budget_saved', group: 'Финансы', emoji: '💾', name: 'Бюджет на бумаге', desc: 'Сохрани свой первый бюджет', color: '#4ad6c8',
+      check: (d) => !!d.budgetSaved },
+    { id: 'psy_half', group: 'Психология', emoji: '🧠', name: 'Заметил(а) себя', desc: 'Пройди 4 урока психологии', color: '#7c5cff',
+      check: (d) => (d.lessonsDone?.psy?.length || 0) >= 4 },
+    { id: 'psy_all', group: 'Психология', emoji: '🌿', name: 'Спокойный ум', desc: 'Пройди все 8 уроков психологии', color: '#7c5cff',
+      check: (d) => (d.lessonsDone?.psy?.length || 0) >= 8 },
+    { id: 'breath_5', group: 'Психология', emoji: '🌬', name: 'Дыши глубже', desc: 'Проведи 5 дыхательных сессий', color: '#7c5cff',
+      check: (d) => (d.breathingSessions || []).length >= 5 },
+    { id: 'sup_all', group: 'Поддержка', emoji: '🛟', name: 'Друг поддержки', desc: 'Пройди все 6 уроков поддержки', color: '#ff5c8a',
+      check: (d) => (d.lessonsDone?.sup?.length || 0) >= 6 },
+    { id: 'streak_3', group: 'Серия дней', emoji: '🔥', name: '3 дня подряд', desc: 'Заходи 3 дня подряд', color: '#ffb547',
+      check: (d) => (d.streak || 0) >= 3 },
+    { id: 'streak_7', group: 'Серия дней', emoji: '🔥', name: '7 дней подряд', desc: 'Целая неделя!', color: '#ffb547',
+      check: (d) => (d.streak || 0) >= 7 },
+    { id: 'streak_30', group: 'Серия дней', emoji: '🏆', name: 'Месяц подряд', desc: '30 дней подряд. Это привычка!', color: '#ffb547',
+      check: (d) => (d.streak || 0) >= 30 },
+    { id: 'xp_500', group: 'Мастерство', emoji: '⭐', name: '500 XP', desc: 'Набери 500 опыта', color: '#4ad6c8',
+      check: (d) => (d.xp || 0) >= 500 },
+    { id: 'all_done', group: 'Мастерство', emoji: '👑', name: 'Всё пройдено', desc: 'Пройди все 22 урока', color: '#b8a6ff',
+      check: (d) => ((d.lessonsDone?.fin?.length || 0) + (d.lessonsDone?.psy?.length || 0) + (d.lessonsDone?.sup?.length || 0)) >= 22 }
+  ];
 
-'fin-3':{moduleId:'fin',moduleName:'Финансы',moduleColor:'#4ad6c8',order:3,title:'Доходы: подработка, фриланс, стипендия',minutes:14,
-goal:'Понять, <b>откуда брать деньги студенту</b>, какие есть варианты подработки и как не попасть на развод.',
-theory:[
-{emoji:'💼',title:'Доход — это не только стипендия',text:['Стипендия — не доход, а «на мороженое». Реальные деньги студента — это <b>2–3 источника</b>, которые вместе дают сумму, на которую можно жить.','Плюс нескольких источников: если один просел — ты не остаёшься с нулём.']},
-{emoji:'📋',title:'4 основных варианта',list:['<b>Подработка по расписанию</b> — курьер, официант, промоутер. Плюс: стабильно, платят сразу.','<b>Фриланс</b> — тексты, дизайн, монтаж, репетиторство. Плюс: гибкий график.','<b>Стажировка</b> — оплачиваемая или с перспективой. Плюс: идёт в резюме.','<b>Микрозаработок в кампусе</b> — помощь на кафедре, съёмка мероприятий. Плюс: рядом и совместимо с учёбой.']},
-{emoji:'🚫',title:'Как не попасть на развод',text:['Красные флаги в объявлениях:'],list:['Просят <b>заплатить за обучение или материалы</b> — это развод.','Обещают <b>50 000 ₽ за 2 часа</b> с непонятной задачей.','«Работа с криптой без опыта» — 99% мошенники.','Просят паспорт до собеседования или данные карты.','Нет конкретного названия компании.'],footer:'Правило: <b>настоящая работа не требует денег вперёд</b>.'}
-],
-practice:{intro:'Подбери 2 варианта подработки под свой график и навыки.',fields:[
-{key:'skills',label:'Что я умею делать хорошо?',placeholder:'Например: пишу тексты, знаю Python, вожу машину...',type:'textarea'},
-{key:'variant1',label:'Вариант 1',placeholder:'Например: репетиторство, 500 ₽ / час, 4 часа в неделю',type:'textarea'},
-{key:'variant2',label:'Вариант 2',placeholder:'Например: фриланс-копирайтинг, 300 ₽ за статью',type:'textarea'},
-{key:'firstStep',label:'Первый шаг к первому варианту',placeholder:'Например: создать профиль на бирже и отправить 3 заявки',type:'textarea'}
-]},
-quiz:[
-{q:'Что из этого — признак мошенничества?',options:[{text:'Просят паспортные данные',correct:false},{text:'Просят заплатить за обучение',correct:true},{text:'Просят прийти в офис',correct:false},{text:'Просят резюме',correct:false}],explain:'Настоящая работа не требует денег вперёд.'},
-{q:'Почему лучше иметь 2–3 источника дохода?',options:[{text:'Чтобы больше уставать',correct:false},{text:'Чтобы не остаться с нулём, если один просел',correct:true},{text:'Чтобы платить налоги',correct:false},{text:'Это не важно',correct:false}],explain:'Если один источник исчезнет — останутся другие.'},
-{q:'Что лучше для студента без опыта?',options:[{text:'Сразу требовать как сеньор',correct:false},{text:'Начать с малого и постепенно расти',correct:true},{text:'Ждать, пока позовут',correct:false},{text:'Работать бесплатно',correct:false}],explain:'Начинать с малого нормально.'},
-{q:'Что из этого — не доход, а трата?',options:[{text:'Подработка курьером',correct:false},{text:'Фриланс-заказ',correct:false},{text:'Курс «как заработать миллион», за который надо заплатить',correct:true},{text:'Стипендия',correct:false}],explain:'Если ты платишь, чтобы «заработать» — это не доход.'}
-],
-reflection:{questions:[{key:'understood',label:'Какой вариант подработки я раньше недооценивал?'},{key:'willTry',label:'Что я сделаю на этой неделе, чтобы попробовать?'}]}},
+  const styles = `
+    .ach-card { padding:28px; border-radius:20px; background:linear-gradient(135deg,rgba(124,92,255,.14),rgba(74,214,200,.1)); border:1px solid rgba(255,255,255,.12); color:#f2f2f7; font-family:'Inter',sans-serif; }
+    .ach-head { display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:24px; flex-wrap:wrap; gap:16px; }
+    .ach-title { font-size:20px; font-weight:800; margin-bottom:6px; }
+    .ach-sub { font-size:13.5px; color:#a1a1b5; }
+    .ach-counter { padding:8px 16px; border-radius:12px; background:rgba(0,0,0,.25); border:1px solid rgba(255,255,255,.12); font-size:14px; font-weight:700; }
+    .ach-counter b { color:#4ad6c8; font-size:16px; }
+    .ach-group { margin-bottom:22px; }
+    .ach-group-title { font-size:12px; font-weight:700; color:#a1a1b5; text-transform:uppercase; letter-spacing:.6px; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+    .ach-group-title::after { content:""; flex:1; height:1px; background:rgba(255,255,255,.08); }
+    .ach-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+    .ach-item { padding:16px 14px; border-radius:14px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1); display:flex; flex-direction:column; gap:8px; position:relative; overflow:hidden; transition:.25s; }
+    .ach-item.locked { opacity:.5; filter:grayscale(.7); }
+    .ach-item.unlocked { background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.04)); border-color:var(--badge-color); box-shadow:0 4px 18px rgba(0,0,0,.2); }
+    .ach-item.unlocked::before { content:""; position:absolute; inset:0; background:radial-gradient(200px 80px at 0% 0%, var(--badge-glow), transparent 70%); pointer-events:none; }
+    .ach-item .emo { font-size:28px; position:relative; }
+    .ach-item h4 { font-size:14px; font-weight:800; position:relative; }
+    .ach-item p { font-size:12px; color:#a1a1b5; line-height:1.4; position:relative; }
+    .ach-item.unlocked .check { position:absolute; top:10px; right:10px; width:20px; height:20px; border-radius:50%; background:var(--badge-color); color:#0b0b12; font-size:12px; font-weight:800; display:grid; place-items:center; }
+  `;
 
-'fin-4':{moduleId:'fin',moduleName:'Финансы',moduleColor:'#4ad6c8',order:4,title:'Накопления с 1000 ₽',minutes:12,
-goal:'Понять, что <b>копить можно с любой суммы</b>, и запустить первую копилку — без страданий.',
-theory:[
-{emoji:'💡',title:'Правило 10%',text:['Главное правило: <b>откладывай, а не «откладывай с остатка»</b>. Сначала — 10% от любого дохода в копилку.','Если получил 15 000 ₽ — 1 500 ₽ сразу в копилку. Не в конце месяца, а в начале.']},
-{emoji:'🐷',title:'Почему с 1000 ₽ работает',text:['Даже 1 000 ₽ в месяц — это <b>12 000 ₽ в год</b>. Если 3 000 ₽ — 36 000 ₽ в год. Это уже поездка.','Смысл не в сумме. Смысл — в <b>привычке</b>.']},
-{emoji:'🎯',title:'Как правильно ставить цель',list:['<b>Конкретно:</b> «ноутбук за 60 000 ₽».','<b>Срок:</b> «за 6 месяцев».','<b>Сумма в месяц:</b> 60 000 / 6 = 10 000 ₽.','<b>Автоматически:</b> в день зарплаты, а не «когда вспомнишь».']}
-],
-practice:{intro:'Поставь свою первую копилку. Заполни прямо сейчас.',fields:[
-{key:'goal',label:'На что коплю',placeholder:'Например: ноутбук, поездка, подушка',type:'textarea'},
-{key:'sum',label:'Сумма цели',placeholder:'Например: 60 000 ₽',type:'textarea'},
-{key:'deadline',label:'За сколько месяцев',placeholder:'Например: за 6 месяцев',type:'textarea'},
-{key:'monthly',label:'Сколько в месяц',placeholder:'Например: 10 000 ₽ или сколько реально',type:'textarea'},
-{key:'where',label:'Куда буду откладывать',placeholder:'Например: отдельная копилка в банке',type:'textarea'}
-]},
-quiz:[
-{q:'Когда нужно откладывать?',options:[{text:'В конце месяца, если осталось',correct:false},{text:'В начале, сразу с дохода',correct:true},{text:'Когда накопится 10 000 ₽',correct:false},{text:'Когда захочется',correct:false}],explain:'Если откладывать с остатка — не останется никогда.'},
-{q:'Сколько даёт 1 000 ₽ в месяц за год?',options:[{text:'1 000 ₽',correct:false},{text:'5 000 ₽',correct:false},{text:'12 000 ₽',correct:true},{text:'Ничего',correct:false}],explain:'1 000 × 12 = 12 000 ₽. Уже подушка.'},
-{q:'Что делает цель «правильной»?',options:[{text:'Размытость',correct:false},{text:'Конкретность, срок и сумма',correct:true},{text:'Большая сумма без срока',correct:false},{text:'Цель не нужна',correct:false}],explain:'Мозгу нужны конкретика и дедлайн.'},
-{q:'Если 10 000 ₽ в месяц не получается?',options:[{text:'Отказаться',correct:false},{text:'Растянуть срок и копить меньше',correct:true},{text:'Занять',correct:false},{text:'Есть только хлеб',correct:false}],explain:'Меньше, но регулярно — лучше, чем ничего.'}
-],
-reflection:{questions:[{key:'understood',label:'Реальная ли моя цель по срокам и сумме?'},{key:'willTry',label:'Сколько я отложу в этом месяце?'}]}},
+  function render() {
+    const container = document.getElementById('achievementsWidget');
+    if (!container) return;
 
-'fin-5':{moduleId:'fin',moduleName:'Финансы',moduleColor:'#4ad6c8',order:5,title:'Долги и кредитки',minutes:13,
-goal:'Понять, <b>чем опасны кредитки и микрозаймы</b>, и не влезть в долговую яму.',
-theory:[
-{emoji:'💳',title:'Кредитка — не «свои деньги»',text:['Кредитка — это <b>чужие деньги под проценты</b>. Если успеваешь вернуть в льготный период — ок. Но если чуть-чуть опоздал — проценты капают со всей суммы.','Студенту кредитка почти никогда не нужна.']},
-{emoji:'🕳',title:'Микрозаймы — это ловушка',list:['<b>Ставка 200–365% годовых</b> — норма для МФО.','Берёшь 10 000 ₽ — через месяц отдаёшь 13 000–15 000 ₽.','Не отдал — долг переходит коллекторам или растёт.','«0% для новых» — только на первый раз.'],footer:'Если ты берёшь в долг, чтобы закрыть другой долг — ты в яме.'},
-{emoji:'🛟',title:'Что делать, если уже есть долг',list:['<b>Остановись:</b> не бери новый кредит, чтобы закрыть старый.','<b>Выпиши все долги:</b> кому, сколько, какой процент.','<b>Сначала закрывай дорогие:</b> где самый большой процент.','<b>Поговори с близкими.</b>','<b>Не игнорируй:</b> с банком можно договориться о реструктуризации.']}
-],
-practice:{intro:'Проверь свои долги (если есть) — или зафиксируй правило «не брать».',fields:[
-{key:'hasDebt',label:'Есть ли у меня сейчас долги?',placeholder:'Да / Нет / Не уверен(а)',type:'textarea'},
-{key:'expensive',label:'Самый дорогой долг (если есть)',placeholder:'Например: микрозайм 10 000 ₽ под 300%',type:'textarea'},
-{key:'plan',label:'Мой план на ближайший месяц',placeholder:'Например: не буду брать новый, начну отдавать 3000 ₽',type:'textarea'},
-{key:'rule',label:'Моё личное правило про долги',placeholder:'Например: «Никогда не беру, чтобы закрыть другой долг»',type:'textarea'}
-]},
-quiz:[
-{q:'Когда кредитка выгодна?',options:[{text:'Когда не возвращаешь',correct:false},{text:'Когда возвращаешь в льготный период',correct:true},{text:'Всегда',correct:false},{text:'Никогда',correct:false}],explain:'Если уложился в льготный период — процентов нет.'},
-{q:'Обычная ставка по микрозаймам:',options:[{text:'5–10%',correct:false},{text:'20–30%',correct:false},{text:'200–365%',correct:true},{text:'0%',correct:false}],explain:'МФО — это очень дорого.'},
-{q:'Что делать в первую очередь при нескольких долгах?',options:[{text:'Закрывать маленький',correct:false},{text:'Закрывать самый дорогой',correct:true},{text:'Игнорировать',correct:false},{text:'Взять новый',correct:false}],explain:'Сначала гасится самый дорогой долг.'},
-{q:'Если не можешь платить банку?',options:[{text:'Молчать',correct:false},{text:'Поговорить о реструктуризации',correct:true},{text:'Взять новый кредит',correct:false},{text:'Сменить номер',correct:false}],explain:'Банк заинтересован получить хоть что-то.'}
-],
-reflection:{questions:[{key:'understood',label:'Какой долговой привычки у меня нет и не будет?'},{key:'willTry',label:'Что я сделаю при соблазне взять кредит?'}]}},
+    const d = loadData();
+    if (!Array.isArray(d.badgesUnlocked)) d.badgesUnlocked = [];
+    const unlockedSet = new Set(d.badgesUnlocked);
+    
+    // Проверяем новые бейджи
+    BADGES.forEach(b => {
+      if (!unlockedSet.has(b.id) && b.check(d)) {
+        unlockedSet.add(b.id);
+        d.badgesUnlocked.push(b.id);
+      }
+    });
+    localStorage.setItem(KEY, JSON.stringify(d));
 
-'fin-6':{moduleId:'fin',moduleName:'Финансы',moduleColor:'#4ad6c8',order:6,title:'Мошенники и безопасность',minutes:11,
-goal:'Научиться <b>распознавать обман</b> в интернете, по телефону и в СМС.',
-theory:[
-{emoji:'📞',title:'Телефонные мошенники',text:['Три классические схемы:'],list:['<b>«Служба безопасности банка».</b> Просят назвать код из СМС — якобы «для отмены перевода».','<b>«Мама, я в беде».</b> С незнакомого номера, просят перевести.','<b>«Родственник попал в ДТП».</b> Давят на страх.'],footer:'Если торопят и пугают — мошенник. Положи трубку и перезвони сам.'},
-{emoji:'🌐',title:'Онлайн-мошенничество',list:['«Оплати доставку» на Авито — просят уйти с площадки.','«Розыгрыш iPhone» — просят данные карты.','«Быстрый заработок» через «инвестиции».','«Друг просит в долг» — аккаунт мог быть взломан.','Фишинговые сайты — копии известных.']},
-{emoji:'🛡',title:'Что делать, чтобы не попасться',list:['<b>Никогда</b> не сообщай код из СМС. Никому.','Проверяй адрес сайта — одна буква может отличаться.','Не переводи «друзьям» в мессенджере без звонка.','Не переходи по ссылкам из незнакомых сообщений.','Если уже перевёл — <b>немедленно</b> в банк.']}
-],
-practice:{intro:'Разбери ситуации. Что бы ты сделал(а)?',fields:[
-{key:'case1',label:'Звонок: «Служба безопасности банка. Назовите код»',placeholder:'Мои действия...',type:'textarea'},
-{key:'case2',label:'СМС: «Мама, я в больнице, срочно 20 000 ₽»',placeholder:'Мои действия...',type:'textarea'},
-{key:'case3',label:'Telegram: «Розыгрыш iPhone! Перейди и введи данные»',placeholder:'Мои действия...',type:'textarea'},
-{key:'rule',label:'Моё личное правило безопасности',placeholder:'Например: «Никогда и никому не сообщаю код из СМС»',type:'textarea'}
-]},
-quiz:[
-{q:'Звонит «сотрудник банка», просит код из СМС. Что делать?',options:[{text:'Назвать — это же банк',correct:false},{text:'Положить и перезвонить в банк самому',correct:true},{text:'Спросить данные',correct:false},{text:'Назвать половину',correct:false}],explain:'Банк никогда не спрашивает код из СМС.'},
-{q:'Друг в мессенджере просит деньги. Что делать?',options:[{text:'Сразу перевести',correct:false},{text:'Позвонить ему голосом',correct:true},{text:'Ответить «сколько?»',correct:false},{text:'Заблокировать',correct:false}],explain:'Аккаунт могли взломать.'},
-{q:'Какая ссылка безопаснее?',options:[{text:'sber-bank.ru',correct:false},{text:'sberbank.ru',correct:true},{text:'sber-bonus-online.ru',correct:false},{text:'sberbank.su-bonus.ru',correct:false}],explain:'Одна лишняя буква или дефис — фишинг.'},
-{q:'Если ты перевёл мошенникам?',options:[{text:'Подождать',correct:false},{text:'Сразу в банк и заблокировать карту',correct:true},{text:'Молчать',correct:false},{text:'Перевести ещё раз',correct:false}],explain:'Счётчик идёт на минуты.'}
-],
-reflection:{questions:[{key:'understood',label:'Какой сценарий кажется мне самым опасным?'},{key:'willTry',label:'Как я защищу себя и близких на этой неделе?'}]}},
+    const groups = {};
+    BADGES.forEach(b => {
+      if (!groups[b.group]) groups[b.group] = [];
+      groups[b.group].push(b);
+    });
 
-'fin-7':{moduleId:'fin',moduleName:'Финансы',moduleColor:'#4ad6c8',order:7,title:'Инвестиции простыми словами',minutes:15,
-goal:'Понять, <b>что такое акции и облигации</b>, и стоит ли начинать с 1 000 ₽.',
-theory:[
-{emoji:'💡',title:'Что такое инвестиции',text:['Инвестиции — это <b>когда ты вкладываешь деньги, чтобы они работали</b>.','Студенту доступны вклад и ценные бумаги. Главное — <b>запустить привычку</b>.']},
-{emoji:'📈',title:'Акции и облигации — простыми словами',list:['<b>Акция</b> — доля в компании. Растёт — растёт цена. Может упасть.','<b>Облигация</b> — ты даёшь в долг, тебе платят проценты.','<b>Фонд (ETF)</b> — «корзина» из десятков акций. Меньше риска.'],footer:'Главный принцип: <b>не клади все яйца в одну корзину</b>.'},
-{emoji:'⚠️',title:'О чём важно помнить студенту',list:['<b>Нет гарантий.</b> «50% гарантированно» — мошенники.','<b>Сначала подушка безопасности</b>, потом инвестиции.','<b>Не инвестируй в долг.</b>','<b>Начни с малого.</b> 1 000 ₽ — уже опыт.','<b>Горизонт 3+ года.</b>']}
-],
-practice:{intro:'Проверь свою готовность к инвестициям.',fields:[
-{key:'cushion',label:'Есть ли подушка безопасности?',placeholder:'Да / Нет / Примерно',type:'textarea'},
-{key:'debt',label:'Есть ли долги?',placeholder:'Да / Нет',type:'textarea'},
-{key:'risk',label:'Мой уровень риска',placeholder:'Осторожный / средний / агрессивный',type:'textarea'},
-{key:'plan',label:'Что я готов вложить в месяц',placeholder:'Например: 1000 ₽ в ETF',type:'textarea'}
-]},
-quiz:[
-{q:'Что такое акция?',options:[{text:'Долг компании',correct:false},{text:'Доля в компании',correct:true},{text:'Гарантированный доход',correct:false},{text:'Скидка',correct:false}],explain:'Акция — доля в компании.'},
-{q:'Что важнее инвестиций для студента?',options:[{text:'Сразу вложить всё',correct:false},{text:'Сначала подушка безопасности',correct:true},{text:'Взять кредит',correct:false},{text:'Найти «гарантию»',correct:false}],explain:'Инвестиции — после подушки.'},
-{q:'«Гарантированный доход 50% в год» — это...',options:[{text:'Отлично',correct:false},{text:'Мошенничество',correct:true},{text:'Норма для банка',correct:false},{text:'Обычная акция',correct:false}],explain:'Даже 10% в год — уже хорошо.'},
-{q:'Зачем ETF вместо одной акции?',options:[{text:'Всегда дороже',correct:false},{text:'Меньше риска за счёт диверсификации',correct:true},{text:'Гарантирует доход',correct:false},{text:'Нет разницы',correct:false}],explain:'ETF — корзина из десятков акций.'}
-],
-reflection:{questions:[{key:'understood',label:'Готов(а) ли я сейчас к инвестициям? Почему?'},{key:'willTry',label:'Что мне нужно сделать перед первой инвестицией?'}]}},
+    const totalUnlocked = unlockedSet.size;
 
-'fin-8':{moduleId:'fin',moduleName:'Финансы',moduleColor:'#4ad6c8',order:8,title:'Финансовая цель',minutes:13,
-goal:'Собрать всё, что ты прошёл, в <b>одну понятную цель</b> и план.',
-theory:[
-{emoji:'🎯',title:'Почему цель важнее цифр',text:['Можно знать про бюджет, накопления и инвестиции — но ничего не делать. Потому что нет <b>зачем</b>.','Цель — это не «хочу много денег». Это конкретный образ: <b>что будет, когда получится</b>.']},
-{emoji:'🧭',title:'Формула цели',text:['Хорошая цель проходит 4 фильтра:'],list:['<b>Конкретно:</b> «ноутбук за 60 000 ₽».','<b>Измеримо:</b> понятно, когда достигнута.','<b>Достижимо:</b> ты веришь, что сможешь.','<b>Со сроком:</b> «к июню», а не «когда-нибудь».']},
-{emoji:'🗺',title:'Маршрут к цели',list:['Шаг 1. Запиши цель: сумма, срок, для чего.','Шаг 2. Посчитай: сумма / срок = сколько в месяц.','Шаг 3. Выбери инструмент: копилка, вклад.','Шаг 4. Автоматизируй.','Шаг 5. Проверяй раз в месяц.','Шаг 6. Дошёл — поставь новую.']}
-],
-practice:{intro:'Опиши свою главную финансовую цель. Конкретно, с цифрами и сроком.',fields:[
-{key:'goal',label:'Моя цель',placeholder:'Например: поездка в Питер с друзьями',type:'textarea'},
-{key:'sum',label:'Сколько нужно денег',placeholder:'Например: 40 000 ₽',type:'textarea'},
-{key:'deadline',label:'К какому сроку',placeholder:'Например: к июню',type:'textarea'},
-{key:'monthly',label:'Сколько откладываю в месяц',placeholder:'Например: 5 000 ₽',type:'textarea'},
-{key:'firstStep',label:'Первый шаг на этой неделе',placeholder:'Например: открою копилку и переведу 1000 ₽',type:'textarea'}
-]},
-quiz:[
-{q:'Какая цель «правильная»?',options:[{text:'«Хочу много денег»',correct:false},{text:'«Ноутбук за 60 000 ₽ к марту»',correct:true},{text:'«Что-нибудь купить»',correct:false},{text:'«Стать богатым»',correct:false}],explain:'Конкретика, сумма и срок.'},
-{q:'Если не получается копить на цель?',options:[{text:'Отказаться',correct:false},{text:'Пересмотреть срок или сумму',correct:true},{text:'Залезть в долги',correct:false},{text:'Ждать',correct:false}],explain:'Продлить срок — нормально.'},
-{q:'Как часто проверять прогресс?',options:[{text:'Раз в год',correct:false},{text:'Раз в месяц',correct:true},{text:'Никогда',correct:false},{text:'Раз в день',correct:false}],explain:'Раз в месяц — оптимально.'},
-{q:'Что делать, когда цель достигнута?',options:[{text:'Потратить всё',correct:false},{text:'Поставить новую',correct:true},{text:'Больше не копить',correct:false},{text:'Забыть',correct:false}],explain:'Привычка копить — ценнее самой цели.'}
-],
-reflection:{questions:[{key:'understood',label:'Что для меня на самом деле стоит за моей целью?'},{key:'willTry',label:'Что я сделаю сегодня, чтобы приблизиться к ней?'}]}},
+    const groupsHtml = Object.keys(groups).map(gname => {
+      const items = groups[gname].map(b => {
+        const isUnlocked = unlockedSet.has(b.id);
+        return `
+          <div class="ach-item ${isUnlocked ? 'unlocked' : 'locked'}" style="--badge-color:${b.color};--badge-glow:${b.color}33">
+            ${isUnlocked ? '<div class="check">✓</div>' : ''}
+            <div class="emo">${b.emoji}</div>
+            <h4>${b.name}</h4>
+            <p>${b.desc}</p>
+          </div>
+        `;
+      }).join('');
+      return `<div class="ach-group"><div class="ach-group-title">${gname}</div><div class="ach-grid">${items}</div></div>`;
+    }).join('');
 
-/* ==================== ПСИХОЛОГИЯ ==================== */
-'psy-1':{moduleId:'psy',moduleName:'Психология',moduleColor:'#7c5cff',order:1,title:'Эмоции: зачем они нужны',minutes:12,
-goal:'Понять, <b>что на самом деле говорят эмоции</b>, и перестать делить их на «правильные» и «неправильные».',
-theory:[
-{emoji:'🌊',title:'Эмоции — это сигнал, а не проблема',text:['Мы привыкли думать, что есть «хорошие» эмоции и «плохие». Но это не так.','Эмоция — это <b>быстрый сигнал от тела</b>. Она говорит: «здесь что-то важно». Злость — про границы. Тревога — про угрозу. Грусть — про потерю.','Когда мы пытаемся «отключить» эмоцию, сигнал уходит в тело: зажимы, головные боли, апатия.']},
-{emoji:'🧭',title:'4 базовые эмоции и их послания',list:['<b>Злость:</b> «мои границы нарушены».','<b>Тревога:</b> «есть неопределённость».','<b>Грусть:</b> «я что-то потерял».','<b>Страх:</b> «есть угроза».'],footer:'Умение назвать эмоцию = <b>половина работы</b>. Это «аффективная маркировка» — она уже снижает напряжение.'},
-{emoji:'📓',title:'Что делать с эмоциями',list:['<b>Заметить:</b> «что я сейчас чувствую?»','<b>Назвать:</b> «это злость».','<b>Понять послание:</b> «о чём это?»','<b>Выбрать действие:</b> что я могу сделать?'],footer:'Цель — <b>не избавиться</b> от эмоции, а понять, о чём она.'}
-],
-practice:{intro:'Дневник эмоций за сегодня. Вспомни 3 момента.',fields:[
-{key:'situation1',label:'Ситуация 1 — что произошло',placeholder:'Например: получил плохую оценку',type:'textarea'},
-{key:'emotion1',label:'Что я почувствовал(а)?',placeholder:'Например: злость, потом стыд',type:'textarea'},
-{key:'situation2',label:'Ситуация 2',placeholder:'Например: друг не ответил',type:'textarea'},
-{key:'emotion2',label:'Что я почувствовал(а)?',placeholder:'Например: тревога, обида',type:'textarea'},
-{key:'pattern',label:'Что заметил(а)?',placeholder:'Например: тревога появляется чаще вечером',type:'textarea'}
-]},
-quiz:[
-{q:'Эмоция — это...',options:[{text:'Проблема',correct:false},{text:'Сигнал о том, что для меня важно',correct:true},{text:'Слабость',correct:false},{text:'Что-то, что можно отключить',correct:false}],explain:'Сигнал от тела, а не проблема.'},
-{q:'О чём чаще всего говорит злость?',options:[{text:'О плохом характере',correct:false},{text:'О нарушении границ',correct:true},{text:'О голоде',correct:false},{text:'Ни о чём',correct:false}],explain:'Злость — сигнал, что границы нарушены.'},
-{q:'Что снижает напряжение само по себе?',options:[{text:'Подавить эмоцию',correct:false},{text:'Назвать эмоцию точным словом',correct:true},{text:'Отвлечься телефоном',correct:false},{text:'Заесть сладким',correct:false}],explain:'Аффективная маркировка снижает активность миндалины.'},
-{q:'Что делать, если эмоция неприятная?',options:[{text:'Срочно убрать',correct:false},{text:'Заметить, назвать, понять, выбрать действие',correct:true},{text:'Игнорировать',correct:false},{text:'Осудить себя',correct:false}],explain:'4 шага работают лучше попытки «отключить».'}
-],
-reflection:{questions:[{key:'understood',label:'Какая эмоция повторяется у меня чаще всего?'},{key:'willTry',label:'Что я попробую, когда в следующий раз её замечу?'}]}},
+    container.innerHTML = `
+      <style>${styles}</style>
+      <div class="ach-card">
+        <div class="ach-head">
+          <div><div class="ach-title">🏅 Достижения</div><div class="ach-sub">Собери все ${BADGES.length} бейджей</div></div>
+          <div class="ach-counter"><b>${totalUnlocked}</b> / ${BADGES.length}</div>
+        </div>
+        ${groupsHtml}
+      </div>
+    `;
+  }
 
-'psy-2':{moduleId:'psy',moduleName:'Психология',moduleColor:'#7c5cff',order:2,title:'Тревога перед экзаменом',minutes:14,
-goal:'Понять, <b>почему трясёт перед важным</b>, и получить техники, которые успокаивают тело за 2 минуты.',
-crossLink:{type:'psy',text:'🌿 <a href="breathing.html">Открыть дыхательный тренажёр →</a>'},
-theory:[
-{emoji:'⚡',title:'Что такое тревога физически',text:['Тревога — это <b>реакция тела на неопределённость</b>. Мозг не знает, что будет — и запускает режим «боевой готовности».','Сердце быстрее, дыхание поверхностное, мышцы напряжены. Это не «ты сходишь с ума» — это древний механизм.']},
-{emoji:'🫁',title:'Дыхание 4-7-8',text:['Самая быстрая техника. Удлинённый выдох включает парасимпатическую систему.'],list:['<b>Вдох носом на 4 счёта</b>','<b>Задержка на 7</b>','<b>Выдох ртом на 8</b>','Повторить 4 раза'],footer:'Если тяжело — сократи пропорционально (4-4-6). Главное — <b>выдох длиннее вдоха</b>.'},
-{emoji:'⚓',title:'Заземление 5-4-3-2-1',text:['Если тревога накрыла — верни себя в «здесь и сейчас».'],list:['<b>5</b> вещей, которые видишь','<b>4</b> — которые слышишь','<b>3</b> — которых касаешься','<b>2</b> — запаха','<b>1</b> — вкуса'],footer:'Тревога живёт в будущем, а чувства — только в настоящем.'}
-],
-practice:{intro:'Попробуй технику прямо сейчас. Потом опиши, что почувствовал(а).',fields:[
-{key:'breathing',label:'Сделай дыхание 4-7-8 четыре раза. Что изменилось?',placeholder:'Например: плечи опустились...',type:'textarea'},
-{key:'grounding',label:'Сделай заземление 5-4-3-2-1. Что заметил(а)?',placeholder:'Например: стало меньше мыслей...',type:'textarea'},
-{key:'beforeExam',label:'Как я буду использовать это перед экзаменом?',placeholder:'Например: за 5 минут до входа',type:'textarea'}
-]},
-quiz:[
-{q:'Тревога — это...',options:[{text:'Признак слабости',correct:false},{text:'Реакция тела на неопределённость',correct:true},{text:'Что-то ненормальное',correct:false},{text:'Болезнь',correct:false}],explain:'Древний механизм боевой готовности.'},
-{q:'Почему дыхание 4-7-8 работает?',options:[{text:'Отвлекает',correct:false},{text:'Удлинённый выдох включает парасимпатическую систему',correct:true},{text:'Это гипноз',correct:false},{text:'Не работает',correct:false}],explain:'Выдох — сигнал телу, что опасности нет.'},
-{q:'Что главное в пропорции?',options:[{text:'Вдох длиннее',correct:false},{text:'Выдох длиннее',correct:true},{text:'Одинаковые',correct:false},{text:'Не важно',correct:false}],explain:'Выдох длиннее вдоха — ключевое условие.'},
-{q:'Зачем заземление через 5 чувств?',options:[{text:'Отвлечься',correct:false},{text:'Тревога в будущем, чувства — в настоящем',correct:true},{text:'Это медитация',correct:false},{text:'Не работает',correct:false}],explain:'Возвращение в момент через ощущения.'}
-],
-reflection:{questions:[{key:'understood',label:'Какая техника подошла мне лучше?'},{key:'willTry',label:'В какой ситуации я применю её на этой неделе?'}]}},
-
-'psy-3':{moduleId:'psy',moduleName:'Психология',moduleColor:'#7c5cff',order:3,title:'Стресс и выгорание',minutes:15,
-goal:'Научиться <b>различать усталость и выгорание</b>. Заметить признаки до того, как тело выключит тебя само.',
-theory:[
-{emoji:'🌡',title:'Стресс vs выгорание',text:['Стресс — это <b>пик</b>. Всплеск: сессия, дедлайн. После — восстановление.','Выгорание — это <b>долгое плато</b>. Ты не на пике — ты на дне. И уже давно.']},
-{emoji:'🚦',title:'3 стадии выгорания',list:['<b>1. Напряжение.</b> Всё раздражает, сон плохой, но сил хватает.','<b>2. Истощение.</b> Устал(а) даже после отдыха.','<b>3. Отчуждение.</b> «Зачем всё это?». Цинизм, апатия.'],footer:'Чем раньше заметишь на первой стадии — тем легче выбраться.'},
-{emoji:'🛠',title:'Что делать',list:['<b>Признать.</b> «Я не ленивый — я выгорел(а)».','<b>Снизить нагрузку.</b> Хотя бы на 20%.','<b>Сон важнее всего.</b> 7–8 часов.','<b>Движение.</b> 15 минут прогулки меняют состояние.','<b>Сказать кому-то.</b>']}
-],
-practice:{intro:'Пройди по чек-листу и честно ответь.',fields:[
-{key:'tired',label:'Усталость даже после отдыха?',placeholder:'Да / Нет / Иногда',type:'textarea'},
-{key:'interest',label:'Что раньше радовало, а сейчас — нет?',placeholder:'Например: музыка, спорт',type:'textarea'},
-{key:'sleep',label:'Как у меня со сном?',placeholder:'Например: 5-6 часов, встаю тяжело',type:'textarea'},
-{key:'stage',label:'На какой стадии я?',placeholder:'Напряжение / Истощение / Отчуждение',type:'textarea'},
-{key:'firstStep',label:'Один шаг на этой неделе',placeholder:'Например: лягу в 23:00 три дня подряд',type:'textarea'}
-]},
-quiz:[
-{q:'Чем выгорание отличается от стресса?',options:[{text:'Ничем',correct:false},{text:'Стресс — пик, выгорание — долгое плато',correct:true},{text:'Выгорание только у взрослых',correct:false},{text:'Стресс опаснее',correct:false}],explain:'Стресс — всплеск с восстановлением. Выгорание — долгое состояние на дне.'},
-{q:'Сколько стадий у выгорания?',options:[{text:'1',correct:false},{text:'2',correct:false},{text:'3',correct:true},{text:'5',correct:false}],explain:'Напряжение → истощение → отчуждение.'},
-{q:'Что важнее всего при выгорании?',options:[{text:'Взять себя в руки',correct:false},{text:'Сон 7–8 часов',correct:true},{text:'Работать больше',correct:false},{text:'Отвлечься сериалом',correct:false}],explain:'Сон — базовое восстановление.'},
-{q:'Что делать на первой стадии?',options:[{text:'Игнорировать',correct:false},{text:'Снизить нагрузку хотя бы на 20%',correct:true},{text:'Уехать на месяц',correct:false},{text:'Работать быстрее',correct:false}],explain:'На первой стадии достаточно признать и снизить нагрузку.'}
-],
-reflection:{questions:[{key:'understood',label:'Что удивило меня в этом уроке про меня самого?'},{key:'willTry',label:'Какой один шаг я сделаю для восстановления?'}]}},
-
-'psy-4':{moduleId:'psy',moduleName:'Психология',moduleColor:'#7c5cff',order:4,title:'Прокрастинация',minutes:13,
-goal:'Понять, что <b>прокрастинация — не лень</b>, и найти свой способ начать.',
-theory:[
-{emoji:'🎭',title:'Что на самом деле происходит',text:['Прокрастинация — это <b>не лень</b>. Ленивому всё равно. А ты — мучаешься.','Прокрастинация — это <b>эмоциональное избегание</b>. Мозг чувствует: «эта задача неприятная / страшная» — и уводит тебя от неё.']},
-{emoji:'😰',title:'Что чаще всего стоит за прокрастинацией',list:['<b>Страх провала:</b> «если не получится — будет больно».','<b>Страх успеха:</b> «если получится — будет больше давления».','<b>Перфекционизм:</b> «пока не идеально — не начинаю».','<b>Неясность:</b> «я не понимаю, с чего начать».','<b>Перегрузка:</b> «задач слишком много, я замираю».']},
-{emoji:'🚀',title:'Как начать',list:['<b>Разбей задачу.</b> Не «написать курсовую», а «открыть Word».','<b>Правило 2 минут.</b> Если меньше 2 минут — делай сразу.','<b>Таймер 25/5.</b> 25 минут работы, 5 отдыха.','<b>Начни с лёгкого.</b> Включи инерцию.','<b>Скажи кому-то.</b> Обещание вслух работает.'],footer:'Главное — <b>перестать себя винить</b>. Вина съедает энергию.'}
-],
-practice:{intro:'Разбери одну задачу, которую ты давно откладываешь.',fields:[
-{key:'task',label:'Задача, которую я откладываю',placeholder:'Например: начать писать курсовую',type:'textarea'},
-{key:'why',label:'Что за этим стоит?',placeholder:'Например: боюсь плохо написать',type:'textarea'},
-{key:'tiny',label:'Самый маленький первый шаг (2 минуты)',placeholder:'Например: открыть документ и написать заголовок',type:'textarea'},
-{key:'when',label:'Когда я это сделаю?',placeholder:'Например: сегодня в 19:00',type:'textarea'}
-]},
-quiz:[
-{q:'Прокрастинация — это...',options:[{text:'Лень',correct:false},{text:'Эмоциональное избегание',correct:true},{text:'Отсутствие силы воли',correct:false},{text:'Характер',correct:false}],explain:'Ленивому всё равно. А ты — мучаешься.'},
-{q:'Что чаще всего стоит за прокрастинацией?',options:[{text:'Страх и перфекционизм',correct:true},{text:'Глупость',correct:false},{text:'Плохое воспитание',correct:false},{text:'Нехватка времени',correct:false}],explain:'Страх провала, страх успеха, перфекционизм, неясность.'},
-{q:'Что помогает начать?',options:[{text:'Поругать себя',correct:false},{text:'Разбить задачу на шаги',correct:true},{text:'Ждать вдохновения',correct:false},{text:'Сделать всё за один день',correct:false}],explain:'Маленькие шаги снижают страх.'},
-{q:'Почему вина не помогает?',options:[{text:'Она мотивирует',correct:false},{text:'Съедает энергию для старта',correct:true},{text:'Она полезна',correct:false},{text:'Не важна',correct:false}],explain:'Вина забирает силы.'}
-],
-reflection:{questions:[{key:'understood',label:'Что я раньше называл(а) ленью, а на самом деле — страх?'},{key:'willTry',label:'Какой мой крошечный шаг на сегодня?'}]}},
-
-'psy-5':{moduleId:'psy',moduleName:'Психология',moduleColor:'#7c5cff',order:5,title:'Самооценка и синдром самозванца',minutes:15,
-goal:'Понять, почему кажется, что ты «недостаточно хорош», и научиться <b>опираться на факты, а не на чувство</b>.',
-theory:[
-{emoji:'🎭',title:'Что такое синдром самозванца',text:['Синдром самозванца — это когда ты <b>обесцениваешь свои достижения</b>. «Просто повезло», «препод добрый».','Исследования показывают: <b>до 70% людей</b> испытывают это хотя бы раз. Особенно студенты.']},
-{emoji:'🔍',title:'Как отличить здоровую самооценку от самозванца',list:['<b>Здоровая:</b> «я хорошо это сделал(а), потому что работал(а)».','<b>Самозванец:</b> «мне просто повезло».','<b>Здоровая:</b> «это было сложно, но я справился(ась)».','<b>Самозванец:</b> «это было легко — значит, ничего особенного».']},
-{emoji:'🛠',title:'Что делать',list:['<b>Факты вместо чувств.</b> На «я ничего не умею» — 3 примера обратного.','<b>Вести «банк побед».</b> Записывать всё, что получилось.','<b>Не сравнивать с чужой витриной.</b> В соцсетях показывают лучшее.','<b>Разрешить себе не знать.</b>','<b>Поговорить с другом.</b>']}
-],
-practice:{intro:'Собери свой «банк побед». Минимум 5 пунктов.',fields:[
-{key:'wins',label:'Что у меня получилось за последний год',placeholder:'Например: сдал математику, научился готовить...',type:'textarea'},
-{key:'praise',label:'За что меня хвалили?',placeholder:'Например: препод сказал про хороший анализ',type:'textarea'},
-{key:'skills',label:'Что я умею, чего не умеют другие?',placeholder:'Например: хорошо слушаю, умею объяснять сложное',type:'textarea'},
-{key:'reframe',label:'Одна мысль про себя, которую хочу переформулировать',placeholder:'Например: «я плохой студент» → «я учусь в своём темпе»',type:'textarea'}
-]},
-quiz:[
-{q:'Синдром самозванца — это...',options:[{text:'Реальная некомпетентность',correct:false},{text:'Обесценивание своих достижений',correct:true},{text:'Заболевание',correct:false},{text:'Редкое явление',correct:false}],explain:'Не про реальный уровень, а про восприятие.'},
-{q:'Сколько людей испытывают синдром самозванца?',options:[{text:'Меньше 5%',correct:false},{text:'Около 20%',correct:false},{text:'До 70%',correct:true},{text:'Все',correct:false}],explain:'До 70% хотя бы раз в жизни.'},
-{q:'Как отличить здоровую самооценку?',options:[{text:'По количеству достижений',correct:false},{text:'По присвоению заслуг',correct:true},{text:'По зарплате',correct:false},{text:'Никак',correct:false}],explain:'Самозванец объясняет успех случайностью.'},
-{q:'Что помогает против самозванца?',options:[{text:'Перестать думать',correct:false},{text:'Вести «банк побед» и опираться на факты',correct:true},{text:'Сравнивать с лучшими',correct:false},{text:'Работать больше',correct:false}],explain:'Факты против чувств.'}
-],
-reflection:{questions:[{key:'understood',label:'Что я раньше обесценивал(а) в себе, а зря?'},{key:'willTry',label:'Что я добавлю в свой «банк побед» уже сегодня?'}]}},
-
-'psy-6':{moduleId:'psy',moduleName:'Психология',moduleColor:'#7c5cff',order:6,title:'Личные границы',minutes:14,
-goal:'Научиться <b>говорить «нет» без чувства вины</b> и при этом не терять отношения.',
-theory:[
-{emoji:'🚪',title:'Что такое личные границы',text:['Граница — это <b>правило, которое ты устанавливаешь о себе</b>. «Я не беру звонки после 22:00», «я не даю в долг больше X».','Границы — не про запреты другим. Они про то, <b>как с тобой можно</b> и как нельзя.']},
-{emoji:'❌',title:'Почему сложно сказать «нет»',list:['<b>Страх отвержения.</b> «Перестанут любить».','<b>Вина.</b> «Ему же нужна помощь».','<b>Роль «удобного».</b> С детства учили быть хорошим для всех.','<b>Незнание своих потребностей.</b>']},
-{emoji:'💬',title:'Формула вежливого «нет»',text:['Работает в 90% случаев:'],list:['<b>1.</b> Поблагодари: «спасибо, что подумал обо мне».','<b>2.</b> Откажи чётко: «но я не могу».','<b>3.</b> Объясни — только если хочешь.','<b>4.</b> Не оправдывайся.','<b>5.</b> Если хочешь — предложи альтернативу.'],footer:'Пример: «Спасибо, что позвал. Но я не смогу — у меня свои планы. Хорошо вам провести время».'}
-],
-practice:{intro:'Выбери одну ситуацию, где тебе сложно сказать «нет».',fields:[
-{key:'situation',label:'Ситуация, где сложно отказать',placeholder:'Например: друг просит деньги в долг',type:'textarea'},
-{key:'why',label:'Что именно сложно?',placeholder:'Например: боюсь, что обидится',type:'textarea'},
-{key:'script',label:'Мой скрипт отказа',placeholder:'Например: «Спасибо, что доверяешь. Но я не могу дать в долг»',type:'textarea'},
-{key:'firstTime',label:'Когда я попробую это?',placeholder:'Например: на этой неделе',type:'textarea'}
-]},
-quiz:[
-{q:'Личные границы — это...',options:[{text:'Запреты другим',correct:false},{text:'Правила о том, как с тобой можно',correct:true},{text:'Эгоизм',correct:false},{text:'Ненужное',correct:false}],explain:'Про тебя, а не про запреты другим.'},
-{q:'Что мешает сказать «нет»?',options:[{text:'Слабость',correct:false},{text:'Страх отвержения и вина',correct:true},{text:'Глупость',correct:false},{text:'Нет причин',correct:false}],explain:'Страх и вина — две главные причины.'},
-{q:'Что входит в формулу вежливого «нет»?',options:[{text:'Извиниться',correct:false},{text:'Благодарность + отказ + (по желанию) альтернатива',correct:true},{text:'Молчание',correct:false},{text:'Агрессия',correct:false}],explain:'Спасибо → отказ → альтернатива.'},
-{q:'Нужно ли оправдываться?',options:[{text:'Да, обязательно',correct:false},{text:'Нет — отказ не преступление',correct:true},{text:'Только родителям',correct:false},{text:'Только начальнику',correct:false}],explain:'Оправдания подразумевают вину.'}
-],
-reflection:{questions:[{key:'understood',label:'В какой сфере мне сложнее всего ставить границы?'},{key:'willTry',label:'Какое «нет» я скажу на этой неделе?'}]}},
-
-'psy-7':{moduleId:'psy',moduleName:'Психология',moduleColor:'#7c5cff',order:7,title:'Токсичные отношения',minutes:15,
-goal:'Научиться <b>распознавать токсичные отношения</b> и понять, что с этим делать.',
-theory:[
-{emoji:'⚠️',title:'Что такое токсичные отношения',text:['Это не про ссоры. Ссоры бывают у всех. Токсичные — это когда после общения с человеком <b>ты систематически чувствуешь себя хуже</b>.','Не разово. А регулярно.']},
-{emoji:'🚩',title:'Красные флаги',list:['<b>Манипуляции:</b> «если бы ты любил(а)...».','<b>Газлайтинг:</b> «ты всё придумал(а)».','<b>Постоянная критика:</b> не по делу, а по личности.','<b>Контроль:</b> кто, где, с кем.','<b>Изоляция:</b> «твои друзья тебе не нужны».','<b>Качели:</b> сегодня обожаю, завтра унижаю.','<b>Ты всегда виноват(а).</b>']},
-{emoji:'🚪',title:'Что делать',list:['<b>Назвать.</b> «Со мной происходит вот это».','<b>Поговорить.</b> О конкретных поступках.','<b>Смотреть на действия, а не слова.</b>','<b>Проверить с близкими.</b>','<b>Дать себе право уйти.</b>'],footer:'Если есть <b>физическое насилие</b> — уходить сразу, без разговоров.'}
-],
-practice:{intro:'Разбери одну ситуацию или отношения, которые тебя беспокоят.',fields:[
-{key:'who',label:'Кто это?',placeholder:'Партнёр, друг, родственник — можно без имени',type:'textarea'},
-{key:'feeling',label:'Как я себя чувствую после общения?',placeholder:'Например: усталость, вина',type:'textarea'},
-{key:'flags',label:'Какие красные флаги я замечаю?',placeholder:'Например: постоянно критикует',type:'textarea'},
-{key:'step',label:'Один шаг, который я могу сделать',placeholder:'Например: поговорю, а если не изменится — буду реже общаться',type:'textarea'}
-]},
-quiz:[
-{q:'Токсичные отношения — это...',options:[{text:'Любые ссоры',correct:false},{text:'Когда после общения систематически хуже',correct:true},{text:'Когда не согласны',correct:false},{text:'Когда не нравится человек',correct:false}],explain:'Регулярное ухудшение состояния.'},
-{q:'Газлайтинг — это...',options:[{text:'Комплимент',correct:false},{text:'«Этого не было», «ты придумал(а)»',correct:true},{text:'Юмор',correct:false},{text:'Способ помириться',correct:false}],explain:'Искажение реальности.'},
-{q:'На что смотреть при решении остаться или уйти?',options:[{text:'На слова',correct:false},{text:'На действия',correct:true},{text:'На возраст',correct:false},{text:'На деньги',correct:false}],explain:'«Я изменюсь» — слова. Важно, что делает.'},
-{q:'Что делать при физическом насилии?',options:[{text:'Поговорить',correct:false},{text:'Уходить сразу и обратиться за помощью',correct:true},{text:'Терпеть',correct:false},{text:'Измениться самому',correct:false}],explain:'Точка невозврата. Уходить сразу.'}
-],
-reflection:{questions:[{key:'understood',label:'Что я увидел(а) такого, чего раньше не замечал(а)?'},{key:'willTry',label:'Какой шаг я готов(а) сделать?'}]}},
-
-'psy-8':{moduleId:'psy',moduleName:'Психология',moduleColor:'#7c5cff',order:8,title:'Сессия без нервного срыва',minutes:14,
-goal:'Собрать <b>личный план на сессию</b>, чтобы учиться и не выгореть.',
-theory:[
-{emoji:'🗓',title:'Почему большинство планов проваливаются',text:['Стандартный план: «сяду и буду учить всё». Мозг видит огромную гору — и не начинает.','Работающий подход: <b>конкретные блоки</b>, <b>перерывы</b> и <b>сон</b>.']},
-{emoji:'⏱',title:'3 рабочих принципа',list:['<b>Помодоро:</b> 25 минут работы, 5 отдыха.','<b>Блоки по 2–3 предмета:</b> не всё подряд.','<b>Сон 7–8 часов.</b> Мозг закрепляет материал во сне.']},
-{emoji:'🛟',title:'План на сессию',list:['<b>Шаг 1.</b> Список экзаменов и дат.','<b>Шаг 2.</b> На сколько дней разбить подготовку.','<b>Шаг 3.</b> Каждый день — 2–3 блока по 25 минут.','<b>Шаг 4.</b> Один день в неделю — полный отдых.','<b>Шаг 5.</b> За день до — только повторение.','<b>Шаг 6.</b> Утром экзамена — выспаться и поесть.'],footer:'Если сорвался — <b>не бросай план</b>. Просто возвращайся.'}
-],
-practice:{intro:'Составь личный план на ближайшую сессию.',fields:[
-{key:'exams',label:'Список экзаменов и дат',placeholder:'Например: матан 15.01, философия 20.01',type:'textarea'},
-{key:'blocks',label:'Сколько блоков в день?',placeholder:'Например: 3 блока по 25 минут',type:'textarea'},
-{key:'rest',label:'Мой день отдыха',placeholder:'Например: воскресенье',type:'textarea'},
-{key:'sleep',label:'Во сколько буду ложиться',placeholder:'Например: до 23:30',type:'textarea'},
-{key:'ifFail',label:'Если я сорвусь — что я сделаю?',placeholder:'Например: не буду ругать себя, продолжу на следующий день',type:'textarea'}
-]},
-quiz:[
-{q:'Почему план «учить всё» не работает?',options:[{text:'Скучно',correct:false},{text:'Мозг видит огромную задачу и не начинает',correct:true},{text:'Мало силы воли',correct:false},{text:'Работает',correct:false}],explain:'Нужны конкретные, маленькие блоки.'},
-{q:'Сколько длится блок Помодоро?',options:[{text:'10 минут',correct:false},{text:'25 минут',correct:true},{text:'60 минут',correct:false},{text:'2 часа',correct:false}],explain:'25 работы, 5 отдыха.'},
-{q:'Что происходит с материалом во сне?',options:[{text:'Забывается',correct:false},{text:'Закрепляется',correct:true},{text:'Ничего',correct:false},{text:'Путается',correct:false}],explain:'Мозг закрепляет выученное.'},
-{q:'Что делать, если сорвался?',options:[{text:'Бросить план',correct:false},{text:'Поругать себя',correct:false},{text:'Просто продолжить с того же места',correct:true},{text:'Учить за двоих',correct:false}],explain:'Один день — не катастрофа.'}
-],
-reflection:{questions:[{key:'understood',label:'Что в моём прошлом подходе к сессии не работало?'},{key:'willTry',label:'Какой пункт нового плана я точно выполню?'}]}},
-
-/* ==================== ПОДДЕРЖКА ==================== */
-'sup-1':{moduleId:'sup',moduleName:'Поддержка',moduleColor:'#ff5c8a',order:1,title:'Когда нужна помощь',minutes:12,
-goal:'Понять, <b>когда «справиться самому» — уже не работает</b>, и что обращаться за помощью — это нормально.',
-theory:[
-{emoji:'🚩',title:'Почему сложно признать',text:['Нас учили: «будь сильным», «не жалуйся», «у других хуже». В итоге человек годами терпит.','Правда в том, что <b>помощь не требует «достаточно плохо»</b>. Достаточно того, что тебе плохо.']},
-{emoji:'📋',title:'Красные флаги',list:['<b>Настроение</b> подавленное больше 2 недель.','<b>Сон</b> — не можешь заснуть или спишь слишком много.','<b>Еда</b> — пропал аппетит или ешь «от стресса».','<b>Интерес</b> — то, что радовало, больше не радует.','<b>Изоляция</b> — не хочется ни с кем общаться.','<b>Мысли</b> — «я никому не нужен(на)», «лучше бы меня не было».','<b>Тело</b> — постоянные боли, ничего не помогает.'],footer:'Если ты замечаешь <b>мысли о причинении вреда себе</b> — это повод <b>немедленно</b> позвонить 8 800 2000 122 или 112.'},
-{emoji:'🧭',title:'Куда идти',list:['<b>Друг или родитель</b> — живой человек, который выслушает.','<b>Психолог в вузе</b> — во многих есть бесплатная служба.','<b>Горячие линии</b> — анонимно и бесплатно, 24/7.','<b>Психиатр или психотерапевт</b> — если состояние тяжёлое и долгое.','<b>112</b> — если есть угроза жизни.'],footer:'Обратиться — это не «сдаться». Это <b>взять ответственность за себя</b>.'}
-],
-practice:{intro:'Пройдись по чек-листу. Это для тебя.',fields:[
-{key:'mood',label:'Как у меня с настроением последние 2 недели?',placeholder:'Например: часто подавленное',type:'textarea'},
-{key:'sleepFood',label:'Сон и еда',placeholder:'Например: засыпаю после 2 ночи, ем мало',type:'textarea'},
-{key:'interest',label:'Что раньше радовало — а сейчас?',placeholder:'Например: музыка, спорт — не тянет',type:'textarea'},
-{key:'flags',label:'Какие красные флаги я вижу?',placeholder:'Список или «пока ничего серьёзного»',type:'textarea'},
-{key:'step',label:'Один шаг на этой неделе',placeholder:'Например: позвоню на горячую линию',type:'textarea'}
-]},
-quiz:[
-{q:'Когда стоит обращаться за помощью?',options:[{text:'Только когда совсем невмоготу',correct:false},{text:'Когда тебе плохо — уже достаточно',correct:true},{text:'Никогда',correct:false},{text:'Только с разрешения родителей',correct:false}],explain:'Помощь не требует «достаточно плохо».'},
-{q:'Сколько недель подавленное настроение — красный флаг?',options:[{text:'1 день',correct:false},{text:'Больше 2 недель',correct:true},{text:'Полгода',correct:false},{text:'Не важно',correct:false}],explain:'2 недели — стандартный ориентир.'},
-{q:'Куда идти, если не хочешь говорить знакомым?',options:[{text:'Терпеть',correct:false},{text:'На горячую линию — там анонимно',correct:true},{text:'В соцсети',correct:false},{text:'Никуда',correct:false}],explain:'Горячие линии — 24/7, анонимно, бесплатно.'},
-{q:'Обращение за помощью — это...',options:[{text:'Слабость',correct:false},{text:'Ответственность за себя',correct:true},{text:'Стыд',correct:false},{text:'Для слабых',correct:false}],explain:'Зрелое действие.'}
-],
-reflection:{questions:[{key:'understood',label:'Что я сейчас чувствую по поводу обращения за помощью?'},{key:'willTry',label:'Кому или куда я могу обратиться на этой неделе?'}]}},
-
-'sup-2':{moduleId:'sup',moduleName:'Поддержка',moduleColor:'#ff5c8a',order:2,title:'Как поговорить с другом',minutes:14,
-goal:'Понять, <b>что говорить и чего не говорить</b>, если близкому плохо.',
-theory:[
-{emoji:'👂',title:'Главное — не советы',text:['Самая частая ошибка: давать советы. «Тебе надо…», «А ты попробуй…».','Что действительно помогает: <b>быть рядом и слушать</b>.']},
-{emoji:'🗣',title:'Что говорить',list:['«Я рядом».','«Мне жаль, что тебе так тяжело».','«Хочешь рассказать, что происходит?» — и молчать.','«Спасибо, что доверился(ась)».','«Ты не обязан(а) справляться один(одна)».','«Что бы я мог(ла) сделать?»']},
-{emoji:'🚫',title:'Чего не говорить',list:['«Да ладно, всё нормально» — обесценивает.','«Другим хуже» — сравнение ранит.','«Соберись» — обвиняет.','«Ты просто устал(а)» — не слышит.','«Мне тоже было плохо» — переводит фокус.']},
-{emoji:'🛟',title:'Если это про суицид',text:['<b>Не бойся спрашивать прямо:</b> «Ты думаешь о том, чтобы причинить себе вред?». Исследования показывают: прямой вопрос не «подталкивает», а снижает риск.','Если ответ «да» — <b>не оставляй одного</b>. Позвони вместе на 8 800 2000 122 или в 112.']}
-],
-practice:{intro:'Придумай скрипт для ситуации, когда близкому плохо.',fields:[
-{key:'who',label:'О ком речь',placeholder:'Например: лучший друг',type:'textarea'},
-{key:'signals',label:'Что я замечаю?',placeholder:'Например: замкнулся, не отвечает',type:'textarea'},
-{key:'opener',label:'Как я начну разговор',placeholder:'Например: «Я вижу, что ты не такой последнее время. Я рядом»',type:'textarea'},
-{key:'avoid',label:'Что я точно не скажу',placeholder:'Например: «соберись», «у других хуже»',type:'textarea'},
-{key:'ifHard',label:'Если он скажет что-то серьёзное — что я сделаю?',placeholder:'Например: останусь рядом, позвоним вместе',type:'textarea'}
-]},
-quiz:[
-{q:'Что главное, когда другу плохо?',options:[{text:'Дать совет',correct:false},{text:'Быть рядом и слушать',correct:true},{text:'Отвлечь',correct:false},{text:'Рассказать свою историю',correct:false}],explain:'Советы не слышны в плохом состоянии.'},
-{q:'Какая фраза — поддерживающая?',options:[{text:'«Другим хуже»',correct:false},{text:'«Соберись»',correct:false},{text:'«Я рядом»',correct:true},{text:'«Ты просто устал(а)»',correct:false}],explain:'Простое и не обесценивающее.'},
-{q:'Можно ли спрашивать прямо о суицидальных мыслях?',options:[{text:'Нет, подтолкнёт',correct:false},{text:'Да, это снижает риск',correct:true},{text:'Только с родителями',correct:false},{text:'Не важно',correct:false}],explain:'Прямой вопрос даёт возможность сказать.'},
-{q:'Если друг признался в суицидальных мыслях?',options:[{text:'Оставить одного',correct:false},{text:'Остаться рядом и помочь позвонить',correct:true},{text:'Не поверить',correct:false},{text:'Сменить тему',correct:false}],explain:'Не оставлять одного.'}
-],
-reflection:{questions:[{key:'understood',label:'Какие фразы я раньше говорил(а), не понимая, что они не помогают?'},{key:'willTry',label:'Что я скажу близкому, если замечу, что ему плохо?'}]}},
-
-'sup-3':{moduleId:'sup',moduleName:'Поддержка',moduleColor:'#ff5c8a',order:3,title:'Горячие линии',minutes:11,
-goal:'Понять, <b>куда звонить и что говорить</b>. Снять страх «а вдруг там спросят что-то сложное».',
-theory:[
-{emoji:'📞',title:'Как это устроено',text:['На горячей линии работают специально обученные психологи. <b>Анонимно</b> — можно не называть имя. <b>Бесплатно</b> — с любого телефона. <b>24/7</b>.','Никто не осудит. Не нужно «правильно» формулировать.']},
-{emoji:'🧾',title:'Как начать разговор',text:['Можно буквально так:'],list:['«Здравствуйте. Мне плохо, и я не знаю, с чего начать».','«Я хочу просто поговорить, если можно».','«Я не в кризисе, но мне тяжело последнее время».','«Мне не с кем поговорить».'],footer:'Это <b>нормальные</b> начала. Специалист подхватит.'},
-{emoji:'🕐',title:'Когда звонить',list:['<b>Если плохо прямо сейчас</b> — не ждать.','<b>Если накрывает ночью</b> — линии работают 24/7.','<b>Если нет сил говорить голосом</b> — есть онлайн-чаты.','<b>Если боишься звонка</b> — можно сначала посмотреть сайт.'],footer:'Каждый звонок — это <b>акт заботы о себе</b>.'}
-],
-practice:{intro:'Подготовься к первому звонку.',fields:[
-{key:'which',label:'На какую линию я бы позвонил(а)?',placeholder:'Например: 8 800 2000 122',type:'textarea'},
-{key:'firstWords',label:'С чего начну',placeholder:'Например: «Здравствуйте, мне тяжело, хочу поговорить»',type:'textarea'},
-{key:'fear',label:'Что меня останавливает?',placeholder:'Например: боюсь, что не поймут',type:'textarea'},
-{key:'when',label:'Когда я готов(а) позвонить',placeholder:'Например: если станет хуже',type:'textarea'}
-]},
-quiz:[
-{q:'Горячие линии работают...',options:[{text:'Только днём',correct:false},{text:'24/7, анонимно и бесплатно',correct:true},{text:'По записи',correct:false},{text:'Только для взрослых',correct:false}],explain:'Круглосуточно, анонимно, бесплатно.'},
-{q:'Что сказать в начале звонка?',options:[{text:'Готовую речь',correct:false},{text:'«Мне плохо, не знаю, с чего начать»',correct:true},{text:'Ничего, ждать вопросов',correct:false},{text:'Что-то серьёзное',correct:false}],explain:'Простого «мне плохо» достаточно.'},
-{q:'Можно ли не называть имя?',options:[{text:'Нет',correct:false},{text:'Да, это анонимно',correct:true},{text:'Только по паспорту',correct:false},{text:'Только если попросят',correct:false}],explain:'Анонимность — базовый принцип.'},
-{q:'Куда звонить, если опасность для жизни?',options:[{text:'112',correct:true},{text:'Только на доверие',correct:false},{text:'В поликлинику',correct:false},{text:'Никуда',correct:false}],explain:'112 — экстренные службы.'}
-],
-reflection:{questions:[{key:'understood',label:'Что во мне изменилось после этого урока?'},{key:'willTry',label:'Сохранил(а) ли я номер? В какой ситуации воспользуюсь?'}]}},
-
-'sup-4':{moduleId:'sup',moduleName:'Поддержка',moduleColor:'#ff5c8a',order:4,title:'Юридическая помощь студентам',minutes:15,
-goal:'Узнать <b>свои базовые права</b>: отчисление, общежитие, стипендия, работа.',
-theory:[
-{emoji:'🎓',title:'Твои права в вузе',list:['<b>Отчисление:</b> только по основаниям из устава вуза.','<b>Пересдача:</b> право на 2 попытки + комиссия.','<b>Академический отпуск:</b> до 2 лет по мед. или семейным причинам.','<b>Перевод:</b> на другую специальность или вуз.','<b>Зачётка:</b> право на копии и выписки.']},
-{emoji:'🏠',title:'Общежитие и стипендия',list:['<b>Общежитие:</b> иногородним очникам.','<b>Академическая стипендия:</b> по результатам сессии.','<b>Социальная:</b> сиротам, инвалидам, малоимущим.','<b>Повышенная:</b> за достижения.']},
-{emoji:'💼',title:'Работа и права',list:['<b>Трудовой договор:</b> обязателен.','<b>Оплата:</b> не реже 2 раз в месяц.','<b>Совместитель:</b> сокращённое рабочее время.','<b>Испытательный срок:</b> не больше 3 месяцев.','<b>Увольнение:</b> только с основанием.']},
-{emoji:'📞',title:'Куда обращаться',list:['<b>Профком</b> — в твоём вузе.','<b>Деканат → ректорат</b>.','<b>Рособрнадзор</b> — жалобы на вуз.','<b>Трудовая инспекция</b> — если работодатель.','<b>Юридические клиники при вузах</b>.'],footer:'Начни с простого: <b>попроси письменный ответ</b> на устное решение.'}
-],
-practice:{intro:'Разбери ситуацию, где ты не уверен(а) в правах.',fields:[
-{key:'situation',label:'Что произошло?',placeholder:'Например: препод не принимает пересдачу',type:'textarea'},
-{key:'rights',label:'Какие мои права могут быть нарушены?',placeholder:'Например: право на пересдачу',type:'textarea'},
-{key:'where',label:'Куда можно обратиться?',placeholder:'Например: к завкафедрой, потом в профком',type:'textarea'},
-{key:'firstStep',label:'Первый шаг',placeholder:'Например: напишу заявление',type:'textarea'}
-]},
-quiz:[
-{q:'Можно ли отчислить студента «просто так»?',options:[{text:'Да, если декан решит',correct:false},{text:'Нет, только по основаниям из устава',correct:true},{text:'Да, по желанию препода',correct:false},{text:'Да, за неуважение',correct:false}],explain:'Строго по уставу.'},
-{q:'Сколько попыток пересдачи обычно?',options:[{text:'1',correct:false},{text:'2 + комиссия',correct:true},{text:'Ни одной',correct:false},{text:'Сколько угодно',correct:false}],explain:'2 попытки + комиссия.'},
-{q:'Что обязательно при трудоустройстве?',options:[{text:'Устная договорённость',correct:false},{text:'Трудовой договор',correct:true},{text:'Рукопожатие',correct:false},{text:'Ничего',correct:false}],explain:'Без договора ты не защищён.'},
-{q:'Куда идти, если нарушают права?',options:[{text:'Только в суд',correct:false},{text:'Сначала профком и деканат',correct:true},{text:'Никуда',correct:false},{text:'В соцсети',correct:false}],explain:'Начни с профкома.'}
-],
-reflection:{questions:[{key:'understood',label:'Какое право я раньше не знал(а), а теперь знаю?'},{key:'willTry',label:'Что я сделаю, если столкнусь с нарушением?'}]}},
-
-'sup-5':{moduleId:'sup',moduleName:'Поддержка',moduleColor:'#ff5c8a',order:5,title:'Как пережить потерю',minutes:14,
-goal:'Понять, <b>что такое горе и почему это нормально</b>. Что делать с болью и когда пора обращаться.',
-theory:[
-{emoji:'🕯',title:'Горе — это не болезнь',text:['Потеря — это не только смерть близкого. Это и расставание, и потеря дружбы, и провал мечты.','Горе — это <b>нормальный процесс</b>. Он требует времени и поддержки.']},
-{emoji:'🌊',title:'Что может происходить',list:['<b>Отрицание:</b> «этого не может быть».','<b>Злость:</b> на всех, на себя. Это нормально.','<b>Торг:</b> «если бы я тогда…».','<b>Депрессия:</b> пустота, апатия, слёзы.','<b>Принятие:</b> боль остаётся, но становится частью жизни.'],footer:'Этапы <b>не идут по порядку</b>. Можно вернуться к злости через год. Это норма.'},
-{emoji:'🤝',title:'Что помогает',list:['<b>Разрешить себе чувствовать.</b> Слёзы — не слабость.','<b>Говорить о потере.</b>','<b>Ритуалы.</b> Похороны, годовщины, письмо.','<b>Тело.</b> Сон, еда, прогулки.','<b>Не решать большие задачи.</b>','<b>Помощь.</b> Если боль не проходит месяцами — обратись.']}
-],
-practice:{intro:'Мягко разберись в своём состоянии. Если сейчас тяжело — можно пропустить.',fields:[
-{key:'loss',label:'О какой потере я готов(а) подумать',placeholder:'Не обязательно смерть',type:'textarea'},
-{key:'feelings',label:'Что я обычно чувствую?',placeholder:'Например: пустоту, злость',type:'textarea'},
-{key:'helps',label:'Что мне помогает?',placeholder:'Например: разговор с мамой, музыка',type:'textarea'},
-{key:'support',label:'К кому могу обратиться?',placeholder:'Например: друг, психолог',type:'textarea'}
-]},
-quiz:[
-{q:'Потеря — это только смерть близкого?',options:[{text:'Да',correct:false},{text:'Нет — и расставание, и потеря дружбы',correct:true},{text:'Только родственники',correct:false},{text:'Не про горе',correct:false}],explain:'Мозг реагирует на любую значимую утрату.'},
-{q:'Горе — это...',options:[{text:'Болезнь',correct:false},{text:'Нормальный процесс',correct:true},{text:'Слабость',correct:false},{text:'Что-то, что надо вылечить',correct:false}],explain:'Нормальный процесс.'},
-{q:'Идут ли этапы горя по порядку?',options:[{text:'Да, строго',correct:false},{text:'Нет — можно возвращаться',correct:true},{text:'Только вперёд',correct:false},{text:'Этапов нет',correct:false}],explain:'Этапы не линейны.'},
-{q:'Когда обращаться к специалисту?',options:[{text:'Никогда',correct:false},{text:'Если боль не утихает месяцами',correct:true},{text:'Через 5 лет',correct:false},{text:'Если скажет друг',correct:false}],explain:'Затянувшееся состояние — повод обратиться.'}
-],
-reflection:{questions:[{key:'understood',label:'Что я разрешаю себе чувствовать после этого урока?'},{key:'willTry',label:'К кому я могу обратиться, если станет тяжело?'}]}},
-
-'sup-6':{moduleId:'sup',moduleName:'Поддержка',moduleColor:'#ff5c8a',order:6,title:'Безопасный план',minutes:13,
-goal:'Составить <b>личный план на случай острого состояния</b>. Чтобы в момент, когда плохо, не думать — а делать.',
-theory:[
-{emoji:'🧭',title:'Зачем нужен план заранее',text:['Когда очень плохо — мозг не работает. Он в режиме «бей или беги».','Поэтому план пишется <b>заранее</b>. И в момент кризиса ты открываешь его и делаешь по шагам.']},
-{emoji:'📋',title:'Что входит в безопасный план',list:['<b>1. Мои признаки</b> — как я понимаю, что вхожу в кризис.','<b>2. Что помогает мне</b> — 3–5 конкретных действий.','<b>3. Люди, к которым можно обратиться</b> — имена и телефоны.','<b>4. Профессиональная помощь</b> — психолог, горячая линия, 112.','<b>5. Что убираю</b> — предметы и ситуации, которые могут навредить.','<b>6. Причина остаться</b> — то, ради чего я хочу пережить момент.'],footer:'Это не «навсегда», а <b>на ближайшие часы</b>.'},
-{emoji:'🛟',title:'Если это для друга',list:['Помоги ему составить такой план вместе.','Не обещай хранить тайну, если есть угроза жизни.','Убери опасные предметы, если можешь.','Не оставляй одного.','Не спорь. Просто будь рядом.']}
-],
-practice:{intro:'Составь свой личный безопасный план. Это 5 минут.',fields:[
-{key:'signs',label:'Мои признаки кризиса',placeholder:'Например: не сплю 2 дня, мысли по кругу',type:'textarea'},
-{key:'helps',label:'Что помогает лично мне',placeholder:'Например: душ, прогулка, звонок маме',type:'textarea'},
-{key:'people',label:'Люди, к которым я могу обратиться',placeholder:'Например: мама — телефон, друг — телефон',type:'textarea'},
-{key:'prof',label:'Профессиональная помощь',placeholder:'Например: психолог в вузе, 8 800 2000 122, 112',type:'textarea'},
-{key:'remove',label:'Что убираю из доступа',placeholder:'Например: таблетки, острые предметы',type:'textarea'},
-{key:'reason',label:'Причина остаться',placeholder:'Например: мама, кот, поездка мечты',type:'textarea'}
-]},
-quiz:[
-{q:'Зачем нужен безопасный план заранее?',options:[{text:'Напугать себя',correct:false},{text:'Чтобы в момент кризиса не думать, а делать',correct:true},{text:'Бесполезно',correct:false},{text:'Только для врачей',correct:false}],explain:'План заменяет мышление в кризисе.'},
-{q:'Что входит в безопасный план?',options:[{text:'Только телефон врача',correct:false},{text:'Признаки, действия, люди, помощь, что убрать, причина',correct:true},{text:'Только таблетки',correct:false},{text:'Ничего конкретного',correct:false}],explain:'6 пунктов, каждый закрывает часть.'},
-{q:'Если это план для друга — можно обещать хранить тайну?',options:[{text:'Да, всегда',correct:false},{text:'Нет, если есть угроза жизни',correct:true},{text:'Да, даже при угрозе',correct:false},{text:'Не важно',correct:false}],explain:'Жизнь важнее обещания.'},
-{q:'Если друг в остром состоянии?',options:[{text:'Оставить одного',correct:false},{text:'Остаться рядом и убрать опасные предметы',correct:true},{text:'Спорить',correct:false},{text:'Позвонить родителям без предупреждения',correct:false}],explain:'Не оставлять одного.'}
-],
-reflection:{questions:[{key:'understood',label:'Что я чувствую, глядя на свой безопасный план?'},{key:'willTry',label:'Сохраню ли я его? Кому ещё он может помочь?'}]}}
-
-};
+  document.addEventListener('DOMContentLoaded', render);
+})();
