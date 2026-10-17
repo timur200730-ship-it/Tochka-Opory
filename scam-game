@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Узнай мошенника — Точка опоры</title>
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#0b0b12;
+    --card:rgba(255,255,255,.06); --card-2:rgba(255,255,255,.09);
+    --stroke:rgba(255,255,255,.12);
+    --text:#f2f2f7; --muted:#a1a1b5;
+    --accent:#7c5cff; --accent-2:#4ad6c8; --accent-3:#ff5c8a; --warning:#ffb547;
+    --ok:#4ad6c8; --err:#ff5c8a;
+    --radius:20px; --radius-s:14px;
+    --ff:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.5;-webkit-font-smoothing:antialiased}
+  body{
+    background:
+      radial-gradient(1200px 600px at 10% -10%, rgba(255,92,138,.15), transparent 60%),
+      radial-gradient(900px 500px at 100% 10%, rgba(255,181,71,.1), transparent 60%),
+      var(--bg);
+    min-height:100vh; display:flex; flex-direction:column;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.75);border-bottom:1px solid var(--stroke);padding:0 20px}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:800px;margin:0 auto}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(124,92,255,.5)}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--stroke);font-size:13.5px;font-weight:600}
+  .pill .num{color:var(--ok)}
+  .back-btn{font-size:14px;color:var(--muted);display:flex;align-items:center;gap:6px;transition:.2s}
+  .back-btn:hover{color:var(--text)}
+
+  .container{max-width:600px;margin:40px auto;padding:0 20px;width:100%;flex:1}
+  
+  .game-header{text-align:center;margin-bottom:30px}
+  .game-header h1{font-size:32px;font-weight:800;margin-bottom:10px}
+  .game-header p{color:var(--muted);font-size:15px}
+
+  .progress-bar{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin-bottom:24px}
+  .progress-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--err),var(--warning));transition:width .4s ease;border-radius:999px}
+
+  .phone-mockup{
+    background:#1c1c21;
+    border:8px solid #2c2c33;
+    border-radius:36px;
+    padding:20px;
+    min-height:280px;
+    display:flex;
+    flex-direction:column;
+    box-shadow:0 20px 40px rgba(0,0,0,.5);
+    margin-bottom:30px;
+    position:relative;
+  }
+  
+  .sms-bubble{
+    background:#2c2c33;
+    padding:16px;
+    border-radius:16px;
+    border-bottom-left-radius:4px;
+    font-size:15px;
+    line-height:1.5;
+    max-width:90%;
+    margin-top:auto;
+    animation:popIn .3s ease;
+  }
+  .sms-sender{font-size:12px;color:var(--muted);margin-bottom:6px;display:block}
+  
+  @keyframes popIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .actions{display:flex;gap:12px}
+  .action-btn{
+    flex:1; padding:18px; border-radius:16px; font-size:16px; font-weight:700;
+    transition:.2s; border:2px solid transparent; display:flex; flex-direction:column; align-items:center; gap:8px;
+  }
+  .btn-danger{background:rgba(255,92,138,.1); border-color:rgba(255,92,138,.3); color:var(--err)}
+  .btn-danger:hover{background:rgba(255,92,138,.2)}
+  .btn-safe{background:rgba(74,214,200,.1); border-color:rgba(74,214,200,.3); color:var(--ok)}
+  .btn-safe:hover{background:rgba(74,214,200,.2)}
+  .action-btn .icon{font-size:24px}
+
+  .feedback{
+    margin-top:20px; padding:20px; border-radius:16px; font-size:14.5px; line-height:1.5;
+    display:none; animation:popIn .3s ease;
+  }
+  .feedback.correct{background:rgba(74,214,200,.1); border:1px solid rgba(74,214,200,.3); display:block}
+  .feedback.wrong{background:rgba(255,92,138,.1); border:1px solid rgba(255,92,138,.3); display:block}
+  .feedback b{font-size:16px; display:block; margin-bottom:6px;}
+  .feedback.correct b{color:var(--ok)}
+  .feedback.wrong b{color:var(--err)}
+
+  .next-btn{
+    display:none; width:100%; padding:16px; border-radius:14px; font-size:16px; font-weight:700;
+    background:linear-gradient(135deg,var(--accent),#5f3dff); color:#fff; margin-top:20px;
+    box-shadow:0 10px 20px rgba(124,92,255,.3); transition:.2s;
+  }
+  .next-btn:hover{transform:translateY(-2px); opacity:.95}
+
+  .finish-screen{text-align:center; display:none; animation:popIn .4s ease}
+  .finish-screen .big{font-size:64px; margin-bottom:20px}
+  .finish-screen h2{font-size:28px; font-weight:800; margin-bottom:10px}
+  .finish-screen p{color:var(--muted); font-size:16px; margin-bottom:30px}
+  .score-badge{
+    display:inline-block; padding:12px 24px; border-radius:20px;
+    background:linear-gradient(135deg,rgba(124,92,255,.2),rgba(74,214,200,.2));
+    border:1px solid var(--stroke); font-size:24px; font-weight:800; margin-bottom:30px;
+  }
+  .score-badge b{color:var(--ok)}
+
+  @media (max-width: 480px){
+    .action-btn{padding:14px; font-size:14px}
+    .game-header h1{font-size:26px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><div class="logo-mark"></div>Точка опоры</a>
+    <div style="display:flex; align-items:center; gap:16px;">
+      <div class="pill" title="Опыт">⭐ <span class="num" id="navXP">0</span></div>
+      <a href="module-fin.html" class="back-btn">✕ Выйти</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="game-header">
+    <h1>🕵️‍♂️ Узнай мошенника</h1>
+    <p>Прочитай сообщение и реши: это обман или безопасно?</p>
+  </div>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+
+  <div id="gameArea">
+    <div class="phone-mockup">
+      <div class="sms-bubble" id="smsText">
+        <span class="sms-sender" id="smsSender">Загрузка...</span>
+        ...
+      </div>
+    </div>
+
+    <div class="actions" id="actionsArea">
+      <button class="action-btn btn-danger" onclick="checkAnswer('scam')">
+        <span class="icon">🚫</span> Мошенник
+      </button>
+      <button class="action-btn btn-safe" onclick="checkAnswer('safe')">
+        <span class="icon">✅</span> Безопасно
+      </button>
+    </div>
+
+    <div class="feedback" id="feedbackBox">
+      <b id="feedbackTitle"></b>
+      <span id="feedbackText"></span>
+    </div>
+
+    <button class="next-btn" id="nextBtn" onclick="nextQuestion()">Следующее →</button>
+  </div>
+
+  <div class="finish-screen" id="finishScreen">
+    <div class="big">🎉</div>
+    <h2>Игра пройдена!</h2>
+    <p>Ты научился распознавать уловки мошенников.</p>
+    <div class="score-badge">Правильных ответов: <b id="finalScore">0</b> из <span id="finalTotal">0</span></div>
+    <div style="display:flex; gap:12px; justify-content:center;">
+      <a href="module-fin.html" class="action-btn btn-safe" style="text-decoration:none; flex:none; padding:16px 32px;">К урокам</a>
+      <button onclick="location.reload()" class="action-btn btn-danger" style="flex:none; padding:16px 32px;">Ещё раз</button>
+    </div>
+  </div>
+</main>
+
+<script>
+const SCENARIOS = [
+  {
+    sender: "+7 (999) 123-45-67",
+    text: "Здравствуйте! Служба безопасности Сбербанка. Зафиксирована попытка перевода с вашей карты. Для отмены продиктуйте код из СМС.",
+    isScam: true,
+    explain: "Банк никогда не просит коды из СМС. Сотрудники банка не звонят в мессенджерах и не просят данные карты. Это классический развод."
+  },
+  {
+    sender: "SBERBANK",
+    text: "Покупка 450 руб. Баланс: 1250 руб. Для отмены операции звоните 8-800-555-35-35.",
+    isScam: false,
+    explain: "Это официальное СМС от банка. В нём нет просьбы перейти по ссылке или продиктовать код. Номер телефона совпадает с горячей линией."
+  },
+  {
+    sender: "Друг (Андрей)",
+    text: "Привет! Срочно нужны 5000 рублей до завтра. Скинь на эту карту: 2202 2003... Я тебе потом верну.",
+    isScam: true,
+    explain: "Аккаунт друга могли взломать. Если близкий человек просит в долг в мессенджере — всегда звони ему голосом. Не переводи деньги, пока не услышишь его."
+  },
+  {
+    sender: "Почта России",
+    text: "Вам посылка! Оплатите доставку 150 рублей по ссылке: pochta-rf.online/pay",
+    isScam: true,
+    explain: "Фишинговая ссылка (настоящий сайт Почты России — pochta.ru). Мошенники часто маскируются под доставку, чтобы украсть данные вашей карты."
+  },
+  {
+    sender: "HR-менеджер",
+    text: "Здравствуйте! Мы нашли ваше резюме. Работа с гибким графиком, 5000 руб/день. Для бронирования места оплатите обучающий курс 1000 руб.",
+    isScam: true,
+    explain: "Настоящая работа никогда не требует денег вперёд. «Оплата за обучение» или «бронь места» — это 100% развод."
+  },
+  {
+    sender: "Telegram",
+    text: "Розыгрыш iPhone 15! Вы стали победителем. Чтобы получить приз, перейдите по ссылке и оплатите доставку курьеру 300 руб.",
+    isScam: true,
+    explain: "Бесплатный сыр только в мышеловке. Если для получения приза нужно что-то оплатить — это мошенничество."
+  }
+];
+
+let currentQ = 0;
+let score = 0;
+
+const Store = {
+  KEY: 'tochka_opory_v1',
+  data: {},
+  load(){ try { const raw = localStorage.getItem(this.KEY); this.data = raw ? JSON.parse(raw) : {}; } catch(e){ this.data = {}; } },
+  save(){ try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch(e){} },
+  addXP(n){ this.data.xp = (this.data.xp || 0) + n; this.save(); }
+};
+
+function init() {
+  Store.load();
+  document.getElementById('navXP').textContent = Store.data.xp || 0;
+  document.getElementById('finalTotal').textContent = SCENARIOS.length;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = SCENARIOS[currentQ];
+  
+  // Обновляем прогресс
+  document.getElementById('progressBar').style.width = ((currentQ) / SCENARIOS.length * 100) + '%';
+  
+  // Обновляем текст
+  document.getElementById('smsSender').textContent = q.sender;
+  document.getElementById('smsText').innerHTML = `<span class="sms-sender">${q.sender}</span>${q.text}`;
+  
+  // Сбрасываем кнопки
+  document.getElementById('actionsArea').style.display = 'flex';
+  document.getElementById('feedbackBox').className = 'feedback';
+  document.getElementById('nextBtn').style.display = 'none';
+}
+
+function checkAnswer(answer) {
+  const q = SCENARIOS[currentQ];
+  const isCorrect = (answer === 'scam' && q.isScam) || (answer === 'safe' && !q.isScam);
+  
+  const fb = document.getElementById('feedbackBox');
+  const title = document.getElementById('feedbackTitle');
+  const text = document.getElementById('feedbackText');
+  
+  if (isCorrect) {
+    score++;
+    fb.className = 'feedback correct';
+    title.textContent = '✅ Верно!';
+    Store.addXP(10);
+    document.getElementById('navXP').textContent = Store.data.xp;
+  } else {
+    fb.className = 'feedback wrong';
+    title.textContent = '❌ Ошибка!';
+  }
+  
+  text.innerHTML = q.explain;
+  
+  // Прячем кнопки, показываем "Дальше"
+  document.getElementById('actionsArea').style.display = 'none';
+  document.getElementById('nextBtn').style.display = 'block';
+}
+
+function nextQuestion() {
+  currentQ++;
+  if (currentQ < SCENARIOS.length) {
+    renderQuestion();
+  } else {
+    showFinish();
+  }
+}
+
+function showFinish() {
+  document.getElementById('progressBar').style.width = '100%';
+  document.getElementById('gameArea').style.display = 'none';
+  document.getElementById('finishScreen').style.display = 'block';
+  document.getElementById('finalScore').textContent = score;
+}
+
+init();
+</script>
+</body>
+</html>
