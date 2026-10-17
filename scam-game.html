@@ -243,7 +243,6 @@ function renderQuestion() {
   document.getElementById('progressBar').style.width = ((currentQ) / SCENARIOS.length * 100) + '%';
   
   // Обновляем текст
-  document.getElementById('smsSender').textContent = q.sender;
   document.getElementById('smsText').innerHTML = `<span class="sms-sender">${q.sender}</span>${q.text}`;
   
   // Сбрасываем кнопки
