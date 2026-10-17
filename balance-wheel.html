@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Колесо баланса — Точка опоры</title>
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#0b0b12; --card:rgba(255,255,255,.06); --stroke:rgba(255,255,255,.12);
+    --text:#f2f2f7; --muted:#a1a1b5; --accent:#7c5cff; --accent-2:#4ad6c8; --warning:#ffb547;
+    --radius:20px; --ff:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.5;-webkit-font-smoothing:antialiased}
+  body{background:radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.2), transparent 60%), radial-gradient(900px 500px at 100% 10%, rgba(74,214,200,.15), transparent 60%), var(--bg); min-height:100vh; padding-bottom:60px}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .container{max-width:800px;margin:0 auto;padding:0 20px}
+
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.75);border-bottom:1px solid var(--stroke)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px;max-width:1100px;margin:0 auto;padding:0 20px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(124,92,255,.5)}
+  .nav-user{display:flex;gap:10px;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--stroke);font-size:13.5px;font-weight:600}
+  .pill .num{color:var(--accent-2)}
+  .back-btn{font-size:14px;color:var(--muted);padding:8px 12px;border-radius:10px;transition:.2s}
+  .back-btn:hover{color:var(--text);background:var(--card)}
+
+  .page-head{padding:40px 0 20px;text-align:center}
+  .page-head h1{font-size:clamp(26px,4vw,36px);font-weight:800;margin-bottom:12px}
+  .page-head p{color:var(--muted);font-size:15px;max-width:500px;margin:0 auto}
+
+  .wheel-container{display:flex;flex-direction:column;align-items:center;margin:30px 0}
+  .svg-wrap{width:100%;max-width:400px;position:relative}
+  svg{width:100%;height:auto;overflow:visible}
+
+  .controls{width:100%;max-width:500px;display:flex;flex-direction:column;gap:16px;margin-top:30px}
+  .control-group{display:flex;flex-direction:column;gap:6px}
+  .control-head{display:flex;justify-content:space-between;font-size:14px;font-weight:600}
+  .control-head span:last-child{color:var(--accent-2)}
+  
+  input[type=range]{
+    -webkit-appearance:none;width:100%;height:6px;border-radius:999px;
+    background:rgba(255,255,255,.1);outline:none;transition:.2s;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+    background:var(--accent-2);cursor:pointer;box-shadow:0 0 10px rgba(74,214,200,.5);
+    transition:.1s;
+  }
+  input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.2)}
+
+  .result-card{
+    margin-top:40px;padding:24px;border-radius:var(--radius);
+    background:linear-gradient(135deg,rgba(124,92,255,.15),rgba(74,214,200,.1));
+    border:1px solid var(--stroke);display:none;animation:fadeIn .4s ease;
+  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .result-card h3{font-size:18px;margin-bottom:12px;color:var(--accent-2)}
+  .result-card p{font-size:14.5px;color:var(--muted);line-height:1.6}
+  .result-card b{color:var(--text)}
+
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:14px;font-size:15px;font-weight:700;transition:.2s;border:1px solid transparent;width:100%;margin-top:24px;cursor:pointer}
+  .btn-primary{background:linear-gradient(135deg,var(--accent-2),#2fbfae);color:#08110f;box-shadow:0 10px 30px rgba(74,214,200,.3)}
+  .btn-primary:hover{transform:translateY(-2px);opacity:.95}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><div class="logo-mark"></div>Точка опоры</a>
+    <div class="nav-user">
+      <div class="pill" title="Опыт">⭐ <span class="num" id="navXP">0</span></div>
+      <a href="module-psy.html" class="back-btn">✕ Выйти</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-head">
+    <h1>🎡 Колесо баланса</h1>
+    <p>Оцени от 1 до 10, насколько ты удовлетворён каждой сферой своей жизни прямо сейчас. Двигай ползунки и смотри, где есть перекос.</p>
+  </div>
+
+  <div class="wheel-container">
+    <div class="svg-wrap">
+      <svg viewBox="0 0 300 300">
+        <defs>
+          <linearGradient id="wheelGradient" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#7c5cff" stop-opacity="0.8" />
+            <stop offset="100%" stop-color="#4ad6c8" stop-opacity="0.8" />
+          </linearGradient>
+        </defs>
+        <!-- Сетка -->
+        <circle cx="150" cy="150" r="120" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <circle cx="150" cy="150" r="90" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <circle cx="150" cy="150" r="60" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <circle cx="150" cy="150" r="30" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        
+        <!-- Оси -->
+        <line x1="150" y1="30" x2="150" y2="270" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <line x1="30" y1="150" x2="270" y2="150" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <line x1="65" y1="65" x2="235" y2="235" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <line x1="65" y1="235" x2="235" y2="65" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+
+        <!-- Полигон результата -->
+        <polygon id="wheelPolygon" points="150,150 150,150 150,150 150,150 150,150 150,150" fill="url(#wheelGradient)" stroke="#4ad6c8" stroke-width="2" style="transition: .3s ease;"/>
+        
+        <!-- Точки на вершинах -->
+        <g id="wheelPoints"></g>
+      </svg>
+    </div>
+
+    <div class="controls" id="controls">
+      <!-- Ползунки будут добавлены через JS -->
+    </div>
+
+    <div class="result-card" id="resultCard">
+      <h3>💡 Твой анализ</h3>
+      <p id="resultText"></p>
+    </div>
+
+    <button class="btn btn-primary" onclick="saveResult()">💾 Сохранить результат</button>
+  </div>
+</main>
+
+<script>
+const Store = {
+  KEY: 'tochka_opory_v1', data: {},
+  load(){ try { const raw = localStorage.getItem(this.KEY); this.data = raw ? JSON.parse(raw) : {}; } catch(e){ this.data = {}; } },
+  save(){ try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch(e){} },
+  addXP(n){ if(!this.data.xp) this.data.xp = 0; this.data.xp += n; this.save(); }
+};
+
+const AREAS = [
+  { id: 'study', name: '🎓 Учёба', angle: -90, value: 5 },
+  { id: 'money', name: '💰 Финансы', angle: -30, value: 5 },
+  { id: 'health', name: '💪 Здоровье', angle: 30, value: 5 },
+  { id: 'friends', name: '🤝 Отношения', angle: 90, value: 5 },
+  { id: 'rest', name: '🎮 Отдых', angle: 150, value: 5 },
+  { id: 'self', name: '🧠 Саморазвитие', angle: 210, value: 5 }
+];
+
+function init() {
+  Store.load();
+  document.getElementById('navXP').textContent = Store.data.xp || 0;
+
+  // Загружаем сохранённые значения, если есть
+  if (Store.data.wheelBalance) {
+    AREAS.forEach(a => {
+      if (Store.data.wheelBalance[a.id] !== undefined) {
+        a.value = Store.data.wheelBalance[a.id];
+      }
+    });
+  }
+
+  const controls = document.getElementById('controls');
+  controls.innerHTML = AREAS.map(a => `
+    <div class="control-group">
+      <div class="control-head">
+        <span>${a.name}</span>
+        <span id="val-${a.id}">${a.value}</span>
+      </div>
+      <input type="range" min="1" max="10" value="${a.value}" 
+             oninput="updateValue('${a.id}', this.value)">
+    </div>
+  `).join('');
+
+  updateWheel();
+}
+
+function updateValue(id, val) {
+  const area = AREAS.find(a => a.id === id);
+  area.value = parseInt(val);
+  document.getElementById('val-' + id).textContent = val;
+  updateWheel();
+}
+
+function updateWheel() {
+  const center = 150;
+  const maxRadius = 120;
+  const points = [];
+  const pointsSvg = [];
+
+  AREAS.forEach(a => {
+    const radius = (a.value / 10) * maxRadius;
+    const rad = (a.angle * Math.PI) / 180;
+    const x = center + radius * Math.cos(rad);
+    const y = center + radius * Math.sin(rad);
+    points.push(`${x},${y}`);
+    pointsSvg.push(`<circle cx="${x}" cy="${y}" r="4" fill="#4ad6c8" />`);
+  });
+
+  document.getElementById('wheelPolygon').setAttribute('points', points.join(' '));
+  document.getElementById('wheelPoints').innerHTML = pointsSvg.join('');
+  
+  analyze();
+}
+
+function analyze() {
+  // Находим самую слабую сферу
+  let minArea = AREAS[0];
+  let total = 0;
+  AREAS.forEach(a => {
+    total += a.value;
+    if (a.value < minArea.value) minArea = a;
+  });
+
+  const avg = (total / AREAS.length).toFixed(1);
+  const card = document.getElementById('resultCard');
+  const text = document.getElementById('resultText');
+
+  card.style.display = 'block';
+
+  if (minArea.value <= 4) {
+    text.innerHTML = `Твой средний балл: <b>${avg}</b>. Самая уязвимая сфера сейчас — <b>${minArea.name}</b> (${minArea.value}/10). Это нормально, но именно туда стоит направить внимание. Возможно, тебе поможет один из уроков в модуле «Психология» или «Финансы». Не пытайся прокачать всё сразу, начни с одного шага.`;
+  } else if (avg >= 8) {
+    text.innerHTML = `Твой средний балл: <b>${avg}</b>. Отличный баланс! Ты умеешь распределять силы. Продолжай в том же духе, но помни: даже в идеальной картине всегда есть место для роста.`;
+  } else {
+    text.innerHTML = `Твой средний балл: <b>${avg}</b>. Хороший результат! У тебя нет критических провалов. Обрати внимание на <b>${minArea.name}</b> (${minArea.value}/10) — если подтянешь эту сферу хоть немного, общее состояние станет ещё лучше.`;
+  }
+}
+
+function saveResult() {
+  Store.data.wheelBalance = {};
+  AREAS.forEach(a => Store.data.wheelBalance[a.id] = a.value);
+  Store.addXP(15);
+  document.getElementById('navXP').textContent = Store.data.xp;
+  alert('Колесо сохранено! +15 XP. Ты можешь вернуться и перепроверить его через месяц.');
+}
+
+init();
+</script>
+</body>
+</html>
