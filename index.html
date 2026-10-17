@@ -76,6 +76,25 @@
   .state .title{font-weight:700;font-size:15px}
   .state .desc{font-size:13px;color:var(--muted)}
 
+    /* TOOLS GRID */
+  .tools-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+  .tool-card{padding:20px;border-radius:var(--radius-s);text-decoration:none;display:flex;flex-direction:column;gap:10px;transition:.25s;border:1px solid var(--stroke);background:var(--card)}
+  .tool-card:hover{transform:translateY(-4px);background:var(--card-2)}
+  .tool-card .icon{font-size:28px}
+  .tool-card h4{font-size:15px;font-weight:800;color:var(--text)}
+  .tool-card p{font-size:12.5px;color:var(--muted);line-height:1.4}
+  
+  .tool-card.fin:hover{border-color:rgba(74,214,200,.5);box-shadow:0 8px 24px rgba(74,214,200,.1)}
+  .tool-card.psy:hover{border-color:rgba(124,92,255,.5);box-shadow:0 8px 24px rgba(124,92,255,.1)}
+  .tool-card.sup:hover{border-color:rgba(255,92,138,.5);box-shadow:0 8px 24px rgba(255,92,138,.1)}
+  .tool-card.neutral:hover{border-color:rgba(255,255,255,.3);box-shadow:0 8px 24px rgba(255,255,255,.05)}
+
+  @media (max-width:960px){
+    .tools-grid{grid-template-columns:repeat(2,1fr)}
+  }
+  @media (max-width:520px){
+    .tools-grid{grid-template-columns:1fr}
+  }
   /* SECTION */
   section{padding:50px 0}
   .section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:28px;flex-wrap:wrap}
@@ -275,7 +294,37 @@
     </div>
   </div>
 </section>
-
+<!-- ИНСТРУМЕНТЫ -->
+<section class="container" style="padding-top:20px;">
+  <div class="section-head">
+    <div>
+      <h2>Инструменты в один клик</h2>
+      <p>Не только читай, но и пробуй. Всё сохраняется на твоём устройстве.</p>
+    </div>
+  </div>
+  <div class="tools-grid">
+    <a href="scam-game.html" class="tool-card sup">
+      <div class="icon">🕵️‍♂️</div>
+      <h4>Узнай мошенника</h4>
+      <p>Интерактивная игра: отличи обман от правды</p>
+    </a>
+    <a href="breathing.html" class="tool-card psy">
+      <div class="icon">🌿</div>
+      <h4>Дыхание</h4>
+      <p>Успокой тревогу за 2 минуты</p>
+    </a>
+    <a href="budget.html" class="tool-card fin">
+      <div class="icon">💰</div>
+      <h4>Калькулятор бюджета</h4>
+      <p>Посчитай доходы и расходы на месяц</p>
+    </a>
+    <a href="notebook.html" class="tool-card neutral">
+      <div class="icon">📓</div>
+      <h4>Рабочая тетрадь</h4>
+      <p>Все твои записи и результаты тестов</p>
+    </a>
+  </div>
+</section>
 <section class="container" id="steps">
   <div class="section-head"><div><h2>Как это работает</h2><p>Четыре шага — и ты уже в процессе. Без лекций и «воды».</p></div></div>
   <div class="steps">
