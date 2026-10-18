@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>О проекте — Точка опоры</title>
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#0b0b12; --card:rgba(255,255,255,.06); --stroke:rgba(255,255,255,.12);
+    --text:#f2f2f7; --muted:#a1a1b5; --accent:#7c5cff; --accent-2:#4ad6c8; --warning:#ffb547;
+    --radius:20px; --ff:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.6;-webkit-font-smoothing:antialiased}
+  body{background:radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.15), transparent 60%), radial-gradient(900px 500px at 100% 10%, rgba(74,214,200,.15), transparent 60%), var(--bg); min-height:100vh; padding-bottom:80px}
+  a{color:inherit;text-decoration:none}
+  .container{max-width:800px;margin:0 auto;padding:0 20px}
+  
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.75);border-bottom:1px solid var(--stroke)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px;max-width:1100px;margin:0 auto;padding:0 20px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(124,92,255,.5)}
+  .back-btn{font-size:14px;color:var(--muted);padding:8px 12px;border-radius:10px;transition:.2s}
+  .back-btn:hover{color:var(--text);background:var(--card)}
+
+  .hero{text-align:center; padding:60px 0 40px}
+  .hero h1{font-size:clamp(32px,5vw,48px);font-weight:800;margin-bottom:16px;letter-spacing:-1px}
+  .hero h1 span{background:linear-gradient(135deg,#b8a6ff,#4ad6c8 50%,#ff5c8a);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--muted);font-size:18px;max-width:600px;margin:0 auto}
+
+  .quote-box{
+    background:linear-gradient(135deg, rgba(124,92,255,.1), rgba(74,214,200,.1));
+    border:1px solid var(--stroke); border-radius:24px; padding:40px;
+    text-align:center; margin-bottom:60px; position:relative;
+  }
+  .quote-box::before{content:'"'; position:absolute; top:10px; left:20px; font-size:80px; color:rgba(255,255,255,.05); font-family:serif; line-height:1}
+  .quote-box p{font-size:20px; font-weight:600; color:var(--text); font-style:italic; position:relative; z-index:1}
+
+  .section-title{font-size:24px; font-weight:800; margin-bottom:30px; text-align:center}
+  
+  .team{display:flex; flex-direction:column; gap:24px; margin-bottom:60px}
+  .author-card{
+    background:var(--card); border:1px solid var(--stroke); border-radius:24px;
+    padding:30px; display:flex; gap:24px; align-items:flex-start;
+    transition:.3s; position:relative; overflow:hidden;
+  }
+  .author-card:hover{transform:translateY(-4px); border-color:rgba(255,255,255,.2)}
+  .author-card::before{content:""; position:absolute; inset:0; background:radial-gradient(300px 100px at 0% 0%, rgba(124,92,255,.1), transparent); pointer-events:none}
+  
+  .author-avatar{
+    width:80px; height:80px; border-radius:24px; flex-shrink:0;
+    display:grid; place-items:center; font-size:28px; font-weight:800; color:#fff;
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+  }
+  .author-card.elena .author-avatar{background:linear-gradient(135deg,#7c5cff,#4ad6c8)}
+  .author-card.timur .author-avatar{background:linear-gradient(135deg,#ff5c8a,#ffb547)}
+  
+  .author-info h3{font-size:22px; font-weight:800; margin-bottom:4px}
+  .author-info .role{font-size:14px; color:var(--accent-2); font-weight:600; margin-bottom:16px; display:block}
+  .author-info p{color:var(--muted); font-size:15px; line-height:1.6}
+  .author-tags{display:flex; gap:8px; flex-wrap:wrap; margin-top:16px}
+  .author-tag{font-size:12px; padding:6px 12px; border-radius:999px; background:rgba(255,255,255,.05); border:1px solid var(--stroke); color:var(--muted)}
+
+  .contact-box{
+    text-align:center; background:var(--card); border:1px solid var(--stroke);
+    border-radius:24px; padding:40px;
+  }
+  .contact-box h3{font-size:22px; font-weight:800; margin-bottom:10px}
+  .contact-box p{color:var(--muted); margin-bottom:24px}
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; padding:14px 28px;
+    border-radius:14px; font-size:15px; font-weight:700; transition:.2s;
+    background:linear-gradient(135deg,var(--accent),#5f3dff); color:#fff; border:none; cursor:pointer;
+    box-shadow:0 10px 30px rgba(124,92,255,.3);
+  }
+  .btn:hover{transform:translateY(-2px); opacity:.95}
+
+  @media (max-width: 600px) {
+    .author-card{flex-direction:column; text-align:center; align-items:center}
+    .author-card::before{background:radial-gradient(300px 100px at 50% 0%, rgba(124,92,255,.1), transparent)}
+    .author-tags{justify-content:center}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><div class="logo-mark"></div>Точка опоры</a>
+    <a href="index.html" class="back-btn">✕ На главную</a>
+  </div>
+</header>
+
+<main class="container">
+  <div class="hero">
+    <h1>О проекте <span>«Точка опоры»</span></h1>
+    <p>Мы создали это приложение, чтобы у каждого студента было место, где можно разобраться в себе, найти деньги и просто выдохнуть.</p>
+  </div>
+
+  <div class="quote-box">
+    <p>«Мы не учителя. Мы такие же люди, которые когда-то проходили через сессии, тревогу и нехватку денег. Мы собрали то, что реально помогло нам».</p>
+  </div>
+
+  <h2 class="section-title">Авторы проекта</h2>
+
+  <div class="team">
+    <!-- Елена -->
+    <div class="author-card elena">
+      <div class="author-avatar">ЕО</div>
+      <div class="author-info">
+        <h3>Елена Осинцева</h3>
+        <span class="role">Психолог · Куратор модулей «Психология» и «Поддержка»</span>
+        <p>Елена помогает студентам справляться с тревогой, выгоранием и прокрастинацией. Она искренне верит, что заботиться о ментальном здоровье так же важно, как и сдавать экзамены. Все практики и тесты в нашем приложении собраны и проверены ею.</p>
+        <div class="author-tags">
+          <span class="author-tag">Эмоции</span>
+          <span class="author-tag">Тревога</span>
+          <span class="author-tag">Выгорание</span>
+          <span class="author-tag">Личные границы</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Тимур -->
+    <div class="author-card timur">
+      <div class="author-avatar">ТХ</div>
+      <div class="author-info">
+        <h3>Тимур Хайретдинов</h3>
+        <span class="role">Финансист · Куратор модуля «Финансы»</span>
+        <p>Тимур знает, как выглядит жизнь на одну стипендию. Он разбирается в инвестициях и бюджетах, но главное его умение — объяснять сложные финансовые вещи простым и понятным языком. Без скучных лекций и таблиц в Excel.</p>
+        <div class="author-tags">
+          <span class="author-tag">Бюджет</span>
+          <span class="author-tag">Накопления</span>
+          <span class="author-tag">Инвестиции</span>
+          <span class="author-tag">Мошенники</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  
+
+</main>
+
+<script src="ui-upgrade.js"></script>
+<script src="bottom-menu.js"></script>
+</body>
+</html>
