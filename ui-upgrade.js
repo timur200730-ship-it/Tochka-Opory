@@ -124,5 +124,3 @@
     });
   });
 })();
-  document.head.appendChild(style);
-})();
