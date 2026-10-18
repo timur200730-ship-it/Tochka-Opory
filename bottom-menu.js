@@ -6,7 +6,7 @@
   const style = document.createElement('style');
   style.textContent = `
     /* Отступ для body, чтобы меню не перекрывало контент */
-    body { padding-bottom: calc(100px + env(safe-area-inset-bottom)) !important; }
+    body { padding-bottom: calc(150px + env(safe-area-inset-bottom)) !important; }
 
     .bottom-nav {
       position: fixed;
@@ -24,6 +24,11 @@
     }
 
     .nav-item {
+    .nav-item {
+  /* ... старые стили ... */
+  font-size: 10px !important; /* Уменьшили размер шрифта */
+  white-space: nowrap !important; /* Запретили перенос слов на новую строку */
+}
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -203,7 +208,7 @@
       <span class="icon">📚</span><span>Модули</span>
     </a>
     <button class="nav-item" onclick="window.toggleTools()">
-      <span class="icon">🛠</span><span>Инструменты</span>
+      <span class="icon">🛠</span><span>Сервисы</span>
     </button>
     <a href="notebook.html" class="nav-item ${isNotebook ? 'active' : ''}">
       <span class="icon">📓</span><span>Тетрадь</span>
