@@ -208,6 +208,9 @@
     <a href="notebook.html" class="nav-item ${isNotebook ? 'active' : ''}">
       <span class="icon">📓</span><span>Тетрадь</span>
     </a>
+    <a href="panic.html" class="nav-item" style="color:#ff5c8a;">
+  <span class="icon">🆘</span><span>SOS</span>
+</a>
     <button class="nav-item" onclick="openSupport()">
       <span class="icon">🤍</span><span>Поддержка</span>
     </button>
