@@ -217,7 +217,7 @@
   <span class="icon">🆘</span><span>SOS</span>
 </a>
     <button class="nav-item" onclick="openSupport()">
-      <span class="icon">🤍</span><span>Поддержка</span>
+      <span class="icon">🤍</span><span>Помощь</span>
     </button>
   `;
   document.body.appendChild(nav);
