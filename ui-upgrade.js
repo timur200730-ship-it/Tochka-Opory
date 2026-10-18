@@ -72,7 +72,7 @@
     .state .emoji { width: 52px !important; height: 52px !important; margin-bottom: 12px !important; }
     .module .icn { width: 56px !important; height: 56px !important; margin-bottom: 16px !important; }
     .tool-card .icon { width: 48px !important; height: 48px !important; margin-bottom: 12px !important; }
-    .mood-btn { width: 44px !important; height: 44px !important; }
+    .mood-btn { height: 44px !important; width: auto !important; padding: 0 12px !important; flex: 1 !important; }
     .tip-emoji { width: 36px !important; height: 36px !important; }
     .chal-icon { width: 64px !important; height: 64px !important; }
 
