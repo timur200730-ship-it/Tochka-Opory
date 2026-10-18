@@ -632,7 +632,7 @@ function showToast(text, type = 'default'){
   t.textContent = finalText;
   t.classList.add('show');
   clearTimeout(t._tid);
-  t._tid = setTimeout(()=>t.classList.remove('show'), 3000);
+  t._tid = setTimeout(()=>t.classList.remove('show'), 3200);
 }
 
 function renderProgress(){
