@@ -35,11 +35,15 @@
     }
 
     /* 2. Стеклянный эффект для шапки */
-    header {
-      background: rgba(11, 11, 18, 0.6) !important;
+       header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(11, 11, 18, 0.9) !important; /* Сделали фон темнее */
       backdrop-filter: blur(20px) saturate(150%) !important;
       -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
       border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+      width: 100%;
     }
 
     /* 3. Кастомный скроллбар */
