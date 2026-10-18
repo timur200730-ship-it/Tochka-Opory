@@ -313,12 +313,35 @@ if (lesson.isPlaceholder) currentStage = 'theory';
 /* ============================================================
    УТИЛИТЫ
    ============================================================ */
-function showToast(text){
+function showToast(text, type = 'default'){
+  const warmPhrases = {
+    lesson: [
+      "Ты заглянул(а) внутрь себя. Это требует смелости. +20 XP",
+      "Ты не стоишь на месте. Это огромный прогресс. +20 XP",
+      "Знания — это твоя суперсила. Так держать! +20 XP",
+      "Ещё один шаг к пониманию себя. Ты молодец. +20 XP",
+      "Ты инвестировал(а) время в себя. Лучшая инвестиция! +20 XP"
+    ],
+    test: [
+      "Твои знания закреплены. Отличная работа!",
+      "Ты справился(ась) с тестом. Это победа!",
+      "Мозг говорит тебе спасибо за тренировку.",
+      "Ошибки — это тоже опыт. Главное, что ты попробовал(а)!"
+    ]
+  };
+
+  let finalText = text;
+  if (type === 'lesson') {
+    finalText = warmPhrases.lesson[Math.floor(Math.random() * warmPhrases.lesson.length)];
+  } else if (type === 'test') {
+    finalText = warmPhrases.test[Math.floor(Math.random() * warmPhrases.test.length)];
+  }
+
   const t = document.getElementById('toast');
-  t.textContent = text;
+  t.textContent = finalText;
   t.classList.add('show');
   clearTimeout(t._tid);
-  t._tid = setTimeout(()=>t.classList.remove('show'), 2400);
+  t._tid = setTimeout(()=>t.classList.remove('show'), 3000);
 }
 
 function renderHeader(){
@@ -669,7 +692,7 @@ function selectAnswer(qi, oi, event){
   if (res.completed){
     setTimeout(() => {
       render();
-      showToast('Тест пройден: ' + res.correct + ' из ' + res.total);
+      showToast('Тест пройден: ' + res.correct + ' из ' + res.total, 'test');
     }, 400);
   } else {
     const counter = document.querySelector('.quiz-summary p b');
@@ -682,7 +705,7 @@ function selectAnswer(qi, oi, event){
 function finishLesson(){
   const wasNew = Store.markDone(LESSON_ID);
   if (wasNew){
-    showToast('+20 XP · Урок пройден 🔥');
+    showToast('', 'lesson');
   }
   goStage('finish');
 }
