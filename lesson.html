@@ -341,6 +341,20 @@ function showToast(text, type = 'default'){
   t.textContent = finalText;
   t.classList.add('show');
   clearTimeout(t._tid);
+  t._tid = setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+  let finalText = text;
+  if (type === 'lesson') {
+    finalText = warmPhrases.lesson[Math.floor(Math.random() * warmPhrases.lesson.length)];
+  } else if (type === 'test') {
+    finalText = warmPhrases.test[Math.floor(Math.random() * warmPhrases.test.length)];
+  }
+
+  const t = document.getElementById('toast');
+  t.textContent = finalText;
+  t.classList.add('show');
+  clearTimeout(t._tid);
   t._tid = setTimeout(()=>t.classList.remove('show'), 3000);
 }
 
