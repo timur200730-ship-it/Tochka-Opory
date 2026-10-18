@@ -206,9 +206,30 @@
   .copyright{margin-top:26px;padding-top:20px;border-top:1px solid var(--stroke);display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;font-size:13px}
 
   /* TOAST */
-  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;padding:14px 22px;border-radius:14px;font-weight:600;font-size:14.5px;box-shadow:0 20px 40px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.35s;z-index:100}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
+   .toast{
+    position:fixed;
+    bottom: 90px; /* Подняли выше нижнего меню */
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:linear-gradient(135deg,var(--mod),#7c5cff);
+    color:#fff;
+    padding:14px 22px;
+    border-radius:14px;
+    font-weight:600;
+    font-size:14.5px;
+    box-shadow:0 20px 40px rgba(0,0,0,.4);
+    opacity:0;
+    pointer-events:none;
+    transition:.35s;
+    z-index: 10000; /* Чтобы было поверх меню */
+    text-align: center;
+    max-width: 90vw; /* Ограничили ширину */
+    line-height: 1.4;
+  }
+  .toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
   /* RESPONSIVE */
   @media (max-width:960px){
     .state-grid,.steps{grid-template-columns:repeat(2,1fr)}
