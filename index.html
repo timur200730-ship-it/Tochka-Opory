@@ -613,12 +613,26 @@ function formatSince(ts){
   return d.getDate() + ' ' + months[d.getMonth()];
 }
 
-function showToast(text){
+function showToast(text, type = 'default'){
+  const warmPhrases = {
+    practice: [
+      "Маленький шаг сегодня — большое изменение завтра. +10 XP",
+      "Ты сделал(а) это для себя. Это очень важно. +10 XP",
+      "Привычка формируется именно так. Ты на верном пути. +10 XP",
+      "Забота о себе начинается с таких моментов. +10 XP"
+    ]
+  };
+
+  let finalText = text;
+  if (type === 'practice') {
+    finalText = warmPhrases.practice[Math.floor(Math.random() * warmPhrases.practice.length)];
+  }
+
   const t = document.getElementById('toast');
-  t.textContent = text;
+  t.textContent = finalText;
   t.classList.add('show');
   clearTimeout(t._tid);
-  t._tid = setTimeout(()=>t.classList.remove('show'), 2400);
+  t._tid = setTimeout(()=>t.classList.remove('show'), 3000);
 }
 
 function renderProgress(){
@@ -694,7 +708,7 @@ function doPractice(){
   btn.style.cursor = 'default';
   document.getElementById('doneMsg').style.display = 'block';
   renderProgress();
-  showToast('+10 XP · Ритм ' + Store.data.streak + ' 🔥');
+  showToast('', 'practice');
 }
 
 /* ============================================================
