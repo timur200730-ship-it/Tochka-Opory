@@ -78,7 +78,7 @@
     .daily-part { display: flex; align-items: center; gap: 12px; }
     .daily-label { font-size: 13px; font-weight: 600; color: #a1a1b5; white-space: nowrap; }
     
-    .mood-row { display: flex; gap: 6px; }
+    .mood-row { display: flex; gap: 6px; width: 100%; max-width: 280px; }
     .mood-btn { 
       width: 34px; height: 34px; 
       border-radius: 10px; 
