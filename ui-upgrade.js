@@ -34,16 +34,20 @@
       100% { transform: translate(-5vw, -5vh) scale(0.9); }
     }
 
-    /* 2. Стеклянный эффект для шапки */
-       header {
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      background: rgba(11, 11, 18, 0.9) !important; /* Сделали фон темнее */
-      backdrop-filter: blur(20px) saturate(150%) !important;
-      -webkit-backdrop-filter: blur(20px) saturate(150%) !important;
+           /* 2. Стеклянный эффект для шапки */
+    header {
+      position: sticky !important;
+      top: 0 !important;
+      z-index: 100 !important;
+      background: #0b0b12 !important; /* Сплошной темный фон */
       border-bottom: 1px solid rgba(255,255,255,0.08) !important;
-      width: 100%;
+      padding: 0 20px !important;
+      width: 100% !important;
+    }
+    
+    /* Глобальный отступ снизу, чтобы контент не прятался за меню */
+    body {
+      padding-bottom: calc(140px + env(safe-area-inset-bottom)) !important;
     }
 
     /* 3. Кастомный скроллбар */
@@ -99,7 +103,12 @@
     .state .emoji .ui-svg-icon { width: 26px; height: 26px; }
     .tool-card .icon .ui-svg-icon { width: 24px; height: 24px; }
   `;
+   /* Отступ для контента под шапкой */
+    main, .container {
+      padding-top: 20px !important;
+    }
   document.head.appendChild(style);
+      
 
   // 7. ЗАМЕНА ЭМОДЗИ НА SVG-ИКОНКИ
   document.addEventListener('DOMContentLoaded', () => {
