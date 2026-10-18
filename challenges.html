@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Челленджи — Точка опоры</title>
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#0b0b12; --card:rgba(255,255,255,.06); --stroke:rgba(255,255,255,.12);
+    --text:#f2f2f7; --muted:#a1a1b5; --accent:#7c5cff; --accent-2:#4ad6c8; --warning:#ffb547;
+    --radius:20px; --ff:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.5;-webkit-font-smoothing:antialiased}
+  body{background:radial-gradient(1200px 600px at 10% -10%, rgba(124,92,255,.15), transparent 60%), radial-gradient(900px 500px at 100% 10%, rgba(74,214,200,.15), transparent 60%), var(--bg); min-height:100vh; padding-bottom:60px}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .container{max-width:800px;margin:0 auto;padding:0 20px}
+
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.75);border-bottom:1px solid var(--stroke)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px;max-width:1100px;margin:0 auto;padding:0 20px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(124,92,255,.5)}
+  .nav-user{display:flex;gap:10px;align-items:center}
+  .pill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:var(--card);border:1px solid var(--stroke);font-size:13.5px;font-weight:600}
+  .pill .num{color:var(--accent-2)}
+  .back-btn{font-size:14px;color:var(--muted);padding:8px 12px;border-radius:10px;transition:.2s}
+  .back-btn:hover{color:var(--text);background:var(--card)}
+
+  .page-head{padding:40px 0 20px;text-align:center}
+  .page-head h1{font-size:clamp(26px,4vw,36px);font-weight:800;margin-bottom:12px}
+  .page-head p{color:var(--muted);font-size:15px;max-width:500px;margin:0 auto}
+
+  /* Вкладки */
+  .tabs{display:flex;gap:8px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
+  .tab-btn{padding:12px 20px;border-radius:12px;font-size:14.5px;font-weight:600;background:var(--card);border:1px solid var(--stroke);color:var(--muted);transition:.2s;cursor:pointer;display:flex;align-items:center;gap:8px}
+  .tab-btn:hover{background:rgba(255,255,255,.08)}
+  .tab-btn.active{background:rgba(124,92,255,.2);border-color:var(--accent);color:var(--text);box-shadow:0 0 15px rgba(124,92,255,.2)}
+
+  /* Карточка челленджа */
+  .challenge-card{
+    background:var(--card); border:1px solid var(--stroke); border-radius:var(--radius);
+    padding:30px; margin-bottom:30px; display:none; animation:fadeIn .4s ease;
+  }
+  .challenge-card.active{display:block}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+  .chal-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
+  .chal-icon{width:60px;height:60px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--stroke);display:grid;place-items:center;font-size:30px}
+  .chal-header h2{font-size:22px;font-weight:800;margin-bottom:4px}
+  .chal-header p{color:var(--muted);font-size:14px;line-height:1.4}
+
+  .desc-box{background:rgba(0,0,0,.2);border:1px solid var(--stroke);border-radius:14px;padding:16px;margin-bottom:24px;font-size:14px;color:var(--muted);line-height:1.6}
+  .desc-box b{color:var(--text)}
+
+  /* Сетка дней */
+  .days-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:24px}
+  .day-box{
+    aspect-ratio:1; border-radius:14px; background:rgba(255,255,255,.04);
+    border:1px solid var(--stroke); display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:4px; transition:.2s; cursor:pointer;
+  }
+  .day-box:hover{background:rgba(255,255,255,.08)}
+  .day-box.done{background:linear-gradient(135deg,rgba(74,214,200,.2),rgba(46,139,87,.3)); border-color:var(--accent-2); box-shadow:0 0 15px rgba(74,214,200,.2)}
+  .day-box .num{font-size:18px;font-weight:800;color:var(--muted)}
+  .day-box.done .num{color:var(--accent-2)}
+  .day-box .lbl{font-size:11px;color:var(--muted);text-transform:uppercase}
+  .day-box.done .lbl{color:var(--text)}
+
+  /* Кнопка завершения */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:14px 24px;border-radius:14px;font-size:15px;font-weight:700;transition:.2s;border:1px solid transparent;width:100%;cursor:pointer}
+  .btn-primary{background:linear-gradient(135deg,var(--accent-2),#2fbfae);color:#08110f;box-shadow:0 10px 30px rgba(74,214,200,.3)}
+  .btn-primary:hover{transform:translateY(-2px);opacity:.95}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+
+  /* Модалка для ввода текста (Благодарность) */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:20px;z-index:100;opacity:0;pointer-events:none;transition:.3s}
+  .modal.show{opacity:1;pointer-events:auto}
+  .modal-content{background:#1c1c24;border:1px solid var(--stroke);border-radius:20px;padding:24px;max-width:400px;width:100%;transform:translateY(20px);transition:.3s}
+  .modal.show .modal-content{transform:none}
+  .modal h3{font-size:18px;margin-bottom:12px}
+  .modal textarea{width:100%;padding:14px;border-radius:12px;background:rgba(0,0,0,.3);border:1px solid var(--stroke);color:var(--text);font-size:14.5px;resize:none;height:100px;margin-bottom:16px;font-family:inherit}
+  .modal textarea:focus{outline:none;border-color:var(--accent-2)}
+
+  /* Таймер (Продуктивность) */
+  .timer-box{text-align:center;margin-bottom:24px}
+  .timer-display{font-size:56px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-2px;color:var(--text);margin-bottom:10px;line-height:1}
+  .timer-display.running{color:var(--accent-2)}
+
+  @media (max-width: 600px){
+    .days-grid{grid-template-columns:repeat(4,1fr)}
+    .chal-header{flex-direction:column;text-align:center;gap:10px}
+    .timer-display{font-size:44px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><div class="logo-mark"></div>Точка опоры</a>
+    <div class="nav-user">
+      <div class="pill" title="Опыт">⭐ <span class="num" id="navXP">0</span></div>
+      <a href="index.html" class="back-btn">✕ На главную</a>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-head">
+    <h1>🏆 Челленджи</h1>
+    <p>Маленькие шаги каждый день меняют жизнь. Выбери вызов и продержись 7 дней подряд.</p>
+  </div>
+
+  <!-- Вкладки -->
+  <div class="tabs">
+    <button class="tab-btn active" data-target="finance" onclick="switchTab('finance')">
+      💰 Финансы
+    </button>
+    <button class="tab-btn" data-target="gratitude" onclick="switchTab('gratitude')">
+      🧠 Благодарность
+    </button>
+    <button class="tab-btn" data-target="focus" onclick="switchTab('focus')">
+      ⚡ Фокус
+    </button>
+  </div>
+
+  <!-- Челлендж 1: Финансы -->
+  <div class="challenge-card active" id="chal-finance">
+    <div class="chal-header">
+      <div class="chal-icon">💸</div>
+      <div>
+        <h2>7 дней без спонтанных трат</h2>
+        <p>Награда: +100 XP и бейдж «Железная воля»</p>
+      </div>
+    </div>
+    <div class="desc-box">
+      <b>Правила:</b> В течение 7 дней ты не покупаешь ничего импульсивного (фастфуд вне дома, такси, если можно пройтись, мелкие безделушки). Каждый вечер отмечай день как пройденный. Если сорвался — просто начни день заново.
+    </div>
+    <div class="days-grid" id="grid-finance"></div>
+    <button class="btn btn-primary" id="btn-finance" onclick="claimDay('finance')">Отметить день как пройденный</button>
+  </div>
+
+  <!-- Челлендж 2: Благодарность -->
+  <div class="challenge-card" id="chal-gratitude">
+    <div class="chal-header">
+      <div class="chal-icon">✨</div>
+      <div>
+        <h2>7 дней благодарности</h2>
+        <p>Награда: +100 XP и бейдж «Позитивный ум»</p>
+      </div>
+    </div>
+    <div class="desc-box">
+      <b>Правила:</b> Каждый день записывай одну вещь, за которую ты благодарен. Даже мелочь: вкусный кофе, хорошая погода, друг написал. Это перестраивает мозг на поиск хорошего.
+    </div>
+    <div class="days-grid" id="grid-gratitude"></div>
+    <button class="btn btn-primary" id="btn-gratitude" onclick="openGratitudeModal()">Записать благодарность</button>
+  </div>
+
+  <!-- Челлендж 3: Фокус -->
+  <div class="challenge-card" id="chal-focus">
+    <div class="chal-header">
+      <div class="chal-icon">⏱️</div>
+      <div>
+        <h2>7 дней фокуса (Помодоро)</h2>
+        <p>Награда: +100 XP и бейдж «Мастер концентрации»</p>
+      </div>
+    </div>
+    <div class="desc-box">
+      <b>Правила:</b> Каждый день выделяй 25 минут на учёбу без отвлечений на телефон. Нажми «Старт», сосредоточься на задаче. Когда таймер прозвенит — день засчитан.
+    </div>
+    <div class="timer-box">
+      <div class="timer-display" id="focusTimer">25:00</div>
+      <button class="btn btn-primary" id="btn-focus-timer" onclick="startFocusTimer()" style="max-width:200px;margin:0 auto;">▶ Старт</button>
+    </div>
+    <div class="days-grid" id="grid-focus"></div>
+  </div>
+
+</main>
+
+<!-- Модалка для благодарности -->
+<div class="modal" id="gratitudeModal">
+  <div class="modal-content">
+    <h3>✨ За что ты благодарен сегодня?</h3>
+    <textarea id="gratitudeInput" placeholder="Например: за вкусный кофе с утра..."></textarea>
+    <div style="display:flex;gap:10px;">
+      <button class="btn btn-ghost" onclick="closeGratitudeModal()" style="background:rgba(255,255,255,.1)">Отмена</button>
+      <button class="btn btn-primary" onclick="saveGratitude()">Сохранить</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const Store = {
+  KEY: 'tochka_opory_v1', data: {},
+  load(){ try { const raw = localStorage.getItem(this.KEY); this.data = raw ? JSON.parse(raw) : {}; } catch(e){ this.data = {}; } },
+  save(){ try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch(e){} },
+  addXP(n){ if(!this.data.xp) this.data.xp = 0; this.data.xp += n; this.save(); }
+};
+
+// Инициализация структур
+Store.load();
+if (!Store.data.challenges) {
+  Store.data.challenges = {
+    finance: { days: [false,false,false,false,false,false,false], completed: false },
+    gratitude: { days: [false,false,false,false,false,false,false], notes: ["","","","","","",""], completed: false },
+    focus: { days: [false,false,false,false,false,false,false], completed: false }
+  };
+}
+
+let currentTab = 'finance';
+let focusInterval = null;
+let focusTimeLeft = 25 * 60;
+
+function init() {
+  document.getElementById('navXP').textContent = Store.data.xp || 0;
+  renderGrid('finance');
+  renderGrid('gratitude');
+  renderGrid('focus');
+  updateButtons();
+}
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.toggle('active', b.dataset.target === tab));
+  document.querySelectorAll('.challenge-card').forEach(c => c.classList.toggle('active', c.id === 'chal-' + tab));
+  currentTab = tab;
+}
+
+function renderGrid(type) {
+  const grid = document.getElementById('grid-' + type);
+  const state = Store.data.challenges[type];
+  const names = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  
+  let html = '';
+  for (let i = 0; i < 7; i++) {
+    const isDone = state.days[i];
+    html += `
+      <div class="day-box ${isDone ? 'done' : ''}" onclick="toggleDay('${type}', ${i})">
+        <div class="num">${isDone ? '✓' : i + 1}</div>
+        <div class="lbl">${names[i]}</div>
+      </div>
+    `;
+  }
+  grid.innerHTML = html;
+}
+
+function toggleDay(type, index) {
+  const state = Store.data.challenges[type];
+  state.days[index] = !state.days[index];
+  
+  // Если снимаем галочку, то completed сбрасывается
+  if (!state.days[index]) state.completed = false;
+
+  Store.save();
+  renderGrid(type);
+  updateButtons();
+  checkCompletion(type);
+}
+
+function updateButtons() {
+  const finDone = Store.data.challenges.finance.days.filter(Boolean).length;
+  const gratDone = Store.data.challenges.gratitude.days.filter(Boolean).length;
+  
+  document.getElementById('btn-finance').textContent = finDone === 7 ? '🎉 Челлендж пройден!' : `Отметить день (${finDone}/7)`;
+  document.getElementById('btn-finance').disabled = finDone === 7;
+
+  document.getElementById('btn-gratitude').textContent = gratDone === 7 ? '🎉 Челлендж пройден!' : `Записать благодарность (${gratDone}/7)`;
+  document.getElementById('btn-gratitude').disabled = gratDone === 7;
+}
+
+function claimDay(type) {
+  const state = Store.data.challenges[type];
+  const nextIndex = state.days.findIndex(d => !d);
+  if (nextIndex === -1) return;
+  
+  state.days[nextIndex] = true;
+  Store.addXP(15);
+  document.getElementById('navXP').textContent = Store.data.xp;
+  Store.save();
+  renderGrid(type);
+  updateButtons();
+  checkCompletion(type);
+}
+
+function checkCompletion(type) {
+  const state = Store.data.challenges[type];
+  const doneCount = state.days.filter(Boolean).length;
+  if (doneCount === 7 && !state.completed) {
+    state.completed = true;
+    Store.addXP(30); // Бонус за завершение
+    document.getElementById('navXP').textContent = Store.data.xp;
+    Store.save();
+    alert('🎉 Челлендж пройден! Ты заработал 30 XP бонусом!');
+  }
+}
+
+// --- Благодарность ---
+function openGratitudeModal() {
+  const state = Store.data.challenges.gratitude;
+  const nextIndex = state.days.findIndex(d => !d);
+  if (nextIndex === -1) return;
+  document.getElementById('gratitudeModal').classList.add('show');
+  document.getElementById('gratitudeInput').focus();
+}
+
+function closeGratitudeModal() {
+  document.getElementById('gratitudeModal').classList.remove('show');
+  document.getElementById('gratitudeInput').value = '';
+}
+
+function saveGratitude() {
+  const text = document.getElementById('gratitudeInput').value.trim();
+  if (!text) return;
+
+  const state = Store.data.challenges.gratitude;
+  const nextIndex = state.days.findIndex(d => !d);
+  if (nextIndex !== -1) {
+    state.days[nextIndex] = true;
+    state.notes[nextIndex] = text;
+    Store.addXP(15);
+    document.getElementById('navXP').textContent = Store.data.xp;
+    Store.save();
+    renderGrid('gratitude');
+    updateButtons();
+    checkCompletion('gratitude');
+  }
+  closeGratitudeModal();
+}
+
+// --- Фокус (Таймер) ---
+function startFocusTimer() {
+  const btn = document.getElementById('btn-focus-timer');
+  const display = document.getElementById('focusTimer');
+  
+  if (focusInterval) {
+    clearInterval(focusInterval);
+    focusInterval = null;
+    btn.textContent = '▶ Старт';
+    display.classList.remove('running');
+    return;
+  }
+
+  btn.textContent = '⏸ Пауза';
+  display.classList.add('running');
+
+  focusInterval = setInterval(() => {
+    focusTimeLeft--;
+    const m = Math.floor(focusTimeLeft / 60);
+    const s = focusTimeLeft % 60;
+    display.textContent = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+
+    if (focusTimeLeft <= 0) {
+      clearInterval(focusInterval);
+      focusInterval = null;
+      btn.textContent = '▶ Старт';
+      display.classList.remove('running');
+      focusTimeLeft = 25 * 60;
+      display.textContent = '25:00';
+      
+      // Засчитываем день
+      const state = Store.data.challenges.focus;
+      const nextIndex = state.days.findIndex(d => !d);
+      if (nextIndex !== -1) {
+        state.days[nextIndex] = true;
+        Store.addXP(15);
+        document.getElementById('navXP').textContent = Store.data.xp;
+        Store.save();
+        renderGrid('focus');
+        checkCompletion('focus');
+        alert('🔔 Время вышло! День засчитан. +15 XP');
+      }
+    }
+  }, 1000);
+}
+
+init();
+</script>
+<script src="bottom-menu.js"></script>  
+</body>
+</html>
