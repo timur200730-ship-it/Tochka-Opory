@@ -7,8 +7,7 @@
   const style = document.createElement('style');
   style.textContent = `
     /* Отступ для body, чтобы меню не перекрывало контент */
-    body { padding-bottom: 80px !important; }
-
+    body { padding-bottom: calc(110px + env(safe-area-inset-bottom)) !important; }
     .bottom-nav {
       position: fixed;
       bottom: 0; left: 0; right: 0;
