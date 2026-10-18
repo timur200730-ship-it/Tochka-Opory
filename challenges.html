@@ -293,7 +293,7 @@ function checkCompletion(type) {
     Store.addXP(30); // Бонус за завершение
     document.getElementById('navXP').textContent = Store.data.xp;
     Store.save();
-    alert('🎉 Челлендж пройден! Ты заработал 30 XP бонусом!');
+   showToast('🎉 Челлендж пройден! Ты проявил(а) невероятную силу воли! +30 XP');
   }
 }
 
@@ -370,12 +370,28 @@ function startFocusTimer() {
         Store.save();
         renderGrid('focus');
         checkCompletion('focus');
-        alert('🔔 Время вышло! День засчитан. +15 XP');
+        showToast('🔔 25 минут фокуса позади. Твой мозг стал чуть сильнее. +15 XP');
       }
     }
   }, 1000);
 }
-
+function showToast(text) {
+  let toast = document.getElementById('chal-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'chal-toast';
+    toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,#4ad6c8,#7c5cff);color:#fff;padding:14px 22px;border-radius:14px;font-weight:600;font-size:14.5px;box-shadow:0 20px 40px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.35s;z-index:10000;text-align:center;max-width:90%;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = text;
+  toast.style.opacity = '1';
+  toast.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(toast._tid);
+  toast._tid = setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 3000);
+}
 init();
 </script>
 <script src="bottom-menu.js"></script>  
