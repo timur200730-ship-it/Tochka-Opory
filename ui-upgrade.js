@@ -98,5 +98,27 @@
       left: 100%;
     }
   `;
+       /* 8. ПРЕМИАЛЬНЫЕ ИКОНКИ И СМАЙЛИКИ */
+    .state .emoji, .mood-btn, .tip-emoji, .chal-icon {
+      background: linear-gradient(135deg, rgba(255,255,255,0.1), rgba(255,255,255,0.02)) !important;
+      border: 1px solid rgba(255,255,255,0.15) !important;
+      border-radius: 16px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4), inset 0 2px 4px rgba(255,255,255,0.1) !important;
+      text-shadow: 0 0 15px rgba(255,255,255,0.3) !important;
+      transition: all 0.3s ease !important;
+    }
+    .state .emoji { width: 52px !important; height: 52px !important; font-size: 26px !important; margin-bottom: 12px !important; }
+    .mood-btn { width: 44px !important; height: 44px !important; font-size: 22px !important; }
+    .tip-emoji { width: 40px !important; height: 40px !important; font-size: 20px !important; }
+    .chal-icon { width: 64px !important; height: 64px !important; font-size: 32px !important; }
+    
+    .state:hover .emoji, .mood-btn:hover, .chal-icon:hover {
+      transform: translateY(-5px) scale(1.05) !important;
+      box-shadow: 0 10px 25px rgba(124,92,255,0.4), inset 0 2px 4px rgba(255,255,255,0.2) !important;
+      border-color: rgba(124,92,255,0.6) !important;
+    }
   document.head.appendChild(style);
 })();
