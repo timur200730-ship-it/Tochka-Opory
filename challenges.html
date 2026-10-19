@@ -194,6 +194,7 @@
 </div>
 
 <script>
+<script>
 const Store = {
   KEY: 'tochka_opory_v1', data: {},
   load(){ try { const raw = localStorage.getItem(this.KEY); this.data = raw ? JSON.parse(raw) : {}; } catch(e){ this.data = {}; } },
@@ -209,11 +210,16 @@ if (!Store.data.challenges) {
     gratitude: { days: [false,false,false,false,false,false,false], notes: ["","","","","","",""], completed: false },
     focus: { days: [false,false,false,false,false,false,false], completed: false }
   };
+  Store.save(); // СРАЗУ СОХРАНЯЕМ ПРИ ПЕРВОМ ЗАПУСКЕ
 }
 
 let currentTab = 'finance';
 let focusInterval = null;
 let focusTimeLeft = 25 * 60;
+
+// Принудительное сохранение при сворачивании на iOS
+window.addEventListener('pagehide', () => Store.save());
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') Store.save(); });
 
 function init() {
   document.getElementById('navXP').textContent = Store.data.xp || 0;
@@ -232,7 +238,8 @@ function switchTab(tab) {
 function renderGrid(type) {
   const grid = document.getElementById('grid-' + type);
   const state = Store.data.challenges[type];
-  const names = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
+  // ИСПОЛЬЗУЕМ НЕЙТРАЛЬНЫЕ ДНИ ВМЕСТО ДНЕЙ НЕДЕЛИ
+  const names = ['День 1','День 2','День 3','День 4','День 5','День 6','День 7'];
   
   let html = '';
   for (let i = 0; i < 7; i++) {
@@ -251,7 +258,6 @@ function toggleDay(type, index) {
   const state = Store.data.challenges[type];
   state.days[index] = !state.days[index];
   
-  // Если снимаем галочку, то completed сбрасывается
   if (!state.days[index]) state.completed = false;
 
   Store.save();
@@ -290,10 +296,10 @@ function checkCompletion(type) {
   const doneCount = state.days.filter(Boolean).length;
   if (doneCount === 7 && !state.completed) {
     state.completed = true;
-    Store.addXP(30); // Бонус за завершение
+    Store.addXP(30);
     document.getElementById('navXP').textContent = Store.data.xp;
     Store.save();
-   showToast('🎉 Челлендж пройден! Ты проявил(а) невероятную силу воли! +30 XP');
+    showToast('🎉 Челлендж пройден! Ты проявил(а) невероятную силу воли! +30 XP');
   }
 }
 
@@ -360,7 +366,6 @@ function startFocusTimer() {
       focusTimeLeft = 25 * 60;
       display.textContent = '25:00';
       
-      // Засчитываем день
       const state = Store.data.challenges.focus;
       const nextIndex = state.days.findIndex(d => !d);
       if (nextIndex !== -1) {
@@ -375,23 +380,8 @@ function startFocusTimer() {
     }
   }, 1000);
 }
-function showToast(text) {
-  let toast = document.getElementById('chal-toast');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'chal-toast';
-    toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:linear-gradient(135deg,#4ad6c8,#7c5cff);color:#fff;padding:14px 22px;border-radius:14px;font-weight:600;font-size:14.5px;box-shadow:0 20px 40px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.35s;z-index:10000;text-align:center;max-width:90%;';
-    document.body.appendChild(toast);
-  }
-  toast.textContent = text;
-  toast.style.opacity = '1';
-  toast.style.transform = 'translateX(-50%) translateY(0)';
-  clearTimeout(toast._tid);
-  toast._tid = setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transform = 'translateX(-50%) translateY(20px)';
-  }, 3000);
-}
+
+// Функция для красивых всплывашек
 function showToast(text) {
   let toast = document.getElementById('chal-toast');
   if (!toast) {
@@ -408,7 +398,8 @@ function showToast(text) {
     toast.style.opacity = '0';
     toast.style.transform = 'translateX(-50%) translateY(20px)';
   }, 3000);
-}  
+}
+
 init();
 </script>
 <script src="bottom-menu.js"></script>  
