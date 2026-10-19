@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Колесо эмоций — Точка опоры</title>
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+  :root{ --bg:#0b0b12; --card:rgba(255,255,255,.06); --stroke:rgba(255,255,255,.12); --text:#f2f2f7; --muted:#a1a1b5; --accent:#7c5cff; --accent-2:#4ad6c8; --radius:20px; --ff:'Inter',sans-serif; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.5;padding-bottom:80px; min-height:100vh;}
+  .container{max-width:800px;margin:0 auto;padding:0 20px}
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.75);border-bottom:1px solid var(--stroke);padding:0 20px;}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1100px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:inherit;}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));}
+  .back-btn{font-size:14px;color:var(--muted);text-decoration:none;}
+  .page-head{padding:40px 0 20px;text-align:center}
+  .page-head h1{font-size:28px;font-weight:800;margin-bottom:12px}
+  .page-head p{color:var(--muted);font-size:15px}
+
+  .wheel-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 30px;}
+  .emotion-card {
+    background: var(--card); border: 1px solid var(--stroke); border-radius: 20px; padding: 20px;
+    cursor: pointer; transition: .3s; text-align: center; position: relative; overflow: hidden;
+  }
+  .emotion-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-3px); }
+  .emotion-card.active { border-color: var(--accent); box-shadow: 0 0 20px rgba(124,92,255,0.2); }
+  .emotion-card .emoji { font-size: 36px; margin-bottom: 10px; }
+  .emotion-card h3 { font-size: 18px; font-weight: 700; }
+
+  .sub-emotions { display: none; grid-column: 1 / -1; background: rgba(0,0,0,0.3); border: 1px solid var(--stroke); border-radius: 20px; padding: 20px; margin-top: -10px; margin-bottom: 20px; animation: fadeIn .3s ease; }
+  .sub-emotions.show { display: flex; flex-wrap: wrap; gap: 10px; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(-10px)} to{opacity:1; transform:none} }
+  
+  .sub-btn { padding: 10px 18px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid var(--stroke); color: var(--text); font-size: 14px; cursor: pointer; transition: .2s; }
+  .sub-btn:hover { background: rgba(255,255,255,0.15); border-color: var(--accent-2); }
+
+  .advice-box { display: none; grid-column: 1 / -1; background: linear-gradient(135deg, rgba(124,92,255,0.15), rgba(74,214,200,0.1)); border: 1px solid var(--accent); border-radius: 20px; padding: 24px; margin-top: 10px; animation: fadeIn .3s ease;}
+  .advice-box.show { display: block; }
+  .advice-box h4 { font-size: 18px; font-weight: 800; color: var(--accent-2); margin-bottom: 10px; }
+  .advice-box p { font-size: 15px; color: var(--text); line-height: 1.6; }
+
+  @media (max-width: 500px) { .wheel-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><div class="logo-mark"></div>Точка опоры</a>
+    <a href="module-psy.html" class="back-btn">✕ Выйти</a>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-head">
+    <h1>🎡 Колесо эмоций</h1>
+    <p>Часто мы чувствуем «что-то плохое». Выбери базовую эмоцию, чтобы понять, что именно ты чувствуешь.</p>
+  </div>
+
+  <div class="wheel-grid" id="wheelGrid">
+    <!-- Генерируется через JS -->
+  </div>
+
+  <div id="adviceContainer"></div>
+</main>
+
+<script>
+const emotionsData = [
+  { id: 'joy', emoji: '😊', name: 'Радость', subs: ['Вдохновение', 'Восторг', 'Умиротворение', 'Гордость', 'Интерес'], advice: 'Раздели эту радость с кем-то. Позвони другу или напиши родителям. Запомни это ощущение — в трудные дни оно будет твоей опорой.' },
+  { id: 'sadness', emoji: '😢', name: 'Грусть', subs: ['Одиночество', 'Разочарование', 'Печаль', 'Сожаление', 'Потеря'], advice: 'Не пытайся заглушить грусть. Это сигнал о потере чего-то важного. Разреши себе поплакать. Выпиши в дневник, о чем именно ты грустишь.' },
+  { id: 'anger', emoji: '😡', name: 'Злость', subs: ['Раздражение', 'Ярость', 'Обида', 'Зависть', 'Ревность'], advice: 'Злость — это защита твоих границ. Спроси себя: «Что именно нарушено?» Выпусти энергию физически (порви бумагу, сделай 20 приседаний). Не принимай решений в этом состоянии.' },
+  { id: 'fear', emoji: '😨', name: 'Страх', subs: ['Тревога', 'Паника', 'Неуверенность', 'Волнение', 'Ужас'], advice: 'Тревога живет в будущем. Сделай технику заземления 5-4-3-2-1. Или зайди в раздел SOS на главной странице. Твое тело в безопасности прямо сейчас.' },
+  { id: 'shame', emoji: '🙈', name: 'Стыд', subs: ['Вина', 'Неловкость', 'Унижение', 'Смущение', 'Раскаяние'], advice: 'Стыд говорит: «Я плохой». Но это не так. Ты сделал ошибку, но ты не ошибка. Поговори с тем, кому доверяешь. Напомни себе: у всех бывают провалы.' },
+  { id: 'surprise', emoji: '😲', name: 'Удивление', subs: ['Изумление', 'Шок', 'Замешательство', 'Любопытство', 'Смятение'], advice: 'Когда мир не соответствует ожиданиям, мозг зависает. Сделай паузу. Выдохни. Дай себе время переварить новую информацию.' }
+];
+
+const grid = document.getElementById('wheelGrid');
+const adviceContainer = document.getElementById('adviceContainer');
+
+let activeId = null;
+
+function renderWheel() {
+  grid.innerHTML = emotionsData.map(e => `
+    <div class="emotion-card ${activeId === e.id ? 'active' : ''}" onclick="selectEmotion('${e.id}')">
+      <div class="emoji">${e.emoji}</div>
+      <h3>${e.name}</h3>
+    </div>
+    <div class="sub-emotions ${activeId === e.id ? 'show' : ''}" style="order: ${emotionsData.indexOf(e) * 2 + 1}">
+      ${e.subs.map(s => `<button class="sub-btn" onclick="showAdvice('${e.id}', '${s}')">${s}</button>`).join('')}
+    </div>
+  `).join('');
+}
+
+function selectEmotion(id) {
+  if (activeId === id) {
+    activeId = null;
+    adviceContainer.innerHTML = '';
+  } else {
+    activeId = id;
+    adviceContainer.innerHTML = '';
+  }
+  renderWheel();
+}
+
+function showAdvice(id, subName) {
+  const e = emotionsData.find(x => x.id === id);
+  adviceContainer.innerHTML = `
+    <div class="advice-box show">
+      <h4>💡 Ты чувствуешь: ${subName}</h4>
+      <p>${e.advice}</p>
+    </div>
+  `;
+  adviceContainer.scrollIntoView({ behavior: 'smooth', block: 'end' });
+}
+
+renderWheel();
+</script>
+<script src="ui-upgrade.js"></script>
+<script src="bottom-menu.js"></script>
+</body>
+</html>
