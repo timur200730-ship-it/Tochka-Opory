@@ -680,17 +680,20 @@ function renderProgress(){
 }
 
 function greetUser(){
-  const v = Store.data.visits;
-  if (v > 1){
+  const d = Store.data;
+  // Приветствуем, если есть опыт, стрик или пройденные уроки (то есть человек не впервые здесь)
+  const isReturning = (d.xp > 0) || (d.visits > 1) || 
+                      (d.lessonsDone && (d.lessonsDone.fin?.length > 0 || d.lessonsDone.psy?.length > 0 || d.lessonsDone.sup?.length > 0));
+
+  if (isReturning){
     const h = new Date().getHours();
     const timeGreet = h < 6 ? 'Доброй ночи' : h < 12 ? 'Доброе утро' : h < 18 ? 'Добрый день' : 'Добрый вечер';
     document.getElementById('heroTitle').innerHTML =
       timeGreet + ', с возвращением 💛<br><span class="grad">Продолжаем?</span>';
     document.getElementById('heroSub').textContent =
-      'Твой прогресс сохранён. Ритм: ' + Store.data.streak + ' · XP: ' + Store.data.xp + '. Один шаг — и дальше.';
+      'Твой прогресс сохранён. Ритм: ' + d.streak + ' · XP: ' + d.xp + '. Один шаг — и дальше.';
   }
 }
-
 function restorePracticeState(){
   if (Store.practiceDoneToday()){
     const btn = document.getElementById('practiceBtn');
