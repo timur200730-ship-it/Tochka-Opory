@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Карта тела — Точка опоры</title>
+<title>Карта разума и тела — Точка опоры</title>
 <meta name="theme-color" content="#0b0b12" />
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" href="icon.svg" type="image/svg+xml" />
@@ -30,123 +30,38 @@
   .page-head h1{font-size:clamp(26px,4vw,36px);font-weight:800;margin-bottom:12px}
   .page-head p{color:var(--muted);font-size:15px;max-width:500px;margin:0 auto}
 
-  /* Сетка карточек */
-  .cards-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-    gap: 20px;
-    margin-top: 30px;
-  }
+  .cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; margin-top: 30px; }
 
-  /* 3D Контейнер */
-  .flip-card {
-    background-color: transparent;
-    height: 280px;
-    perspective: 1000px; /* Глубина 3D-эффекта */
-    cursor: pointer;
-  }
-
-  .flip-card-inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    text-align: center;
-    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-    transform-style: preserve-3d;
-  }
-
-  /* Переворот при клике */
-  .flip-card.flipped .flip-card-inner {
-    transform: rotateY(180deg);
-  }
+  .flip-card { background-color: transparent; height: 280px; perspective: 1000px; cursor: pointer; }
+  .flip-card-inner { position: relative; width: 100%; height: 100%; text-align: center; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); transform-style: preserve-3d; }
+  .flip-card.flipped .flip-card-inner { transform: rotateY(180deg); }
 
   .flip-card-front, .flip-card-back {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-    border-radius: 24px;
-    padding: 24px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    border: 1px solid var(--stroke);
+    position: absolute; width: 100%; height: 100%; -webkit-backface-visibility: hidden; backface-visibility: hidden;
+    border-radius: 24px; padding: 24px; display: flex; flex-direction: column; justify-content: center; align-items: center; border: 1px solid var(--stroke);
   }
 
-  /* Лицевая сторона (Симптом) */
-  .flip-card-front {
-    background: linear-gradient(135deg, rgba(30,30,40,0.9), rgba(20,20,30,0.9));
-    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  }
-  .flip-card-front .icon {
-    font-size: 48px;
-    margin-bottom: 16px;
-    filter: drop-shadow(0 0 15px rgba(255,255,255,0.2));
-  }
-  .flip-card-front h3 {
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--text);
-    margin-bottom: 8px;
-  }
-  .flip-card-front p {
-    font-size: 14px;
-    color: var(--muted);
-  }
-  .flip-card-front .tap-hint {
-    position: absolute;
-    bottom: 20px;
-    font-size: 12px;
-    color: var(--accent-2);
-    opacity: 0.7;
-  }
+  .flip-card-front { background: linear-gradient(135deg, rgba(30,30,40,0.9), rgba(20,20,30,0.9)); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+  .flip-card-front .icon { font-size: 48px; margin-bottom: 16px; filter: drop-shadow(0 0 15px rgba(255,255,255,0.2)); }
+  .flip-card-front h3 { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+  .flip-card-front p { font-size: 14px; color: var(--muted); }
+  .flip-card-front .tap-hint { position: absolute; bottom: 20px; font-size: 12px; color: var(--accent-2); opacity: 0.7; }
 
-  /* Обратная сторона (Объяснение) */
-  .flip-card-back {
-    background: linear-gradient(135deg, rgba(124,92,255,0.15), rgba(74,214,200,0.1));
-    border-color: rgba(124,92,255,0.3);
-    transform: rotateY(180deg); /* Изначально повернута */
-    text-align: left;
-    justify-content: flex-start;
-    padding-top: 30px;
-  }
-  .flip-card-back h4 {
-    font-size: 16px;
-    font-weight: 800;
-    color: var(--accent-2);
-    margin-bottom: 12px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .flip-card-back p {
-    font-size: 14px;
-    color: var(--text);
-    line-height: 1.6;
-  }
-  .flip-card-back .advice {
-    margin-top: 16px;
-    padding: 12px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 12px;
-    font-size: 13px;
-    color: var(--muted);
-    border-left: 3px solid var(--accent-3);
-  }
+  .flip-card-back { background: linear-gradient(135deg, rgba(124,92,255,0.15), rgba(74,214,200,0.1)); border-color: rgba(124,92,255,0.3); transform: rotateY(180deg); text-align: left; justify-content: flex-start; padding-top: 30px; }
+  .flip-card-back h4 { font-size: 16px; font-weight: 800; color: var(--accent-2); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .flip-card-back p { font-size: 14px; color: var(--text); line-height: 1.6; }
+  .flip-card-back .advice { margin-top: 16px; padding: 12px; background: rgba(0,0,0,0.3); border-radius: 12px; font-size: 13px; color: var(--muted); border-left: 3px solid var(--accent-3); }
 
-  /* Цвета для разных карточек */
   .card-1 .flip-card-back { border-color: rgba(74,214,200,0.4); }
   .card-2 .flip-card-back { border-color: rgba(255,92,138,0.4); }
   .card-3 .flip-card-back { border-color: rgba(255,181,71,0.4); }
   .card-4 .flip-card-back { border-color: rgba(124,92,255,0.4); }
   .card-5 .flip-card-back { border-color: rgba(74,214,200,0.4); }
+  .card-6 .flip-card-back { border-color: rgba(255,92,138,0.4); }
+  .card-7 .flip-card-back { border-color: rgba(255,181,71,0.4); }
+  .card-8 .flip-card-back { border-color: rgba(124,92,255,0.4); }
 
-  @media (max-width: 480px) {
-    .cards-grid { grid-template-columns: 1fr; }
-    .flip-card { height: 260px; }
-  }
+  @media (max-width: 480px) { .cards-grid { grid-template-columns: 1fr; } .flip-card { height: 260px; } }
 </style>
 </head>
 <body>
@@ -160,93 +75,106 @@
 
 <main class="container">
   <div class="page-head">
-    <h1>🗺️ Карта тела</h1>
-    <p>Наши эмоции живут в теле. Нажми на карточку, чтобы узнать, о чём говорит тот или иной телесный зажим.</p>
+    <h1>🗺️ Карта разума и тела</h1>
+    <p>Наши эмоции живут в теле, а мысли создают ловушки. Нажми на карточку, чтобы узнать, как это работает.</p>
   </div>
 
   <div class="cards-grid">
     
-    <!-- Карточка 1 -->
+    <!-- ТЕЛЕСНЫЕ МАРКЕРЫ -->
     <div class="flip-card card-1" onclick="this.classList.toggle('flipped')">
       <div class="flip-card-inner">
         <div class="flip-card-front">
-          <div class="icon">🗣️</div>
-          <h3>Ком в горле</h3>
-          <p>Замирание, сложно говорить</p>
-          <div class="tap-hint">Нажми, чтобы узнать →</div>
+          <div class="icon">🗣️</div><h3>Ком в горле</h3><p>Замирание, сложно говорить</p><div class="tap-hint">Нажми →</div>
         </div>
         <div class="flip-card-back">
-          <h4>🔍 Что это значит</h4>
-          <p>Это маркер <b>отвержения</b> или страха быть непонятым. Тело блокирует голос, чтобы защитить тебя.</p>
-          <div class="advice">💡 <b>Практика:</b> Положи руку на горло. Сделай глубокий вдох и на выдохе тихо промычи звук «М-м-м» в течение 30 секунд. Это расслабит спазм.</div>
+          <h4>🔍 Отвержение</h4><p>Тело блокирует голос, чтобы защитить тебя от боли быть непонятым.</p>
+          <div class="advice">💡 <b>Практика:</b> Положи руку на горло и тихо промычи «М-м-м» 30 секунд.</div>
         </div>
       </div>
     </div>
 
-    <!-- Карточка 2 -->
     <div class="flip-card card-2" onclick="this.classList.toggle('flipped')">
       <div class="flip-card-inner">
         <div class="flip-card-front">
-          <div class="icon">🫀</div>
-          <h3>Тяжесть в груди</h3>
-          <p>Ощущение пустоты, тоска</p>
-          <div class="tap-hint">Нажми, чтобы узнать →</div>
+          <div class="icon">🫀</div><h3>Тяжесть в груди</h3><p>Ощущение пустоты, тоска</p><div class="tap-hint">Нажми →</div>
         </div>
         <div class="flip-card-back">
-          <h4>🔍 Что это значит</h4>
-          <p>Маркер <b>покинутости</b> или одиночества. Когда-то ты чувствовал(а), что тебя бросили, и тело до сих пор сжимается в груди.</p>
-          <div class="advice">💡 <b>Практика:</b> Обними себя крест-накрест руками, похлопывая по плечам. Это техника «бабочка», она дает ощущение безопасности и тепла.</div>
+          <h4>🔍 Покинутость</h4><p>Тело сжимается в груди, вспоминая моменты, когда ты чувствовал(а) себя брошенным(ой).</p>
+          <div class="advice">💡 <b>Практика:</b> Обними себя крест-накрест и похлопай по плечам (техника «бабочка»).</div>
         </div>
       </div>
     </div>
 
-    <!-- Карточка 3 -->
     <div class="flip-card card-3" onclick="this.classList.toggle('flipped')">
       <div class="flip-card-inner">
         <div class="flip-card-front">
-          <div class="icon">😬</div>
-          <h3>Зажатая челюсть</h3>
-          <p>Скрежет зубами, каменные плечи</p>
-          <div class="tap-hint">Нажми, чтобы узнать →</div>
+          <div class="icon">😬</div><h3>Зажатая челюсть</h3><p>Каменные плечи, скрежет</p><div class="tap-hint">Нажми →</div>
         </div>
         <div class="flip-card-back">
-          <h4>🔍 Что это значит</h4>
-          <p>Маркер <b>предательства</b> или невысказанной злости. Ты держишь удар, но не можешь ответить обидчику, поэтому напряжение копится в челюсти.</p>
-          <div class="advice">💡 <b>Практика:</b> Представь, что кусаешь лимон. Напряги челюсть на 5 секунд, а потом резко расслабь. Повтори 5 раз. Выдохни с облегчением.</div>
+          <h4>🔍 Предательство</h4><p>Невысказанная злость. Ты держишь удар, но не можешь ответить, напряжение копится.</p>
+          <div class="advice">💡 <b>Практика:</b> Напряги челюсть на 5 секунд (представь лимон), потом резко расслабь. 5 раз.</div>
         </div>
       </div>
     </div>
 
-    <!-- Карточка 4 -->
     <div class="flip-card card-4" onclick="this.classList.toggle('flipped')">
       <div class="flip-card-inner">
         <div class="flip-card-front">
-          <div class="icon">🧎</div>
-          <h3>Зажатый живот</h3>
-          <p>Желание сжаться в комок</p>
-          <div class="tap-hint">Нажми, чтобы узнать →</div>
+          <div class="icon">🧎</div><h3>Зажатый живот</h3><p>Желание сжаться в комок</p><div class="tap-hint">Нажми →</div>
         </div>
         <div class="flip-card-back">
-          <h4>🔍 Что это значит</h4>
-          <p>Маркер <b>унижения</b> или стыда. Когда-то тебя могли заставить чувствовать себя маленьким(ой) и уязвимым(ой), и тело пытается защитить живот.</p>
-          <div class="advice">💡 <b>Практика:</b> Положи теплую руку на живот. Дыши так, чтобы поднималась именно рука (дыхание животом), а не грудь. Скажи себе: «Я в безопасности».</div>
+          <h4>🔍 Унижение</h4><p>Тебя могли заставить чувствовать себя маленьким(ой). Тело защищает самое уязвимое место.</p>
+          <div class="advice">💡 <b>Практика:</b> Положи теплую руку на живот, дыши так, чтобы поднималась рука. Скажи: «Я в безопасности».</div>
         </div>
       </div>
     </div>
 
-    <!-- Карточка 5 -->
     <div class="flip-card card-5" onclick="this.classList.toggle('flipped')">
       <div class="flip-card-inner">
         <div class="flip-card-front">
-          <div class="icon">🛡️</div>
-          <h3>Каменная спина</h3>
-          <p>Тело всегда настороже</p>
-          <div class="tap-hint">Нажми, чтобы узнать →</div>
+          <div class="icon">🛡️</div><h3>Каменная спина</h3><p>Тело всегда настороже</p><div class="tap-hint">Нажми →</div>
         </div>
         <div class="flip-card-back">
-          <h4>🔍 Что это значит</h4>
-          <p>Маркер <b>несправедливости</b>. Ты привык(ла) защищаться от всего мира, поэтому спина и шея находятся в постоянном тонусе, чтобы успеть дать отпор.</p>
-          <div class="advice">💡 <b>Практика:</b> Встань, наклонись вперед, округли спину (как кошка), почувствуй, как растягивается позвоночник. Повиси так 30 секунд, затем выпрямись.</div>
+          <h4>🔍 Несправедливость</h4><p>Ты привык(ла) защищаться от всего мира, поэтому спина в постоянном тонусе.</p>
+          <div class="advice">💡 <b>Практика:</b> Встань, округли спину (как кошка), повиси 30 секунд, затем выпрямись.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- МЫСЛИТЕЛЬНЫЕ ЛОВУШКИ -->
+    <div class="flip-card card-6" onclick="this.classList.toggle('flipped')">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <div class="icon">🎭</div><h3>Синдром самозванца</h3><p>«Мне просто повезло»</p><div class="tap-hint">Нажми →</div>
+        </div>
+        <div class="flip-card-back">
+          <h4>🔍 Обесценивание</h4><p>Ты приписываешь успех случаю, а не своим усилиям. Мозг боится, что «раскусят».</p>
+          <div class="advice">💡 <b>Практика:</b> Выпиши 3 факта, где ты реально приложил(а) усилия, чтобы получить результат.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card card-7" onclick="this.classList.toggle('flipped')">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <div class="icon">🌪️</div><h3>Катастрофизация</h3><p>«Если не сдам — всё рухнет»</p><div class="tap-hint">Нажми →</div>
+        </div>
+        <div class="flip-card-back">
+          <h4>🔍 Преувеличение</h4><p>Мозг рисует апокалипсис из-за обычной контрольной. Он просто пытается тебя защитить, но перегибает.</p>
+          <div class="advice">💡 <b>Практика:</b> Спроси себя: «Что самое страшное случится? И как я буду действовать?»</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="flip-card card-8" onclick="this.classList.toggle('flipped')">
+      <div class="flip-card-inner">
+        <div class="flip-card-front">
+          <div class="icon">⚫</div><h3>Черно-белое мышление</h3><p>«Или идеально, или никак»</p><div class="tap-hint">Нажми →</div>
+        </div>
+        <div class="flip-card-back">
+          <h4>🔍 Перфекционизм</h4><p>Мир не делится на «отлично» и «ужасно». Если ты получил 4, а не 5 — ты все равно молодец.</p>
+          <div class="advice">💡 <b>Практика:</b> Замени слово «должен» на «хорошо бы». «Я должен сдать на 5» → «Хорошо бы сдать на 5».</div>
         </div>
       </div>
     </div>
@@ -255,17 +183,9 @@
 </main>
 
 <script>
-  // Добавляем визуальный эффект при наведении (для ПК)
   document.querySelectorAll('.flip-card').forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      if (window.innerWidth > 768) {
-        card.style.transform = 'translateY(-5px)';
-        card.style.transition = 'transform 0.3s';
-      }
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'translateY(0)';
-    });
+    card.addEventListener('mouseenter', () => { if (window.innerWidth > 768) card.style.transform = 'translateY(-5px)'; });
+    card.addEventListener('mouseleave', () => { card.style.transform = 'translateY(0)'; });
   });
 </script>
 <script src="ui-upgrade.js"></script>
