@@ -49,7 +49,7 @@
   toolsPopup.id = 'toolsPopup';
   toolsPopup.className = 'tools-popup';
   toolsPopup.innerHTML = `
-    <a href="panic-help.html">🚨 SOS Помощь</a> 
+    <a href="panic.html">🚨 SOS Помощь</a> 
     <a href="breathing.html">🌿 Дыхание</a>
     <a href="budget.html">💰 Бюджет</a>
     <a href="balance-wheel.html">🎡 Колесо</a>
