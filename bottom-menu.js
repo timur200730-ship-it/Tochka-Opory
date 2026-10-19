@@ -236,13 +236,14 @@
   toolsPopup.innerHTML = `
     <a href="breathing.html">${svg.leaf} Дыхание</a>
     <a href="budget.html">${svg.money} Бюджет</a>
-    <a href="balance-wheel.html">${svg.wheel} Колесо</a>
+    <a href="balance-wheel.html">${svg.wheel} Колесо баланса</a>
     <a href="challenges.html">${svg.trophy} Челленджи</a>
     <a href="scam-game.html">${svg.spy} Мошенник</a>
     <a href="habit-calculator.html">${svg.bad} Привычки</a>
-    <a href="cbt-diary.html">📝 Дневник</a>
+    <a href="body-map.html">🧠 Карта тела</a>
     <a href="emotion-wheel.html">🎡 Эмоции</a>
     <a href="salary-simulator.html">💸 Зарплата</a>
+    <a href="cbt-diary.html">📝 Дневник</a>
   `;
   document.body.appendChild(toolsPopup);
 
