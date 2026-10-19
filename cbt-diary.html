@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Дневник мыслей — Точка опоры</title>
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+  :root{ --bg:#0b0b12; --card:rgba(255,255,255,.06); --stroke:rgba(255,255,255,.12); --text:#f2f2f7; --muted:#a1a1b5; --accent:#7c5cff; --accent-2:#4ad6c8; --radius:20px; --ff:'Inter',sans-serif; }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.5;padding-bottom:80px; min-height:100vh;}
+  .container{max-width:640px;margin:0 auto;padding:0 20px}
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.75);border-bottom:1px solid var(--stroke);padding:0 20px;}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1100px;margin:0 auto;}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:inherit;}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));}
+  .back-btn{font-size:14px;color:var(--muted);text-decoration:none;}
+  .page-head{padding:40px 0 20px;text-align:center}
+  .page-head h1{font-size:28px;font-weight:800;margin-bottom:12px}
+  .page-head p{color:var(--muted);font-size:15px}
+  
+  .diary-form{background:var(--card); border:1px solid var(--stroke); border-radius:24px; padding:24px; margin-bottom:30px;}
+  .input-group{margin-bottom:20px;}
+  .input-group label{display:block; font-size:14px; font-weight:600; margin-bottom:8px; color:var(--accent-2);}
+  .input-group textarea, .input-group select, .input-group input[type="range"]{
+    width:100%; padding:14px; border-radius:12px; background:rgba(0,0,0,.3); border:1px solid var(--stroke); color:var(--text); font-family:inherit; font-size:15px;
+  }
+  .input-group textarea{resize:vertical; min-height:80px;}
+  .input-group textarea:focus{outline:none; border-color:var(--accent-2);}
+  
+  .emotion-row{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .range-wrap{display:flex; align-items:center; gap:12px;}
+  .range-val{font-weight:800; color:var(--accent-2); min-width:30px; text-align:center;}
+
+  .btn{width:100%; padding:16px; border-radius:14px; font-size:16px; font-weight:700; background:linear-gradient(135deg,var(--accent),#5f3dff); color:#fff; border:none; cursor:pointer; box-shadow:0 10px 30px rgba(124,92,255,.3); transition:.2s;}
+  .btn:hover{transform:translateY(-2px); opacity:.95;}
+
+  .saved-entries{margin-top:40px;}
+  .saved-entries h3{font-size:20px; font-weight:800; margin-bottom:16px;}
+  .entry-card{background:rgba(255,255,255,.03); border:1px solid var(--stroke); border-radius:16px; padding:20px; margin-bottom:16px; position:relative;}
+  .entry-date{font-size:12px; color:var(--muted); margin-bottom:10px;}
+  .entry-block{margin-bottom:12px;}
+  .entry-block .lbl{font-size:12px; color:var(--accent-2); font-weight:700; text-transform:uppercase; display:block; margin-bottom:4px;}
+  .entry-block .val{font-size:14.5px;}
+  .entry-delete{position:absolute; top:16px; right:16px; color:var(--muted); cursor:pointer; background:none; border:none; font-size:16px;}
+  .entry-delete:hover{color:#ff5c8a;}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><div class="logo-mark"></div>Точка опоры</a>
+    <a href="index.html" class="back-btn">✕ Выйти</a>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-head">
+    <h1>📝 Дневник мыслей</h1>
+    <p>Мозг часто путает реальность и тревожную фантазию. Выпиши мысль и посмотри на неё со стороны.</p>
+  </div>
+
+  <div class="diary-form" id="formArea">
+    <div class="input-group">
+      <label>1. Что произошло? (Только факты)</label>
+      <textarea id="situation" placeholder="Например: я получил 3 за контрольную по математике"></textarea>
+    </div>
+    <div class="input-group">
+      <label>2. Какая мысль возникла? (Что ты подумал?)</label>
+      <textarea id="thought" placeholder="Например: я полный неудачник, я никогда не сдам сессию, отчислят"></textarea>
+    </div>
+    
+    <div class="emotion-row">
+      <div class="input-group">
+        <label>3. Какая эмоция?</label>
+        <select id="emotion">
+          <option>Тревога</option>
+          <option>Злость</option>
+          <option>Грусть</option>
+          <option>Стыд</option>
+          <option>Вина</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label>Сила (1-10)</label>
+        <div class="range-wrap">
+          <input type="range" id="intensity" min="1" max="10" value="5" oninput="document.getElementById('intVal').textContent = this.value">
+          <div class="range-val" id="intVal">5</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="input-group">
+      <label>4. Рациональный ответ (Как бы ты успокоил друга?)</label>
+      <textarea id="rational" placeholder="Например: одна плохая оценка не отменяет мои знания. Я могу исправить её на пересдаче. Я не неудачник."></textarea>
+    </div>
+
+    <button class="btn" onclick="saveEntry()">Сохранить в тетрадь</button>
+  </div>
+
+  <div class="saved-entries">
+    <h3>Твои записи</h3>
+    <div id="entriesList"></div>
+  </div>
+</main>
+
+<script>
+const Store = {
+  KEY: 'tochka_opory_v1', data: {},
+  load(){ try { const raw = localStorage.getItem(this.KEY); this.data = raw ? JSON.parse(raw) : {}; } catch(e){ this.data = {}; } if(!this.data.cbtEntries) this.data.cbtEntries = []; return this.data; },
+  save(){ try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch(e){} },
+  addXP(n){ this.data.xp = (this.data.xp || 0) + n; this.save(); }
+};
+
+Store.load();
+document.getElementById('navXP').textContent = Store.data.xp || 0;
+
+function saveEntry() {
+  const sit = document.getElementById('situation').value.trim();
+  const th = document.getElementById('thought').value.trim();
+  const em = document.getElementById('emotion').value;
+  const int = document.getElementById('intensity').value;
+  const rat = document.getElementById('rational').value.trim();
+
+  if (!sit || !th || !rat) { alert('Заполни хотя бы ситуацию, мысль и рациональный ответ'); return; }
+
+  const entry = { id: Date.now(), date: new Date().toLocaleDateString('ru-RU', {day:'numeric', month:'long', hour:'2-digit', minute:'2-digit'}), sit, th, em, int, rat };
+  
+  Store.data.cbtEntries.unshift(entry);
+  Store.addXP(15);
+  Store.save();
+
+  document.getElementById('navXP').textContent = Store.data.xp;
+  clearForm();
+  renderEntries();
+  alert('Запись сохранена в тетрадь! +15 XP');
+}
+
+function clearForm() {
+  ['situation', 'thought', 'rational'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('intensity').value = 5;
+  document.getElementById('intVal').textContent = '5';
+}
+
+function deleteEntry(id) {
+  if (!confirm('Удалить эту запись?')) return;
+  Store.data.cbtEntries = Store.data.cbtEntries.filter(e => e.id !== id);
+  Store.save();
+  renderEntries();
+}
+
+function renderEntries() {
+  const list = document.getElementById('entriesList');
+  if (Store.data.cbtEntries.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted);font-size:14px;text-align:center;padding:20px;border:1px dashed var(--stroke);border-radius:16px;">Пока нет записей. Это нормально — пиши, когда будет трудная ситуация.</div>';
+    return;
+  }
+  list.innerHTML = Store.data.cbtEntries.map(e => `
+    <div class="entry-card">
+      <button class="entry-delete" onclick="deleteEntry(${e.id})">✕</button>
+      <div class="entry-date">${e.date} · Сила эмоции: ${e.int}/10</div>
+      <div class="entry-block"><span class="lbl">Ситуация</span><span class="val">${e.sit}</span></div>
+      <div class="entry-block"><span class="lbl">Автоматическая мысль</span><span class="val" style="color:#ff9dba;">«${e.th}»</span></div>
+      <div class="entry-block"><span class="lbl">Ответ</span><span class="val" style="color:var(--accent-2);">${e.rat}</span></div>
+    </div>
+  `).join('');
+}
+
+renderEntries();
+</script>
+<script src="ui-upgrade.js"></script>
+<script src="bottom-menu.js"></script>
+</body>
+</html>
