@@ -9,247 +9,192 @@
 <link rel="icon" href="icon.svg" type="image/svg+xml" />
 <style>
   :root{
-    --bg:#0b0b12; --text:#f2f2f7; --muted:#a1a1b5; 
-    --accent:#7c5cff; --accent-2:#4ad6c8; --soft:#1c1c24;
+    --bg:#0b0b12; --text:#f2f2f7; --muted:#a1a1b5; --accent:#7c5cff; --accent-2:#4ad6c8; --err:#ff5c8a;
     --ff:'Inter',system-ui,sans-serif;
   }
   *{box-sizing:border-box;margin:0;padding:0}
-  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.6;-webkit-font-smoothing:antialiased; height: 100%; overflow: hidden;}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.6;-webkit-font-smoothing:antialiased; min-height:100vh;}
   
+  /* Убрали центрирование flex, чтобы страница нормально скроллилась */
   body{
-    background: radial-gradient(circle at 50% 50%, rgba(74,214,200,0.05) 0%, rgba(11,11,18,1) 70%);
-    display: flex; flex-direction: column;
+    background:radial-gradient(800px 600px at 50% 50%, rgba(124,92,255,.1), transparent 80%), var(--bg);
+    padding: 20px 20px 120px 20px; /* Добавили большой отступ снизу, чтобы кнопки не уходили под меню */
   }
-
-  /* Верхняя панель (минимализм) */
-  .top-bar {
-    position: fixed; top: 0; left: 0; right: 0;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 20px; z-index: 100;
-  }
-  .close-btn {
-    display: flex; align-items: center; gap: 8px;
-    color: var(--muted); text-decoration: none; font-size: 15px;
-    padding: 8px 16px; border-radius: 20px; background: rgba(255,255,255,0.05);
-    transition: .2s;
-  }
-  .close-btn:hover { background: rgba(255,255,255,0.1); color: var(--text); }
-
-  /* Контейнер для шагов */
-  .step-container {
-    flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 20px; text-align: center; max-width: 500px; margin: 0 auto; width: 100%;
-    animation: fadeIn .6s ease;
-  }
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-  h1 { font-size: clamp(24px, 5vw, 32px); font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
-  p { font-size: 16px; color: var(--muted); margin-bottom: 30px; }
-
-  /* Кнопки */
-  .btn-main {
-    display: inline-flex; align-items: center; justify-content: center;
-    padding: 18px 32px; border-radius: 999px; font-size: 18px; font-weight: 700;
-    background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #08110f;
-    border: none; cursor: pointer; width: 100%; max-width: 300px;
-    box-shadow: 0 10px 30px rgba(74,214,200,0.3); transition: .2s;
-  }
-  .btn-main:hover { transform: translateY(-2px); opacity: 0.95; }
   
-  .btn-ghost {
-    background: rgba(255,255,255,0.05); color: var(--text); border: 1px solid rgba(255,255,255,0.1);
-    box-shadow: none; margin-top: 16px; font-size: 15px; padding: 14px 24px;
-  }
+  .sos-container { max-width: 500px; width: 100%; margin: 0 auto; text-align: center; animation: fadeIn 0.8s ease; }
+  @keyframes fadeIn { from{opacity:0; transform:translateY(10px)} to{opacity:1; transform:none} }
 
-  /* Шаг 1: Дыхание */
-  .breath-circle {
+  .sos-header { font-size: 20px; font-weight: 800; color: var(--err); margin-bottom: 20px; letter-spacing: 1px; text-transform: uppercase;}
+  .sos-header::before { content: "🚨"; margin-right: 10px; }
+
+  .step-box { display: none; }
+  .step-box.active { display: block; animation: fadeIn 0.5s ease; }
+
+  .step-title { font-size: 26px; font-weight: 800; margin-bottom: 16px; line-height: 1.2; }
+  .step-desc { font-size: 15px; color: var(--muted); margin-bottom: 30px; }
+
+  /* КРУГ ДЛЯ ДЫХАНИЯ */
+  .breathing-circle {
     width: 180px; height: 180px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(74,214,200,0.3) 0%, rgba(74,214,200,0) 70%);
-    border: 2px solid rgba(74,214,200,0.5);
-    display: grid; place-items: center;
-    margin: 40px auto; position: relative;
-    transition: transform 4s linear;
-  }
-  .breath-circle::after {
-    content: ''; position: absolute; inset: -20px;
-    border-radius: 50%; border: 1px solid rgba(74,214,200,0.1);
-  }
-  .breath-text { font-size: 20px; font-weight: 700; color: var(--accent-2); }
-  
-  /* Шаг 2: Заземление */
-  .grounding-list {
-    display: flex; flex-direction: column; gap: 12px; width: 100%; margin-bottom: 30px;
-  }
-  .grounding-item {
-    background: var(--soft); border: 1px solid rgba(255,255,255,0.05);
-    border-radius: 16px; padding: 16px 20px; display: flex; align-items: center; gap: 16px;
-    text-align: left; font-size: 15px; color: var(--muted); transition: .3s;
-  }
-  .grounding-item .num {
-    width: 32px; height: 32px; border-radius: 50%; background: rgba(124,92,255,0.15);
-    color: var(--accent); font-weight: 800; display: grid; place-items: center; flex-shrink: 0;
-  }
-  .grounding-item.done {
-    border-color: rgba(74,214,200,0.3); color: var(--text);
-  }
-  .grounding-item.done .num {
-    background: var(--accent-2); color: #08110f;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(124,92,255,0.4));
+    border: 2px solid var(--accent);
+    box-shadow: 0 0 40px rgba(124,92,255,0.4);
+    margin: 0 auto 30px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 800; color: #fff;
+    transform: scale(0.8); /* Исходный размер */
   }
 
-  /* Шаг 3: Поддержка */
-  .support-buttons { display: flex; flex-direction: column; gap: 12px; width: 100%; margin-top: 20px; }
-  .support-btn {
+  /* CSS-АНИМАЦИИ (работают идеально на всех телефонах) */
+  @keyframes breatheIn {
+    from { transform: scale(0.8); background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(124,92,255,0.4)); }
+    to { transform: scale(1.15); background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), rgba(74,214,200,0.5)); }
+  }
+  @keyframes breatheOut {
+    from { transform: scale(1.15); background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), rgba(74,214,200,0.5)); }
+    to { transform: scale(0.8); background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(124,92,255,0.4)); }
+  }
+
+  .circle-inhale { animation: breatheIn 4s linear forwards; }
+  .circle-exhale { animation: breatheOut 6s linear forwards; }
+
+  /* СПИСОК ЗАЗЕМЛЕНИЯ */
+  .grounding-list { display: flex; flex-direction: column; gap: 12px; text-align: left; margin-bottom: 30px; }
+  .grounding-item {
     background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1);
     padding: 16px; border-radius: 16px; display: flex; align-items: center; gap: 16px;
-    text-decoration: none; color: var(--text); font-size: 15px; transition: .2s;
+    font-size: 15px; transition: 0.3s; cursor: pointer;
   }
-  .support-btn:hover { background: rgba(255,255,255,0.1); }
-  .support-btn .icon { font-size: 24px; }
-  .support-btn .text { text-align: left; }
-  .support-btn .text b { display: block; font-size: 16px; color: var(--accent-2); }
-  .support-btn .text span { font-size: 13px; color: var(--muted); }
+  .grounding-item.done { background: rgba(74,214,200,0.1); border-color: var(--accent-2); opacity: 0.6; }
+  .grounding-item .num {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--accent); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; flex-shrink: 0;
+  }
+  .grounding-item.done .num { background: var(--accent-2); }
 
-  .hidden { display: none !important; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    width: 100%; padding: 18px; border-radius: 16px; font-size: 17px; font-weight: 700;
+    background: rgba(255,255,255,0.1); color: #fff; border: none; cursor: pointer;
+    transition: 0.2s; margin-bottom: 12px;
+  }
+  .btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 10px 30px rgba(124,92,255,0.3); }
+  .btn-primary:hover { background: #6b4ce6; }
+  .btn-danger { background: var(--err); color: #fff; box-shadow: 0 10px 30px rgba(255,92,138,0.3); }
+  .btn-danger:hover { background: #e04471; }
+  
+  .phone-link { display: block; font-size: 20px; font-weight: 800; color: var(--text); text-decoration: none; margin-top: 20px; margin-bottom: 20px; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 16px; border: 1px solid var(--err); }
+  .phone-link span { color: var(--err); }
+
+  .nav-back { position: fixed; top: 20px; left: 20px; color: var(--muted); text-decoration: none; font-size: 14px; font-weight: 600; z-index: 10; background: rgba(11,11,18,0.8); padding: 8px 12px; border-radius: 10px; backdrop-filter: blur(10px); }
 </style>
 </head>
 <body>
 
-<div class="top-bar">
-  <div></div> <!-- Пустое место для баланса -->
-  <a href="index.html" class="close-btn">✕ Выйти</a>
-</div>
+<a href="index.html" class="nav-back">← На главную</a>
 
-<!-- ШАГ 1: Введение -->
-<div class="step-container" id="step-intro">
-  <h1>Ты в безопасности.</h1>
-  <p>Если сейчас тяжело, накрывает паника или тревога — давай сделаем несколько простых шагов вместе. Это займёт всего пару минут.</p>
-  <button class="btn-main" onclick="startBreathing()">Начать</button>
-</div>
-
-<!-- ШАГ 2: Дыхание -->
-<div class="step-container hidden" id="step-breath">
-  <h1>Дыши вместе с кругом</h1>
-  <p>Медленный выдох помогает телу успокоиться. Просто следуй за анимацией.</p>
+<div class="sos-container">
   
-  <div class="breath-circle" id="breathCircle">
-    <span class="breath-text" id="breathText">Вдох</span>
-  </div>
-  
-  <button class="btn-main btn-ghost" onclick="startGrounding()">Я справился, дальше →</button>
-</div>
-
-<!-- ШАГ 3: Заземление -->
-<div class="step-container hidden" id="step-grounding">
-  <h1>Вернись в настоящий момент</h1>
-  <p>Тревога живет в будущем. Настоящее — только здесь. Нажми на каждый пункт, чтобы выполнить его.</p>
-  
-  <div class="grounding-list">
-    <div class="grounding-item" onclick="this.classList.toggle('done')">
-      <div class="num">5</div>
-      <div>вещей, которые ты видишь прямо сейчас</div>
-    </div>
-    <div class="grounding-item" onclick="this.classList.toggle('done')">
-      <div class="num">4</div>
-      <div>звука, которые ты слышишь</div>
-    </div>
-    <div class="grounding-item" onclick="this.classList.toggle('done')">
-      <div class="num">3</div>
-      <div>предмета, которых ты можешь коснуться</div>
-    </div>
-    <div class="grounding-item" onclick="this.classList.toggle('done')">
-      <div class="num">2</div>
-      <div>запаха, которые ты ощущаешь</div>
-    </div>
-    <div class="grounding-item" onclick="this.classList.toggle('done')">
-      <div class="num">1</div>
-      <div>вкус во рту</div>
-    </div>
-  </div>
-  
-  <button class="btn-main btn-ghost" onclick="startSupport()">Стало легче, дальше →</button>
-</div>
-
-<!-- ШАГ 4: Контакты -->
-<div class="step-container hidden" id="step-support">
-  <h1>Ты справился.</h1>
-  <p>Ты сделал важный шаг — вернул контроль над телом. Если тяжесть осталась, ты можешь поговорить с теми, кто умеет слушать.</p>
-  
-  <div class="support-buttons">
-    <a href="tel:88002000122" class="support-btn">
-      <div class="icon">📞</div>
-      <div class="text">
-        <b>8 800 2000 122</b>
-        <span>Телефон доверия (бесплатно, анонимно)</span>
+  <!-- ШАГ 1: ЗАЗЕМЛЕНИЕ -->
+  <div class="step-box active" id="step1">
+    <div class="sos-header">Ты в безопасности</div>
+    <div class="step-title">Давай вернемся в «здесь и сейчас»</div>
+    <div class="step-desc">Тревога живет в будущем. Нажимай на каждый пункт, чтобы выполнить его.</div>
+    
+    <div class="grounding-list">
+      <div class="grounding-item" onclick="this.classList.add('done')">
+        <div class="num">5</div> <div>вещей, которые ты видишь прямо сейчас</div>
       </div>
-    </a>
-    <a href="tel:112" class="support-btn">
-      <div class="icon">🚑</div>
-      <div class="text">
-        <b>112</b>
-        <span>Экстренные службы (если опасность)</span>
+      <div class="grounding-item" onclick="this.classList.add('done')">
+        <div class="num">4</div> <div>звука, которые ты слышишь</div>
       </div>
-    </a>
-    <a href="module-sup.html" class="support-btn">
-      <div class="icon">🛟</div>
-      <div class="text">
-        <b>Модуль «Поддержка»</b>
-        <span>Скрипты разговора и безопасный план</span>
+      <div class="grounding-item" onclick="this.classList.add('done')">
+        <div class="num">3</div> <div>предмета, которых ты можешь коснуться</div>
       </div>
-    </a>
+      <div class="grounding-item" onclick="this.classList.add('done')">
+        <div class="num">2</div> <div>запаха, которые ты ощущаешь</div>
+      </div>
+      <div class="grounding-item" onclick="this.classList.add('done')">
+        <div class="num">1</div> <div>вкус во рту</div>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" onclick="nextStep(2)">Стало легче, идем дальше →</button>
   </div>
-  
-  <button class="btn-main btn-ghost" onclick="location.href='index.html'" style="margin-top: 30px;">Вернуться на главную</button>
+
+  <!-- ШАГ 2: ДЫХАНИЕ -->
+  <div class="step-box" id="step2">
+    <div class="sos-header">Дыхание</div>
+    <div class="step-title">Успокоим тело</div>
+    <div class="step-desc">Дыши вместе с кругом. Вдох на 4 счета, выдох на 6. Это включит режим покоя.</div>
+    
+    <div class="breathing-circle" id="circle">Вдох</div>
+
+    <button class="btn btn-primary" onclick="startBreathing()" id="btnBreath">Начать дыхание</button>
+    <button class="btn" onclick="nextStep(3)">Я справился(ась), дальше →</button>
+  </div>
+
+  <!-- ШАГ 3: ПОДДЕРЖКА -->
+  <div class="step-box" id="step3">
+    <div class="sos-header">Мы рядом</div>
+    <div class="step-title">Ты не один</div>
+    <div class="step-desc">Ты проделал(а) большую работу. Если тебе все еще тяжело, пожалуйста, позвони. Это бесплатно и анонимно.</div>
+    
+    <a href="tel:88002000122" class="phone-link">📞 Позвонить: <span>8 800 2000 122</span></a>
+    
+    <button class="btn btn-danger" onclick="location.href='index.html'">Вернуться на главную</button>
+  </div>
+
 </div>
 
 <script>
-let breathInterval;
-let isInhaling = true;
+  function nextStep(num) {
+    document.querySelectorAll('.step-box').forEach(el => el.classList.remove('active'));
+    document.getElementById('step' + num).classList.add('active');
+    window.scrollTo({top: 0, behavior: 'smooth'});
+  }
 
-function showStep(id) {
-  document.querySelectorAll('.step-container').forEach(el => el.classList.add('hidden'));
-  document.getElementById('step-' + id).classList.remove('hidden');
-}
+  let breathingInterval = null;
+  let isBreathing = false;
+  const circle = document.getElementById('circle');
+  const btnBreath = document.getElementById('btnBreath');
 
-function startBreathing() {
-  showStep('breath');
-  const circle = document.getElementById('breathCircle');
-  const text = document.getElementById('breathText');
-  
-  let seconds = 0;
-  
-  // Простая анимация 4-7-8 (упрощенная до вдох-выдох для паники)
-  breathInterval = setInterval(() => {
-    seconds++;
-    if (seconds % 8 === 0) {
-      // Каждые 8 секунд меняем состояние
-      if (isInhaling) {
-        // Выдох
-        circle.style.transform = 'scale(0.7)';
-        circle.style.transition = 'transform 4s ease-in-out';
-        text.textContent = 'Выдох';
-        isInhaling = false;
-      } else {
-        // Вдох
-        circle.style.transform = 'scale(1.2)';
-        circle.style.transition = 'transform 4s ease-in-out';
-        text.textContent = 'Вдох';
-        isInhaling = true;
-      }
+  function startBreathing() {
+    if (isBreathing) {
+      clearInterval(breathingInterval);
+      isBreathing = false;
+      btnBreath.textContent = 'Начать дыхание';
+      circle.className = 'breathing-circle';
+      circle.textContent = 'Вдох';
+      return;
     }
-  }, 1000);
-}
 
-function startGrounding() {
-  clearInterval(breathInterval);
-  // Сбрасываем анимацию
-  document.getElementById('breathCircle').style.transform = 'scale(1)';
-  showStep('grounding');
-}
+    isBreathing = true;
+    btnBreath.textContent = 'Остановить';
+    
+    function cycle() {
+      if (!isBreathing) return;
+      
+      // Вдох (4 секунды)
+      circle.className = 'breathing-circle circle-inhale';
+      circle.textContent = 'Вдох';
 
-function startSupport() {
-  showStep('support');
-}
+      // Через 4 секунды меняем на выдох
+      setTimeout(() => {
+        if (!isBreathing) return;
+        // Выдох (6 секунд)
+        circle.className = 'breathing-circle circle-exhale';
+        circle.textContent = 'Выдох';
+      }, 4000);
+    }
+
+    cycle();
+    // Полный цикл (вдох 4 + выдох 6) = 10 секунд
+    breathingInterval = setInterval(cycle, 10000); 
+  }
 </script>
+<script src="ui-upgrade.js"></script>
 <script src="bottom-menu.js"></script>
 </body>
 </html>
