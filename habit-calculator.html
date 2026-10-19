@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Калькулятор вредных привычек — Точка опоры</title>
+<meta name="theme-color" content="#0b0b12" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+  :root{
+    --bg:#0b0b12; --card:rgba(255,255,255,.06); --stroke:rgba(255,255,255,.12);
+    --text:#f2f2f7; --muted:#a1a1b5; --accent:#7c5cff; --accent-2:#4ad6c8; --err:#ff5c8a;
+    --radius:20px; --ff:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.5;-webkit-font-smoothing:antialiased}
+  body{background:radial-gradient(1200px 600px at 10% -10%, rgba(74,214,200,.15), transparent 60%), radial-gradient(900px 500px at 100% 10%, rgba(124,92,255,.15), transparent 60%), var(--bg); min-height:100vh; padding-bottom:80px}
+  a{color:inherit;text-decoration:none}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+  .container{max-width:640px;margin:0 auto;padding:0 20px}
+
+  header{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);background:rgba(11,11,18,.75);border-bottom:1px solid var(--stroke)}
+  .nav{display:flex;align-items:center;justify-content:space-between;height:64px;gap:16px;max-width:1100px;margin:0 auto;padding:0 20px}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800}
+  .logo-mark{width:32px;height:32px;border-radius:10px;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 6px 20px rgba(124,92,255,.5)}
+  .back-btn{font-size:14px;color:var(--muted);padding:8px 12px;border-radius:10px;transition:.2s}
+  .back-btn:hover{color:var(--text);background:var(--card)}
+
+  .page-head{padding:40px 0 20px;text-align:center}
+  .page-head h1{font-size:clamp(26px,4vw,36px);font-weight:800;margin-bottom:12px}
+  .page-head p{color:var(--muted);font-size:15px;max-width:500px;margin:0 auto}
+
+  .calc-card{background:var(--card); border:1px solid var(--stroke); border-radius:24px; padding:30px; margin-bottom:24px;}
+  
+  .input-group{margin-bottom:24px;}
+  .input-group label{display:flex; justify-content:space-between; font-size:15px; font-weight:600; margin-bottom:10px;}
+  .input-group label span{color:var(--accent-2);}
+  .input-group input{
+    width:100%; padding:16px; border-radius:14px; font-size:18px; font-weight:700;
+    background:rgba(0,0,0,.3); border:1px solid var(--stroke); color:var(--text);
+    transition:.2s; font-family:inherit;
+  }
+  .input-group input:focus{outline:none; border-color:var(--accent-2); background:rgba(0,0,0,.5);}
+  .input-group input::placeholder{font-weight:400; font-size:15px; color:var(--muted);}
+
+  .results-box{
+    background:linear-gradient(135deg, rgba(255,92,138,.15), rgba(255,181,71,.1));
+    border:1px solid rgba(255,92,138,.3); border-radius:24px; padding:30px;
+    text-align:center; display:none; animation:fadeIn .5s ease; margin-bottom:24px;
+  }
+  @keyframes fadeIn{from{opacity:0;transform:translateY(15px)}to{opacity:1;transform:none}}
+  
+  .results-box h3{font-size:16px; color:var(--muted); text-transform:uppercase; letter-spacing:1px; margin-bottom:10px;}
+  .total-year{font-size:48px; font-weight:800; color:var(--err); line-height:1; margin-bottom:6px; letter-spacing:-1px;}
+  .total-month{font-size:18px; color:var(--text); font-weight:600; margin-bottom:24px;}
+  
+  .equivalent{display:flex; flex-direction:column; gap:12px; text-align:left;}
+  .equiv-item{
+    background:rgba(0,0,0,.2); border:1px solid var(--stroke); border-radius:14px;
+    padding:16px; display:flex; gap:14px; align-items:center;
+  }
+  .equiv-item .icon{font-size:24px;}
+  .equiv-item .text{font-size:14.5px; color:var(--text); line-height:1.4;}
+  .equiv-item .text b{color:var(--accent-2);}
+
+  @media (max-width: 480px) {
+    .total-year{font-size:36px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="nav">
+    <a class="logo" href="index.html"><div class="logo-mark"></div>Точка опоры</a>
+    <a href="module-fin.html" class="back-btn">✕ Выйти</a>
+  </div>
+</header>
+
+<main class="container">
+  <div class="page-head">
+    <h1>💸 Калькулятор вредных привычек</h1>
+    <p>Узнай, сколько денег на самом деле съедают твои ежедневные мелочи.</p>
+  </div>
+
+  <div class="tool-info" style="background: rgba(255,92,138,.08); border: 1px solid rgba(255,92,138,.25); border-radius: 16px; padding: 20px; margin-bottom: 30px; text-align: left;">
+    <h3 style="font-size: 15px; font-weight: 800; color: #f2f2f7; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">📖 Зачем это нужно?</h3>
+    <ul style="list-style: none; display: flex; flex-direction: column; gap: 10px; font-size: 13.5px; color: #a1a1b5; line-height: 1.5;">
+      <li style="display: flex; gap: 10px;"><span style="color: #ff5c8a; font-weight: 800;">•</span> <b>Что это:</b> Инструмент, который переводит ежедневные мелкие траты в масштаб года.</li>
+      <li style="display: flex; gap: 10px;"><span style="color: #ff5c8a; font-weight: 800;">•</span> <b>Зачем:</b> Мозг не воспринимает всерьез 200 рублей на кофе. Но когда ты видишь сумму за год, это отрезвляет.</li>
+      <li style="display: flex; gap: 10px;"><span style="color: #ff5c8a; font-weight: 800;">•</span> <b>Что делать:</b> Выбери одну привычку, от которой легче всего отказаться, и направь эти деньги на финансовую цель из 8-го урока.</li>
+    </ul>
+  </div>
+
+  <div class="calc-card">
+    <div class="input-group">
+      <label>☕ Кофе с собой <span>руб./день</span></label>
+      <input type="number" id="coffee" placeholder="Например: 200" oninput="calculate()">
+    </div>
+    <div class="input-group">
+      <label>🍔 Еда вне дома <span>руб./день</span></label>
+      <input type="number" id="food" placeholder="Например: 300" oninput="calculate()">
+    </div>
+    <div class="input-group">
+      <label>🚕 Такси <span>руб./неделя</span></label>
+      <input type="number" id="taxi" placeholder="Например: 800" oninput="calculate()">
+    </div>
+    <div class="input-group" style="margin-bottom:0;">
+      <label>🎮 Импульсивные покупки <span>руб./месяц</span></label>
+      <input type="number" id="impulse" placeholder="Например: 1500" oninput="calculate()">
+    </div>
+  </div>
+
+  <div class="results-box" id="results">
+    <h3>За год ты тратишь на это:</h3>
+    <div class="total-year" id="yearTotal">0 ₽</div>
+    <div class="total-month">Это <b id="monthTotal">0 ₽</b> каждый месяц</div>
+    
+    <div class="equivalent" id="equivalents">
+      <!-- Заполняется через JS -->
+    </div>
+  </div>
+
+</main>
+
+<script>
+const Store = {
+  KEY: 'tochka_opory_v1', data: {},
+  load(){ try { const raw = localStorage.getItem(this.KEY); this.data = raw ? JSON.parse(raw) : {}; } catch(e){ this.data = {}; } },
+  save(){ try { localStorage.setItem(this.KEY, JSON.stringify(this.data)); } catch(e){} },
+  addXP(n){ if(!this.data.xp) this.data.xp = 0; this.data.xp += n; this.save(); }
+};
+
+Store.load();
+
+function calculate() {
+  const coffee = parseFloat(document.getElementById('coffee').value) || 0;
+  const food = parseFloat(document.getElementById('food').value) || 0;
+  const taxi = parseFloat(document.getElementById('taxi').value) || 0;
+  const impulse = parseFloat(document.getElementById('impulse').value) || 0;
+
+  // Считаем в месяц (примерно 30 дней, 4 недели)
+  const monthly = (coffee * 30) + (food * 30) + (taxi * 4) + impulse;
+  const yearly = monthly * 12;
+
+  const resultsBox = document.getElementById('results');
+  
+  if (yearly === 0) {
+    resultsBox.style.display = 'none';
+    return;
+  }
+
+  resultsBox.style.display = 'block';
+  document.getElementById('yearTotal').textContent = yearly.toLocaleString('ru-RU') + ' ₽';
+  document.getElementById('monthTotal').textContent = monthly.toLocaleString('ru-RU') + ' ₽';
+
+  // Генерируем эквиваленты
+  const eqs = [];
+  
+  if (yearly >= 30000) {
+    eqs.push({ icon: '📱', text: `Хватит на новый <b>iPhone</b> или мощный ноутбук для учебы.` });
+  }
+  if (yearly >= 20000) {
+    eqs.push({ icon: '✈️', text: `Хватит на <b>поездку в Сочи</b> или другой город на неделю.` });
+  }
+  if (yearly >= 60000) {
+    eqs.push({ icon: '🚗', text: `Хватит на <b>первый взнос</b> за машину или оплату года в автошколе.` });
+  }
+  if (yearly >= 10000) {
+    eqs.push({ icon: '🎓', text: `Можно оплатить <b>онлайн-курсы</b> по твоей специальности и поднять свою ценность на рынке.` });
+  }
+  if (yearly >= 5000) {
+    eqs.push({ icon: '📚', text: `Хватит на <b>все учебники</b> и материалы на семестр.` });
+  }
+  
+  // Универсальный вариант, если сумма небольшая
+  if (eqs.length === 0) {
+    eqs.push({ icon: '🍕', text: `Хватит на <b>${Math.floor(yearly / 800)} больших пицц</b> с друзьями.` });
+  }
+
+  const eqContainer = document.getElementById('equivalents');
+  eqContainer.innerHTML = eqs.map(e => `
+    <div class="equiv-item">
+      <div class="icon">${e.icon}</div>
+      <div class="text">${e.text}</div>
+    </div>
+  `).join('');
+
+  // Начисляем XP один раз за использование, если была введена сумма больше 0
+  if (!Store.data.habitCalcUsed) {
+    Store.data.habitCalcUsed = true;
+    Store.addXP(10);
+  }
+}
+</script>
+<script src="ui-upgrade.js"></script>
+<script src="bottom-menu.js"></script>
+</body>
+</html>
