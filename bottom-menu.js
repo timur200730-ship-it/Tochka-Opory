@@ -235,6 +235,7 @@
   toolsPopup.className = 'tools-popup';
   toolsPopup.innerHTML = `
     <a href="breathing.html">${svg.leaf} Дыхание</a>
+    <a href="body-map.html">${svg.wheel} Карта тела</a>
     <a href="budget.html">${svg.money} Бюджет</a>
     <a href="balance-wheel.html">${svg.wheel} Колесо</a>
     <a href="challenges.html">${svg.trophy} Челленджи</a>
