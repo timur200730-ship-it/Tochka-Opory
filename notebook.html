@@ -270,6 +270,19 @@ function collectEntries(){
     if (mo !== 0) return mo;
     return (parseInt(a.id.split('-')[1])||0) - (parseInt(b.id.split('-')[1])||0);
   });
+    // Добавляем записи КПТ-дневника
+  const cbtEntries = d.cbtEntries || [];
+  cbtEntries.forEach(e => {
+    entries.push({
+      id: 'cbt-' + e.id,
+      module: 'psy',
+      title: 'Дневник мыслей',
+      done: true,
+      practice: { situation: e.sit, thought: '«' + e.th + '» (' + e.em + ' ' + e.int + '/10)', rational: e.rat },
+      reflection: {},
+      test: null
+    });
+  });
   return entries;
 }
 
