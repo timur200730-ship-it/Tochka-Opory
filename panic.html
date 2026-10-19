@@ -15,10 +15,10 @@
   *{box-sizing:border-box;margin:0;padding:0}
   html,body{background:var(--bg);color:var(--text);font-family:var(--ff);line-height:1.6;-webkit-font-smoothing:antialiased; min-height:100vh;}
   
-  /* Убрали центрирование flex, чтобы страница нормально скроллилась */
+  /* УВЕЛИЧИЛИ ОТСТУП СНИЗУ ДО 160PX, ЧТОБЫ КНОПКИ НЕ УХОДИЛИ ПОД МЕНЮ */
   body{
     background:radial-gradient(800px 600px at 50% 50%, rgba(124,92,255,.1), transparent 80%), var(--bg);
-    padding: 20px 20px 120px 20px; /* Добавили большой отступ снизу, чтобы кнопки не уходили под меню */
+    padding: 20px 20px 160px 20px; 
   }
   
   .sos-container { max-width: 500px; width: 100%; margin: 0 auto; text-align: center; animation: fadeIn 0.8s ease; }
@@ -39,13 +39,25 @@
     background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(124,92,255,0.4));
     border: 2px solid var(--accent);
     box-shadow: 0 0 40px rgba(124,92,255,0.4);
-    margin: 0 auto 30px;
+    margin: 0 auto 10px;
     display: flex; align-items: center; justify-content: center;
     font-size: 24px; font-weight: 800; color: #fff;
-    transform: scale(0.8); /* Исходный размер */
+    transform: scale(0.8);
+    cursor: pointer; /* Делаем курсор-руку */
+    transition: border-color 0.3s;
+  }
+  
+  .breathing-circle:hover {
+    border-color: var(--accent-2);
   }
 
-  /* CSS-АНИМАЦИИ (работают идеально на всех телефонах) */
+  /* Подсказка под кругом */
+  .circle-hint {
+    font-size: 13px; color: var(--muted); margin-bottom: 30px; 
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+
+  /* CSS-АНИМАЦИИ */
   @keyframes breatheIn {
     from { transform: scale(0.8); background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.2), rgba(124,92,255,0.4)); }
     to { transform: scale(1.15); background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.3), rgba(74,214,200,0.5)); }
@@ -127,11 +139,14 @@
   <div class="step-box" id="step2">
     <div class="sos-header">Дыхание</div>
     <div class="step-title">Успокоим тело</div>
-    <div class="step-desc">Дыши вместе с кругом. Вдох на 4 счета, выдох на 6. Это включит режим покоя.</div>
+    <div class="step-desc">Вдох на 4 счета, выдох на 6. Нажми на круг, чтобы начать.</div>
     
-    <div class="breathing-circle" id="circle">Вдох</div>
+    <!-- Круг теперь кликабельный -->
+    <div class="breathing-circle" id="circle" onclick="startBreathing()">Старт</div>
+    <div class="circle-hint">👆 Нажми на круг</div>
 
-    <button class="btn btn-primary" onclick="startBreathing()" id="btnBreath">Начать дыхание</button>
+    <!-- Скрываем кнопку, так как круг сам работает как кнопка -->
+    <button class="btn btn-primary" onclick="startBreathing()" id="btnBreath" style="display:none;">▶ Дышать</button>
     <button class="btn" onclick="nextStep(3)">Я справился(ась), дальше →</button>
   </div>
 
@@ -158,20 +173,18 @@
   let breathingInterval = null;
   let isBreathing = false;
   const circle = document.getElementById('circle');
-  const btnBreath = document.getElementById('btnBreath');
 
   function startBreathing() {
     if (isBreathing) {
+      // Если уже дышим, нажатие останавливает
       clearInterval(breathingInterval);
       isBreathing = false;
-      btnBreath.textContent = 'Начать дыхание';
       circle.className = 'breathing-circle';
-      circle.textContent = 'Вдох';
+      circle.textContent = 'Старт';
       return;
     }
 
     isBreathing = true;
-    btnBreath.textContent = 'Остановить';
     
     function cycle() {
       if (!isBreathing) return;
