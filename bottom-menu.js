@@ -57,6 +57,7 @@
     <a href="scam-game.html">🕵️ Мошенник</a>
     <a href="habit-calculator.html">💸 Привычки</a>
     <a href="body-map.html">🧠 Карта тела</a>
+    <a href="survive-test.html">🌧 Пережить</a>
     <a href="emotion-wheel.html">😡 Эмоции</a>
     <a href="salary-simulator.html">💵 Зарплата</a>
     <a href="cbt-diary.html">📝 Дневник</a>
