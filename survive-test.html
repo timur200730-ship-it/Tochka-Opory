@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Пережить — тест и карты чувств</title>
+<meta name="theme-color" content="#0B0918" />
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
+<style>
+:root{
+  /* АДАПТАЦИЯ ЦВЕТОВ ПОД ТОЧКУ ОПОРЫ */
+  --accent:#7c5cff; 
+  --accent2:#2D1B69;
+  --bg:#0B0918; --bg2:#120E24; --panel:rgba(255,255,255,.045);
+  --line:rgba(255,255,255,.09); --text:#EDEAF7; --muted:#948DB4;
+  --radius:22px; --shadow:0 24px 60px -20px rgba(0,0,0,.7);
+}
+[data-theme="light"]{
+  --bg:#F6F4FB; --bg2:#EDE9F7; --panel:rgba(255,255,255,.75);
+  --line:rgba(20,10,50,.10); --text:#171233; --muted:#6B6390;
+  --shadow:0 24px 60px -24px rgba(40,20,90,.25);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  background:var(--bg); color:var(--text); line-height:1.65;
+  min-height:100vh; overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom: 120px; /* ОТСТУП ДЛЯ НИЖНЕГО МЕНЮ */
+}
+body::before{
+  content:''; position:fixed; inset:0; z-index:-1; pointer-events:none;
+  background:
+    radial-gradient(900px 600px at 15% -10%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+    radial-gradient(800px 500px at 100% 10%, color-mix(in srgb, var(--accent2) 40%, transparent), transparent 70%),
+    linear-gradient(180deg,var(--bg),var(--bg2));
+  transition:background .6s ease;
+}
+.wrap{max-width:880px;margin:0 auto;padding:0 22px 100px}
+
+/* NAV */
+#nav{
+  display:flex;justify-content:space-between;align-items:center;
+  max-width:880px;margin:0 auto;padding:22px;
+}
+.brand{
+  display:flex;align-items:center;gap:10px;text-decoration:none;
+  color:var(--text);font-weight:700;letter-spacing:-.02em;font-size:17px;
+  cursor:pointer;
+}
+.brand span{color:var(--accent);font-size:20px;transition:color .5s}
+.nav-links{display:flex;align-items:center;gap:6px}
+.nav-links a{
+  color:var(--muted);text-decoration:none;font-size:14px;font-weight:500;
+  padding:8px 14px;border-radius:100px;transition:.25s;cursor:pointer;
+}
+.nav-links a:hover{color:var(--text);background:var(--panel)}
+.nav-links a.active{color:var(--text);background:var(--panel);box-shadow:inset 0 0 0 1px var(--line)}
+.theme-toggle{
+  background:var(--panel);border:1px solid var(--line);color:var(--text);
+  width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:15px;
+  transition:.25s;margin-left:6px;font-family:inherit;
+}
+.theme-toggle:hover{transform:rotate(20deg) scale(1.06)}
+
+/* TYPO */
+h1{font-size:clamp(38px,7vw,64px);font-weight:800;letter-spacing:-.04em;line-height:1.03}
+h2{letter-spacing:-.025em}
+.sec-title{font-size:22px;font-weight:700;margin-bottom:6px}
+.sec-sub{color:var(--muted);font-size:15px;margin-bottom:22px}
+.lead{color:var(--muted);font-size:17px;max-width:62ch}
+.center{text-align:center}
+
+/* INTRO */
+.intro{padding:60px 0 40px;text-align:center;animation:rise .8s cubic-bezier(.2,.8,.2,1)}
+.intro h1{margin-bottom:20px}
+.intro h1 em{
+  font-style:normal;
+  background:linear-gradient(120deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+}
+.intro p{color:var(--muted);font-size:18px;max-width:52ch;margin:0 auto 34px}
+@keyframes rise{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:none}}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;border:none;padding:16px 34px;border-radius:100px;
+  font-size:16px;font-weight:600;cursor:pointer;text-decoration:none;
+  box-shadow:0 12px 34px -10px color-mix(in srgb,var(--accent) 70%, transparent);
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),box-shadow .25s,filter .25s;
+  font-family:inherit;
+}
+.btn:hover{transform:translateY(-3px);filter:brightness(1.1);box-shadow:0 20px 44px -12px color-mix(in srgb,var(--accent) 80%, transparent)}
+.btn:active{transform:translateY(-1px) scale(.99)}
+.ghost{
+  background:none;border:1px solid var(--line);color:var(--muted);
+  padding:12px 24px;border-radius:100px;font-size:14px;cursor:pointer;
+  transition:.25s;margin-top:26px;font-family:inherit;
+}
+.ghost:hover{color:var(--text);border-color:var(--accent)}
+
+/* TEST */
+#test{display:none;margin-top:20px}
+#test.show{display:block;animation:rise .5s cubic-bezier(.2,.8,.2,1)}
+.gone{display:none!important}
+.test-head{margin-bottom:34px}
+.test-count{font-size:13px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+.bar{height:3px;background:var(--line);border-radius:100px;overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:100px;transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.test-q{font-size:clamp(22px,4vw,30px);font-weight:700;line-height:1.3;margin-bottom:28px;letter-spacing:-.025em}
+.options{display:flex;flex-direction:column;gap:11px}
+.option{
+  display:flex;align-items:center;gap:16px;text-align:left;
+  background:var(--panel);border:1px solid var(--line);color:var(--text);
+  padding:19px 22px;border-radius:16px;font-size:16px;cursor:pointer;
+  font-family:inherit;line-height:1.45;
+  transition:transform .2s cubic-bezier(.2,.8,.2,1),border-color .2s,background .2s;
+  animation:rise .45s backwards;
+}
+.option:nth-child(1){animation-delay:.02s}
+.option:nth-child(2){animation-delay:.06s}
+.option:nth-child(3){animation-delay:.10s}
+.option:nth-child(4){animation-delay:.14s}
+.option:nth-child(5){animation-delay:.18s}
+.option:nth-child(6){animation-delay:.22s}
+.option:hover{transform:translateX(5px);border-color:color-mix(in srgb,var(--accent) 60%,transparent);background:color-mix(in srgb,var(--accent) 9%,var(--panel))}
+.option .dot{
+  width:11px;height:11px;border-radius:50%;flex:0 0 auto;
+  border:1.5px solid var(--muted);transition:.25s;
+}
+.option:hover .dot{border-color:var(--accent);background:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 22%,transparent)}
+.option.picked{border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,var(--panel));transform:scale(.985)}
+.option.picked .dot{background:var(--accent);border-color:var(--accent)}
+.finishing{text-align:center;padding:80px 0;color:var(--muted);font-size:18px;animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{opacity:.5}50%{opacity:1}}
+
+/* HERO */
+.hero-result,.card-hero{
+  position:relative;overflow:hidden;text-align:center;
+  padding:64px 30px 58px;margin:20px 0 12px;border-radius:34px;
+  background:linear-gradient(160deg,color-mix(in srgb,var(--c) 26%,transparent),color-mix(in srgb,var(--c2) 45%,transparent));
+  border:1px solid color-mix(in srgb,var(--c) 35%,transparent);
+  box-shadow:var(--shadow);
+}
+.hero-glow{
+  position:absolute;width:420px;height:420px;border-radius:50%;
+  background:var(--c);filter:blur(140px);opacity:.35;
+  top:-160px;left:50%;transform:translateX(-50%);pointer-events:none;
+}
+.hero-icon{font-size:60px;line-height:1;margin-bottom:16px;position:relative;filter:drop-shadow(0 8px 24px rgba(0,0,0,.4))}
+.hero-icon.big{font-size:82px}
+.hero-label{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6);margin-bottom:8px;position:relative}
+.hero-name{font-size:clamp(46px,10vw,80px);font-weight:800;letter-spacing:-.045em;line-height:1;margin-bottom:16px;position:relative;color:#fff}
+.hero-tag{color:rgba(255,255,255,.78);font-size:17px;max-width:44ch;margin:0 auto 30px;position:relative}
+.chip{
+  display:inline-block;position:relative;margin-top:22px;padding:9px 20px;border-radius:100px;
+  background:rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.14);
+  font-size:13px;color:rgba(255,255,255,.75);
+}
+
+/* BLOCKS */
+.block{margin:56px 0}
+.reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.8,.2,1),transform .7s cubic-bezier(.2,.8,.2,1)}
+.reveal.in{opacity:1;transform:none}
+
+/* RANK */
+.rank{display:flex;flex-direction:column;gap:8px}
+.rank-row{
+  display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--text);
+  padding:14px 18px;border-radius:14px;background:var(--panel);border:1px solid var(--line);
+  transition:transform .2s,border-color .2s;cursor:pointer;
+}
+.rank-row:hover{transform:translateX(5px);border-color:color-mix(in srgb,var(--c) 55%,transparent)}
+.rank-n{color:var(--muted);font-size:13px;width:16px;font-variant-numeric:tabular-nums}
+.rank-icon{font-size:19px}
+.rank-name{font-weight:600;font-size:15px;min-width:110px}
+.rank-bar{flex:1;height:6px;background:var(--line);border-radius:100px;overflow:hidden}
+.rank-bar i{display:block;height:100%;border-radius:100px;background:var(--c);transition:width 1s cubic-bezier(.2,.8,.2,1)}
+.rank-pct{color:var(--muted);font-size:13px;font-variant-numeric:tabular-nums;width:38px;text-align:right}
+
+/* DECK */
+.deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px}
+.mini{
+  display:flex;flex-direction:column;gap:6px;text-decoration:none;color:var(--text);
+  padding:22px;border-radius:18px;position:relative;overflow:hidden;cursor:pointer;
+  background:linear-gradient(150deg,color-mix(in srgb,var(--c) 20%,var(--panel)),var(--panel));
+  border:1px solid var(--line);transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s,border-color .3s;
+}
+.mini::after{
+  content:'';position:absolute;inset:0;opacity:0;transition:opacity .3s;
+  background:radial-gradient(200px 120px at 50% 0%,color-mix(in srgb,var(--c) 30%,transparent),transparent 70%);
+}
+.mini:hover{transform:translateY(-5px);box-shadow:0 18px 40px -16px color-mix(in srgb,var(--c) 55%,transparent);border-color:color-mix(in srgb,var(--c) 45%,transparent)}
+.mini:hover::after{opacity:1}
+.mini-icon{font-size:28px;position:relative;z-index:1}
+.mini-name{font-weight:700;font-size:17px;letter-spacing:-.02em;position:relative;z-index:1}
+.mini-tag{color:var(--muted);font-size:13px;line-height:1.45;position:relative;z-index:1}
+
+/* CARD */
+.back{
+  display:inline-block;color:var(--muted);text-decoration:none;font-size:14px;
+  margin:6px 0 10px;transition:.25s;cursor:pointer;
+}
+.back:hover{color:var(--text);transform:translateX(-3px)}
+.tags{display:flex;flex-wrap:wrap;gap:9px;list-style:none}
+.tags li{
+  padding:9px 17px;border-radius:100px;font-size:14px;
+  background:var(--panel);border:1px solid var(--line);color:var(--muted);
+  transition:.25s;
+}
+.tags li:hover{color:var(--text);border-color:color-mix(in srgb,var(--accent) 50%,transparent)}
+
+.steps{display:flex;flex-direction:column;gap:14px}
+.step{
+  display:flex;gap:18px;padding:22px;border-radius:18px;
+  background:var(--panel);border:1px solid var(--line);
+  transition:transform .25s cubic-bezier(.2,.8,.2,1),border-color .25s;
+}
+.step:hover{transform:translateX(6px);border-color:color-mix(in srgb,var(--c) 45%,transparent)}
+.step-n{
+  flex:0 0 38px;height:38px;border-radius:12px;display:grid;place-items:center;
+  font-weight:700;font-size:16px;
+  background:color-mix(in srgb,var(--c) 20%,transparent);
+  color:var(--c);border:1px solid color-mix(in srgb,var(--c) 35%,transparent);
+}
+.step-body h4{font-size:16px;font-weight:650;margin-bottom:4px;letter-spacing:-.015em}
+.step-body p{color:var(--muted);font-size:15px}
+
+.phrases{display:flex;flex-direction:column;gap:11px}
+.phrase{
+  padding:20px 24px;border-radius:16px;font-size:17px;font-weight:500;
+  font-style:italic;letter-spacing:-.01em;
+  background:linear-gradient(100deg,color-mix(in srgb,var(--accent) 14%,transparent),transparent 75%);
+  border-left:3px solid var(--accent);
+}
+.practice{
+  padding:28px;border-radius:20px;font-size:16px;line-height:1.7;
+  background:linear-gradient(140deg,color-mix(in srgb,var(--c) 16%,var(--panel)),var(--panel));
+  border:1px solid color-mix(in srgb,var(--c) 30%,transparent);
+}
+.warn .sec-title{color:#FF8A6B}
+.dont{list-style:none;display:flex;flex-direction:column;gap:10px}
+.dont li{
+  padding:15px 20px 15px 46px;border-radius:14px;position:relative;
+  background:rgba(255,110,80,.07);border:1px solid rgba(255,110,80,.18);
+  color:var(--muted);font-size:15px;
+}
+.dont li::before{content:'✕';position:absolute;left:18px;color:#FF8A6B;font-weight:700;font-size:13px}
+
+.note{
+  margin-top:50px;padding:26px;border-radius:18px;text-align:center;
+  color:var(--muted);font-size:15px;line-height:1.7;
+  background:var(--panel);border:1px dashed var(--line);
+}
+
+/* EMPTY */
+.empty{text-align:center;padding:80px 20px}
+.empty-icon{font-size:52px;color:var(--accent);margin-bottom:20px}
+.empty h2{font-size:26px;margin-bottom:12px;letter-spacing:-.03em}
+.empty p{color:var(--muted);max-width:44ch;margin:0 auto 30px}
+
+/* SCREENS */
+.screen{display:none}
+.screen.active{display:block}
+
+@media(max-width:640px){
+  .nav-links a{padding:8px 10px;font-size:13px}
+  .brand{font-size:15px}
+  .wrap{padding:0 18px 80px}
+  .hero-result,.card-hero{padding:48px 22px 44px;border-radius:26px}
+  .step{padding:18px;gap:14px}
+  .deck{grid-template-columns:1fr 1fr}
+  .mini{padding:18px}
+  .mini-tag{display:none}
+  .rank-name{min-width:auto;font-size:14px}
+  .rank-bar{display:none}
+}
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a class="brand" data-nav="home"><span>◈</span> Пережить</a>
+  <div class="nav-links">
+    <a data-nav="home">Тест</a>
+    <a data-nav="result">Моё чувство</a>
+    <a data-nav="deck">Карты</a>
+    <button class="theme-toggle" id="themeBtn">☾</button>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <!-- ЭКРАН: ГЛАВНАЯ -->
+  <section class="screen active" id="screen-home">
+    <div class="intro" id="start-screen">
+      <h1>Чувства не нужно<br><em>побеждать</em></h1>
+      <p>Их нужно пережить. Сначала определим, какое чувство сейчас говорит с вами громче всего — потом дадим карту, как его пройти.</p>
+      <button class="btn" id="start-btn">Начать тест →</button>
+      <div style="margin-top:18px;color:var(--muted);font-size:13px">9 вопросов · около 2 минут · без регистрации</div>
+    </div>
+    <section id="test"></section>
+  </section>
+
+  <!-- ЭКРАН: РЕЗУЛЬТАТ -->
+  <section class="screen" id="screen-result"></section>
+
+  <!-- ЭКРАН: КАРТА -->
+  <section class="screen" id="screen-card"></section>
+
+  <!-- ЭКРАН: КОЛОДА -->
+  <section class="screen" id="screen-deck"></section>
+
+</div>
+
+<script>
+/* ============ ДАННЫЕ ============ */
+const EMOTIONS = {
+  fear: {
+    id:'fear', name:'Страх', icon:'🌑', color:'#6C5CE7', color2:'#2D1B69',
+    tagline:'Сигнал об опасности. Он не враг — он охрана.',
+    what:'Страх включается, когда мозг видит угрозу — реальную или воображаемую, тело реагирует одинаково. Оно мобилизуется, чтобы вас защитить.',
+    body:['Сжатие в груди и животе','Учащённое сердцебиение','Поверхностное дыхание','Напряжение в плечах и шее','Холодные руки','Желание замереть или убежать'],
+    function:'Страх показывает границы. Там, где страшно, — там что-то важное для вас. Он останавливает перед реальной опасностью и подсказывает, где вы растёте.',
+    steps:[
+      ['Назовите его вслух','«Я боюсь». Названное чувство теряет половину власти над вами.'],
+      ['Найдите его в теле','Где именно он живёт — грудь, живот, горло? Положите туда руку и подержите.'],
+      ['Отделите факт от прогноза','Что происходит прямо сейчас, в эту минуту? А что вы себе представляете?'],
+      ['Дыхание 4-7-8','Вдох на 4, задержка на 7, выдох на 8. Три круга. Длинный выдох выключает сигнал тревоги.'],
+      ['Спросите: «что я могу сделать на 5%?»','Один маленький шаг вместо плана спасения мира.'],
+      ['Вернитесь в «здесь и сейчас»','5 предметов, которые видите. 4 — которые слышите. 3 — которых касаетесь.']
+    ],
+    phrases:['Я в безопасности прямо сейчас','Это чувство пройдёт, оно не навсегда','Я могу бояться и всё равно действовать','Моё тело пытается меня защитить'],
+    dont:['Не ругать себя за страх — он не делает вас слабым','Не принимать больших решений на пике','Не убегать от темы навсегда — так страх только растёт','Не сравнивать свой страх с чужим («у других хуже»)'],
+    practice:'«Лестница страха» — выпишите пугающие ситуации от 1 до 10 и делайте по одному шагу с нижней ступени каждый день.',
+    duration:'Острый страх — от 5 до 20 минут, если не подкармливать его мыслями.'
+  },
+  anger: {
+    id:'anger', name:'Гнев', icon:'🔥', color:'#FF6B4A', color2:'#7A1F0A',
+    tagline:'Реакция на нарушение границы. Это энергия, а не агрессия.',
+    what:'Гнев говорит: «Так со мной нельзя». Агрессия — это гнев, которому не дали выхода. Сам по себе гнев — сила, которая защищает.',
+    body:['Жар, прилив крови к лицу','Сжатые кулаки и челюсти','Напряжение в спине и шее','Громкий голос — или окаменение','Учащённое дыхание','Ощущение «внутри всё кипит»'],
+    function:'Защищает границы и восстанавливает справедливость. Под гневом почти всегда лежит что-то более уязвимое — боль, страх, бессилие.',
+    steps:[
+      ['Признайте: «Я злюсь»','Это не делает вас плохим. Злость — это информация, а не приговор.'],
+      ['Сбросьте физику','Гнев живёт в теле. 20 приседаний, быстрая ходьба, порвать бумагу, крикнуть в подушку.'],
+      ['Найдите, что под ним','Спросите: «Если бы я не злился, что бы я чувствовал?» Боль? Страх? Бессилие?'],
+      ['Определите нарушенную границу','«Со мной нельзя повышать голос». «Мои усилия нельзя обесценивать».'],
+      ['Сформулируйте просьбу, а не обвинение','Не «ты всегда...», а «мне важно, чтобы...». Говорите, когда пик прошёл.'],
+      ['Если высказаться нельзя','Напишите письмо и не отправляйте. Или проговорите вслух в пустой комнате.']
+    ],
+    phrases:['Я имею право злиться','Мой гнев защищает что-то важное','Я могу быть злым и не разрушать','За злостью есть боль, и я её вижу'],
+    dont:['Не подавлять — подавленный гнев уходит в тело: головные боли, спазмы, бессонница','Не выливать на людей, которые ни при чём','Не принимать решений в первые 20 минут','Не путать гнев с ненавистью к себе'],
+    practice:'«Письмо гнева» — 10 минут писать всё, что хотите, без цензуры. Потом сжечь или порвать. Не перечитывать.',
+    duration:'Пик — до 20 минут. Остаточное раздражение держится дни, если не разобрать причину.'
+  },
+  sadness: {
+    id:'sadness', name:'Грусть', icon:'🌧', color:'#4A90D9', color2:'#0F2A4A',
+    tagline:'Реакция на потерю. Это не слабость — это работа души.',
+    what:'Грусть приходит, когда вы что-то потеряли: человека, мечту, время или представление о себе. Она замедляет нас, чтобы мы могли осмыслить и отпустить.',
+    body:['Тяжесть в груди и конечностях','Ком в горле','Слёзы — или их отсутствие','Опущенные плечи','Желание лежать','Замедленное дыхание'],
+    function:'Помогает прощаться и восстанавливаться. Без грусти мы не сможем отпустить и двигаться дальше.',
+    steps:[
+      ['Разрешите себе не быть продуктивным','Грусть требует времени — это её природа, а не ваша лень.'],
+      ['Позвольте слёзам, если они есть','Слёзы выводят гормоны стресса. Плакать — это физиологическая разрядка.'],
+      ['Назовите потерю','Что именно вы потеряли? Чем это было для вас? Конкретность помогает горевать.'],
+      ['Обнимите себя или попросите объятий','Физический контакт успокаивает нервную систему лучше слов.'],
+      ['Дайте телу тепло и заботу','Плед, чай, тёплый душ, тишина. Тело должно знать, что оно в порядке.'],
+      ['Ведите дневник потери','Пишите о том, что было дорого. Это не мазохизм — это уважение к ценности.'],
+      ['Постепенно возвращайте ритм','Не через силу, а через якоря: еда, сон, прогулка, один человек.']
+    ],
+    phrases:['Грусть — это цена любви','Я имею право горевать столько, сколько нужно','Мне не нужно спешить','Моё горе не делает меня слабым'],
+    dont:['Не торопить себя («уже месяц прошёл») — у горя нет расписания','Не топить в алкоголе, еде или бесконечных сериалах','Не обесценивать потерю («подумаешь») — для вас это важно','Не заставлять себя «думать позитивно»'],
+    practice:'«Ритуал прощания» — напишите письмо тому, что потеряли. Скажите спасибо и попрощайтесь. Сожгите, отпустите по воде, закопайте.',
+    duration:'Острая грусть — дни. Настоящее горе — от нескольких месяцев до года и больше. Это нормально.'
+  },
+  anxiety: {
+    id:'anxiety', name:'Тревога', icon:'🌀', color:'#F0B429', color2:'#5C3D00',
+    tagline:'Страх без объекта. Она живёт в будущем и питается неопределённостью.',
+    what:'Страх говорит «опасность там», тревога — «опасность везде и всегда». Это гиперзабота мозга, вышедшая из-под контроля. Она не защищает — она истощает.',
+    body:['Ком в горле','Поверхностное дыхание','Напряжение в животе','Дрожь в руках','Мысли по кругу','Проблемы со сном'],
+    function:'Пытается предсказать и предотвратить беду. Полезная функция, но в крайности она забирает силы, не давая ничего взамен.',
+    steps:[
+      ['Спросите: «что конкретно я предсказываю?»','Запишите худший сценарий на бумаге. На бумаге он теряет силу.'],
+      ['Оцените вероятность от 0 до 100%','Мозг путает «возможно» и «обязательно». Проверьте фактами.'],
+      ['Вернитесь в тело','Тревога — в голове. Тело — здесь. Дыхание 4-7-8. Ноги плотно на полу, почувствуйте опору.'],
+      ['Заземлитесь через чувства','5 вещей вижу, 4 слышу, 3 ощущаю телом, 2 запаха, 1 вкус.'],
+      ['Ограничьте «скармливание»','Тревога растёт от проверки новостей, соцсетей, симптомов в интернете. Поставьте лимит.'],
+      ['Сделайте одно конкретное действие','Тревога ненавидит действие. Даже маленькое: письмо, посуда, выйти на 10 минут.'],
+      ['Выделите «время тревоги»','15 минут в день, когда вы сознательно позволяете себе волноваться. В остальное время — «не сейчас, в 18:00».']
+    ],
+    phrases:['Это тревога говорит, а не факты','Я не обязан решать будущее сегодня','Я справлялся раньше и справлюсь сейчас','Моё тело в безопасности в эту минуту'],
+    dont:['Не искать успокоения бесконечно — это подкармливает тревогу','Не гуглить симптомы — вы найдёте то, чего нет','Не избегать всего, что тревожит: так она растёт','Не пить много кофеина — он усиливает симптом'],
+    practice:'«Дыхание квадратом» — вдох 4, задержка 4, выдох 4, задержка 4. И «Дневник тревоги»: что я предсказал / что случилось на самом деле.',
+    duration:'Приступ — 10–30 минут. Фоновую тревогу можно снизить за недели регулярной практики.'
+  },
+  shame: {
+    id:'shame', name:'Стыд', icon:'🫥', color:'#B06AB3', color2:'#3D1145',
+    tagline:'Чувство «со мной что-то не так». Самое болезненное — и самое исцеляемое.',
+    what:'Стыд — это не «я сделал плохо», а «я плохой». Он не про поведение, а про самость. Поэтому он так сильно бьёт.',
+    body:['Жар, покраснение','Желание исчезнуть, сжаться','Опущенные глаза','Тошнота','Оцепенение','Ощущение, что все смотрят'],
+    function:'Стыд — социальная эмоция. Он удерживал нас в группе, когда изгнание означало смерть. Сейчас он часто несоразмерен и разрушает.',
+    steps:[
+      ['Отделите поступок от личности','«Я сделал то, что мне не нравится» ≠ «я плохой». Это разные вещи.'],
+      ['Скажите себе: «Стыд — это чувство, а не факт»','Оно описывает не реальность, а ваш внутренний опыт.'],
+      ['Найдите взгляд наблюдателя','Если бы друг рассказал вам то же самое — что бы вы ему сказали? Скажите это себе.'],
+      ['Разделите с кем-то безопасным','Стыд живёт в изоляции и умирает в принятии. Один человек, который скажет «я тебя не осуждаю», — огромная сила.'],
+      ['Верните достоинство через действие','Сделайте что-то, что соответствует вашим ценностям. Маленькое.'],
+      ['Заметьте, чей голос звучит','Часто это голос родителя, учителя, травли. Это не ваш голос — его можно опознать и отодвинуть.'],
+      ['Работайте с телом','Расправьте плечи, поднимите взгляд, дышите глубже. Поза влияет на состояние.']
+    ],
+    phrases:['Я не равен своему стыду','Я человек, который может ошибаться и всё равно быть достойным','Я имею право занимать место в этом мире','То, что я чувствую, не делает меня плохим'],
+    dont:['Не прятаться от людей — в изоляции стыд только крепнет','Не бичевать себя публично','Не позволять другим обесценивать вашу боль','Не путать стыд с совестью: совесть ведёт к исправлению, стыд — к разрушению'],
+    practice:'«Письмо от друга» — напишите себе письмо от лица безусловно любящего человека. От третьего лица: «Я знаю, что ты чувствуешь...»',
+    duration:'Вспышка — минуты. Глубокий укоренённый стыд — работа на месяцы, часто с психологом.'
+  },
+  guilt: {
+    id:'guilt', name:'Вина', icon:'⚖️', color:'#48B89C', color2:'#0C3D33',
+    tagline:'Совесть в действии. Полезна, когда ведёт к исправлению.',
+    what:'Вина связана с действием: «я сделал что-то, что причинило вред». В отличие от стыда, у вины есть объект и есть возможность исправления.',
+    body:['Тяжесть в груди','Ком в горле','Тошнота','Напряжение в животе','Бессонница','Желание оправдываться'],
+    function:'Вина подталкивает нас к исправлению и к тому, чтобы мы не повторяли вред. Это полезная эмоция — если она ведёт к действию, а не к самонаказанию.',
+    steps:[
+      ['Определите: за что именно?','Конкретный поступок или «за всё сразу»? Конкретика важна.'],
+      ['Проверьте: вина реальная или навязанная?','Иногда нас приучили чувствовать вину за то, что не наша ответственность.'],
+      ['Отделите «мою зону» от «не моей»','Я отвечаю за свои слова и действия. Не за чувства других взрослых людей.'],
+      ['Есть ли способ исправить?','Если да — сделайте: извинитесь искренне, возместите, измените поведение.'],
+      ['Если исправить нельзя — переведите в урок','«Что я понял? Как я буду действовать иначе?» Это и есть искупление.'],
+      ['Отпустите наказание','Постоянное самонаказание не помогает никому. Оно не восстанавливает справедливость.'],
+      ['Проверьте, не путаете ли вы вину с чужой ответственностью','За чувства других отвечают другие.']
+    ],
+    phrases:['Я могу признать свою ошибку и остаться хорошим человеком','Вина ведёт меня к исправлению, а не к самоуничтожению','Я не обязан наказывать себя вечно','Я могу ошибаться — это делает меня человеком'],
+    dont:['Не превращайте вину в самонаказание','Не берите на себя чужую ответственность','Не оправдывайтесь вместо извинения','Не «искупайте» вину подарками, если нужно просто сказать «прости»'],
+    practice:'«Акт исправления» — составьте конкретный список: что я могу сделать, чтобы исправить или изменить. Сделайте одно в течение недели.',
+    duration:'Реальная вина проходит через действие — дни или недели. Хроническая — сигнал о навязанных установках.'
+  },
+  resentment: {
+    id:'resentment', name:'Обида', icon:'🗝', color:'#C97B3C', color2:'#4A2408',
+    tagline:'Гнев и боль, которые держатся за несправедливость.',
+    what:'Обида живёт в прошлом и питается словом «должен был». Она защищает от повторения боли — но, застыв, удерживает вас в старой ране.',
+    body:['Сжатие в груди','Ком в горле','Напряжение в челюсти','Тяжесть','Ощущение «занозы» внутри','Мысленное прокручивание диалогов'],
+    function:'Обида говорит: «мне было плохо, я не хочу, чтобы это повторилось». Но если она длится годами — она не защищает, а держит.',
+    steps:[
+      ['Признайте боль под обидой','«Мне было больно, когда...» — скажите это вслух или напишите.'],
+      ['Назовите ожидание','«Я ожидал, что он должен был...» Что именно? Это честно и важно.'],
+      ['Проверьте: это ожидание реально?','Способен ли этот человек на такое? Или это ваша фантазия о нём?'],
+      ['Определите, что вам нужно сейчас','Не от обидчика — а для себя. Что залечит боль? Чего вы лишены?'],
+      ['Отделите прощение от примирения','Можно простить и не общаться. Прощение — ваше освобождение, а не оправдание другого.'],
+      ['Напишите письмо (не отправляя)','Выложите всё. Это выпускает заряд лучше любых разговоров в голове.'],
+      ['Спросите: «сколько я готов платить за это?»','Обида обходится дорого — здоровьем, вниманием, отношениями. Выбор ваш.']
+    ],
+    phrases:['Я имею право на боль и на гнев','Прощая, я освобождаю себя, а не оправдываю его','Я могу отпустить и не общаться','Моя боль заслуживает внимания, а не заточения'],
+    dont:['Не путать прощение с обесцениванием боли','Не заставлять себя «уже простить»','Не мстить — месть продлевает связь','Не держать обиду как трофей'],
+    practice:'«Письмо без отправки» + «Ритуал освобождения» — напишите всё, что хотите сказать, потом сожгите. Скажите: «Это остаётся в прошлом. Я иду дальше.»',
+    duration:'От нескольких недель до десятилетий — в зависимости от того, даёте ли вы себе прожить боль.'
+  },
+  loneliness: {
+    id:'loneliness', name:'Одиночество', icon:'🌙', color:'#7C89E8', color2:'#1A1F52',
+    tagline:'Потребность в связи. Как голод говорит о еде.',
+    what:'Одиночество — это не количество людей рядом, а ощущение, что тебя не видят. Можно быть одному и не чувствовать одиночества. Можно быть в толпе и быть глубоко одиноким.',
+    body:['Тяжесть в груди','Ощущение холода','Пустота в животе','Желание сжаться','Усталость','Трудности с засыпанием'],
+    function:'Одиночество — сигнал о потребности в близости. Это не поломка, это потребность, как голод или жажда.',
+    steps:[
+      ['Отделите факт от чувства','Вы один — или вы одиноки? Иногда люди есть, но нет ощущения связи. Это можно менять.'],
+      ['Проверьте: от кого вы отдалились сами?','Иногда одиночество — следствие защиты после боли.'],
+      ['Начните с малого','Контакт не требует лучшего друга. Скажите «спасибо» продавцу. Напишите знакомому. Позвоните.'],
+      ['Вернитесь к себе','Одиночество часто залечивается через заботу о себе: тепло, еда, тишина, тело.'],
+      ['Проверьте, нет ли «стены»','Может, вы закрылись и ждёте, что кто-то её пробьёт? Иногда дверь нужно открыть самому.'],
+      ['Ищите место, где вас поймут','Группа, клуб, сообщество по интересам. Не «друзья вообще», а «свои».'],
+      ['Терапевт — это не слабость','Иногда просто нужен человек, который выдержит вашу боль без отторжения.']
+    ],
+    phrases:['Моё одиночество — это потребность, а не приговор','Я могу быть один и всё равно важен','Связь можно строить — она не даётся только по удаче','Я заслуживаю того, чтобы меня видели'],
+    dont:['Не заполняйте пустоту бесконечным скроллом — он усиливает одиночество','Не ждите, что один человек даст всё','Не наказывайте себя изоляцией','Не путайте одиночество с потребностью в уединении — это разные вещи'],
+    practice:'«Один шаг к связи» — каждый день одно действие: написать, позвонить, спросить, предложить. Даже если неловко.',
+    duration:'Одиночество не измеряется временем. Оно уходит с появлением настоящей связи — постепенно.'
+  }
+};
+
+const QUESTIONS = [
+  { q:'Что чаще всего происходит с вашим телом в последние дни?', options:[
+    { t:'Напряжение в плечах, ком в горле, поверхностное дыхание', s:{ anxiety:2, fear:1 } },
+    { t:'Тяжесть в груди, опущенные плечи, хочется лежать', s:{ sadness:2 } },
+    { t:'Жар, сжатые кулаки и челюсти, учащённый пульс', s:{ anger:2 } },
+    { t:'Пустота и холод, хочется сжаться и стать незаметным', s:{ shame:2, loneliness:1 } },
+    { t:'Ком в груди и ощущение занозы, которая не проходит', s:{ resentment:2 } }
+  ]},
+  { q:'О чём вы думаете, когда остаётесь один?', options:[
+    { t:'«А что, если всё пойдёт не так»', s:{ anxiety:2 } },
+    { t:'«Я всё испортил, это моя вина»', s:{ guilt:2 } },
+    { t:'«Со мной что-то не так»', s:{ shame:2 } },
+    { t:'«Меня никто по-настоящему не видит»', s:{ loneliness:2 } },
+    { t:'«Они не должны были так со мной поступать»', s:{ resentment:2 } }
+  ]},
+  { q:'Что вам хочется сделать прямо сейчас?', options:[
+    { t:'Убежать, спрятаться, не выходить из дома', s:{ fear:2, anxiety:1 } },
+    { t:'Крикнуть, ударить, что-нибудь разбить', s:{ anger:2 } },
+    { t:'Лечь и не двигаться, чтобы никто не трогал', s:{ sadness:2 } },
+    { t:'Доказать, что я хороший, быть удобным для всех', s:{ shame:2 } },
+    { t:'Закрыться и никого не подпускать', s:{ resentment:2, loneliness:1 } }
+  ]},
+  { q:'Какая фраза отзывается вам сильнее всего?', options:[
+    { t:'«Мне страшно, что это никогда не закончится»', s:{ anxiety:2, fear:1 } },
+    { t:'«Это несправедливо»', s:{ resentment:2, anger:1 } },
+    { t:'«Я больше не могу»', s:{ sadness:2 } },
+    { t:'«Лучше бы меня не было видно»', s:{ shame:2 } },
+    { t:'«Я не должен был так поступать»', s:{ guilt:2 } },
+    { t:'«Я никому не нужен»', s:{ loneliness:2 } }
+  ]},
+  { q:'Как вы обычно реагируете на конфликт?', options:[
+    { t:'Замираю и соглашаюсь, лишь бы не стало хуже', s:{ fear:2, shame:1 } },
+    { t:'Взрываюсь сразу', s:{ anger:2 } },
+    { t:'Ухожу в себя и молчу', s:{ sadness:1, loneliness:1 } },
+    { t:'Коплю и не забываю', s:{ resentment:2 } },
+    { t:'Начинаю извиняться, даже если не виноват', s:{ guilt:2, shame:1 } }
+  ]},
+  { q:'Что бы вам хотелось услышать от близкого человека?', options:[
+    { t:'«Я рядом, всё под контролем, ты в безопасности»', s:{ anxiety:2, fear:1 } },
+    { t:'«Ты не виноват»', s:{ guilt:2 } },
+    { t:'«Ты имеешь право злиться»', s:{ anger:2 } },
+    { t:'«Ты хороший, тебя есть за что любить»', s:{ shame:2 } },
+    { t:'«Я тебя вижу и слышу»', s:{ loneliness:2 } },
+    { t:'«Я понимаю, что тебе было больно»', s:{ resentment:2 } }
+  ]},
+  { q:'Чем чаще всего заканчивается ваш день?', options:[
+    { t:'Прокручиванием мыслей и бессонницей', s:{ anxiety:2 } },
+    { t:'Опустошением и усталостью', s:{ sadness:2 } },
+    { t:'Раздражением на всех', s:{ anger:1, resentment:1 } },
+    { t:'Самокритикой и разбором своих ошибок', s:{ shame:1, guilt:1 } },
+    { t:'Ощущением, что я один во всём этом', s:{ loneliness:2 } }
+  ]},
+  { q:'Если бы ваше чувство могло говорить, что бы оно сказало?', options:[
+    { t:'«Защити меня»', s:{ fear:2 } },
+    { t:'«Восстанови справедливость»', s:{ anger:2, resentment:1 } },
+    { t:'«Позволь мне отпустить»', s:{ sadness:2 } },
+    { t:'«Прими меня»', s:{ shame:2 } },
+    { t:'«Прости меня — или прости себя»', s:{ guilt:2 } },
+    { t:'«Заметь меня»', s:{ loneliness:2 } }
+  ]},
+  { q:'Что вам труднее всего сделать?', options:[
+    { t:'Расслабиться и не думать о плохом', s:{ anxiety:2 } },
+    { t:'Сказать «нет» и отстоять себя', s:{ fear:1, guilt:1, anger:1 } },
+    { t:'Порадоваться чему-то', s:{ sadness:2 } },
+    { t:'Показать себя настоящего', s:{ shame:2 } },
+    { t:'Отпустить прошлое', s:{ resentment:2 } },
+    { t:'Попросить о помощи', s:{ loneliness:2 } }
+  ]}
+];
+
+/* ============ УТИЛИТЫ ============ */
+const $  = (s, r=document) => r.querySelector(s);
+const $$ = (s, r=document) => [...r.querySelectorAll(s)];
+
+const STORE = {
+  get(k, d=null){ try{ return JSON.parse(localStorage.getItem(k)) ?? d; }catch{ return d; } },
+  set(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch{} },
+  del(k){ try{ localStorage.removeItem(k); }catch{} }
+};
+
+const TEST_KEY = 'feel_test_v1';
+const currentScreen = { name:'home' };
+
+/* ============ ТЕМА ============ */
+function initTheme(){
+  const saved = STORE.get('theme', 'dark');
+  document.documentElement.dataset.theme = saved;
+  updateThemeBtn();
+}
+function toggleTheme(){
+  const next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  STORE.set('theme', next);
+  updateThemeBtn();
+}
+function updateThemeBtn(){
+  const b = $('#themeBtn');
+  if(!b) return;
+  b.textContent = document.documentElement.dataset.theme === 'dark' ? '☾' : '☀';
+}
+
+/* ============ НАВИГАЦИЯ ============ */
+function showScreen(name, opts={}){
+  currentScreen.name = name;
+  $$('.screen').forEach(s => s.classList.remove('active'));
+  const el = $('#screen-' + name);
+  if(el) el.classList.add('active');
+  $$('.nav-links a').forEach(a => {
+    a.classList.toggle('active', a.dataset.nav === name);
+  });
+  window.scrollTo({top:0, behavior: 'instant' in window ? 'instant' : 'auto'});
+  if(name === 'result') renderResult();
+  if(name === 'card')   renderCard(opts.id);
+  if(name === 'deck')   renderDeck();
+  if(name === 'home')   renderHome();
+}
+
+function setAccent(color, color2){
+  document.documentElement.style.setProperty('--accent', color);
+  document.documentElement.style.setProperty('--accent2', color2);
+}
+
+/* ============ ПОЯВЛЕНИЕ БЛОКОВ ============ */
+let observer;
+function observeReveal(){
+  if(observer) observer.disconnect();
+  observer = new IntersectionObserver(es => {
+    es.forEach(e => { if(e.isIntersecting){ e.target.classList.add('in'); observer.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  $$('.reveal').forEach(el => observer.observe(el));
+}
+
+/* ============ ГЛАВНАЯ ============ */
+let testState = null;
+
+function renderHome(){
+  $('#start-screen').classList.remove('gone');
+  $('#test').classList.remove('show');
+  $('#test').innerHTML = '';
+  testState = null;
+  setAccent('#8B7CF6', '#2D1B69');
+  document.title = 'Пережить — тест и карты чувств';
+}
+
+function startTest(){
+  testState = { idx:0, scores:{} };
+  $('#start-screen').classList.add('gone');
+  $('#test').classList.add('show');
+  renderQuestion();
+}
+
+function renderQuestion(){
+  const mount = $('#test');
+  const { idx, scores } = testState;
+  const q = QUESTIONS[idx];
+
+  mount.innerHTML = `
+    <div class="test-head">
+      <div class="test-count">Вопрос ${idx+1} из ${QUESTIONS.length}</div>
+      <div class="bar"><i style="width:${(idx/QUESTIONS.length)*100}%"></i></div>
+    </div>
+    <h3 class="test-q">${q.q}</h3>
+    <div class="options">
+      ${q.options.map((o,i) => `
+        <button class="option" data-i="${i}">
+          <span class="dot"></span><span>${o.t}</span>
+        </button>`).join('')}
+    </div>
+    ${idx > 0 ? '<button class="ghost" id="backBtn">← Назад</button>' : ''}
+  `;
+
+  const backBtn = $('#backBtn');
+  if(backBtn) backBtn.onclick = () => {
+    testState.idx--;
+    renderQuestion();
+  };
+
+  $$('.option', mount).forEach(btn => {
+    btn.onclick = () => {
+      btn.classList.add('picked');
+      const opt = q.options[+btn.dataset.i];
+      for(const k in opt.s) testState.scores[k] = (testState.scores[k]||0) + opt.s[k];
+      setTimeout(() => {
+        testState.idx++;
+        if(testState.idx < QUESTIONS.length) renderQuestion();
+        else finishTest();
+      }, 260);
+    };
+  });
+}
+
+function finishTest(){
+  const { scores } = testState;
+  const ranked = Object.entries(scores).sort((a,b) => b[1]-a[1]);
+  const total = ranked.reduce((s,[,v]) => s+v, 0) || 1;
+  const result = {
+    date: Date.now(),
+    scores,
+    ranked: ranked.map(([k,v]) => ({ id:k, score:v, pct: Math.round((v/total)*100) })),
+    top: ranked[0][0]
+  };
+  STORE.set(TEST_KEY, result);
+
+  $('#test').innerHTML = `<div class="finishing">Собираем вашу карту…</div>`;
+  setTimeout(() => showScreen('result'), 700);
+}
+
+/* ============ РЕЗУЛЬТАТ ============ */
+function renderResult(){
+  const mount = $('#screen-result');
+  const res = STORE.get(TEST_KEY);
+
+  if(!res){
+    setAccent('#8B7CF6', '#2D1B69');
+    mount.innerHTML = `
+      <div class="empty">
+        <div class="empty-icon">◈</div>
+        <h2>Здесь появятся ваши карты</h2>
+        <p>Сначала пройдите короткий тест — он определит, какое чувство сейчас ведущее.</p>
+        <button class="btn" data-nav-home>Пройти тест</button>
+      </div>`;
+    bindNavHome(mount);
+    return;
+  }
+
+  const top = EMOTIONS[res.top];
+  setAccent(top.color, top.color2);
+
+  mount.innerHTML = `
+    <div class="hero-result reveal" style="--c:${top.color};--c2:${top.color2}">
+      <div class="hero-glow"></div>
+      <div class="hero-icon">${top.icon}</div>
+      <div class="hero-label">Сейчас с вами говорит</div>
+      <h1 class="hero-name">${top.name}</h1>
+      <p class="hero-tag">${top.tagline}</p>
+      <button class="btn" data-open-card="${top.id}">Открыть карту →</button>
+    </div>
+
+    <section class="block reveal">
+      <h2 class="sec-title">Что ещё звучит</h2>
+      <p class="sec-sub">Чувства редко приходят по одному. Вот что ещё набрало вес.</p>
+      <div class="rank">
+        ${res.ranked.slice(0,5).map((r,i) => {
+          const e = EMOTIONS[r.id];
+          return `<div class="rank-row" data-open-card="${e.id}" style="--c:${e.color}">
+            <span class="rank-n">${i+1}</span>
+            <span class="rank-icon">${e.icon}</span>
+            <span class="rank-name">${e.name}</span>
+            <span class="rank-bar"><i style="width:${r.pct}%"></i></span>
+            <span class="rank-pct">${r.pct}%</span>
+          </div>`;
+        }).join('')}
+      </div>
+    </section>
+
+    <section class="block reveal">
+      <h2 class="sec-title">Вся колода</h2>
+      <p class="sec-sub">Любую карту можно открыть в любой момент — чувства меняются.</p>
+      <div class="deck">
+        ${Object.values(EMOTIONS).map(e => `
+          <div class="mini" data-open-card="${e.id}" style="--c:${e.color};--c2:${e.color2}">
+            <span class="mini-icon">${e.icon}</span>
+            <span class="mini-name">${e.name}</span>
+            <span class="mini-tag">${e.tagline}</span>
+          </div>`).join('')}
+      </div>
+    </section>
+
+    <div class="center reveal">
+      <button class="ghost" id="retakeBtn">Пройти тест заново</button>
+    </div>
+  `;
+
+  $('#retakeBtn').onclick = () => { STORE.del(TEST_KEY); showScreen('home'); };
+  bindOpenCard(mount);
+  observeReveal();
+}
+
+/* ============ КАРТА ============ */
+function renderCard(id){
+  const mount = $('#screen-card');
+  const e = EMOTIONS[id];
+
+  if(!e){
+    renderDeck();
+    return;
+  }
+
+  setAccent(e.color, e.color2);
+  document.title = `${e.name} — Пережить`;
+
+  mount.innerHTML = `
+    <div class="back" data-nav-result>← К результату</div>
+
+    <header class="card-hero reveal" style="--c:${e.color};--c2:${e.color2}">
+      <div class="hero-glow"></div>
+      <div class="hero-icon big">${e.icon}</div>
+      <h1 class="hero-name">${e.name}</h1>
+      <p class="hero-tag">${e.tagline}</p>
+      <div class="chip">${e.duration}</div>
+    </header>
+
+    <section class="block reveal">
+      <h2 class="sec-title">Что это</h2>
+      <p class="lead">${e.what}</p>
+    </section>
+
+    <section class="block reveal">
+      <h2 class="sec-title">Как это живёт в теле</h2>
+      <ul class="tags">
+        ${e.body.map(b => `<li>${b}</li>`).join('')}
+      </ul>
+    </section>
+
+    <section class="block reveal">
+      <h2 class="sec-title">Зачем оно вам</h2>
+      <p class="lead">${e.function}</p>
+    </section>
+
+    <section class="block reveal">
+      <h2 class="sec-title">Как пережить — по шагам</h2>
+      <div class="steps">
+        ${e.steps.map(([t,d],i) => `
+          <div class="step" style="--c:${e.color}">
+            <div class="step-n">${i+1}</div>
+            <div class="step-body"><h4>${t}</h4><p>${d}</p></div>
+          </div>`).join('')}
+      </div>
+    </section>
+
+    <section class="block reveal">
+      <h2 class="sec-title">Фразы-опоры</h2>
+      <p class="sec-sub">Скажите их себе вслух. Медленно. Это не аффирмации — это напоминания.</p>
+      <div class="phrases">
+        ${e.phrases.map(p => `<div class="phrase">«${p}»</div>`).join('')}
+      </div>
+    </section>
+
+    <section class="block reveal">
+      <h2 class="sec-title">Практика</h2>
+      <div class="practice" style="--c:${e.color}">${e.practice}</div>
+    </section>
+
+    <section class="block warn reveal">
+      <h2 class="sec-title">Чего не делать</h2>
+      <ul class="dont">
+        ${e.dont.map(d => `<li>${d}</li>`).join('')}
+      </ul>
+    </section>
+
+    <section class="block reveal">
+      <h2 class="sec-title">Другие чувства</h2>
+      <div class="deck">
+        ${Object.values(EMOTIONS).filter(x => x.id !== e.id).map(x => `
+          <div class="mini" data-open-card="${x.id}" style="--c:${x.color};--c2:${x.color2}">
+            <span class="mini-icon">${x.icon}</span>
+            <span class="mini-name">${x.name}</span>
+          </div>`).join('')}
+      </div>
+    </section>
+
+    <div class="note reveal">
+      Если чувство не отпускает неделями и мешает жить — это не слабость.
+      Это повод поговорить со специалистом. Помощь — это сила.
+    </div>
+  `;
+
+  mount.querySelector('[data-nav-result]').onclick = () => showScreen('result');
+  bindOpenCard(mount);
+  observeReveal();
+}
+
+/* ============ КОЛОДА ============ */
+function renderDeck(){
+  const mount = $('#screen-deck');
+  setAccent('#8B7CF6', '#2D1B69');
+  mount.innerHTML = `
+    <div class="intro" style="padding:30px 0 20px">
+      <h1 style="font-size:clamp(32px,6vw,52px)">Колода <em>чувств</em></h1>
+      <p>Восемь карт. Каждая — про то, что это за чувство, зачем оно, и как его прожить шаг за шагом.</p>
+    </div>
+    <div class="deck reveal">
+      ${Object.values(EMOTIONS).map(e => `
+        <div class="mini" data-open-card="${e.id}" style="--c:${e.color};--c2:${e.color2}">
+          <span class="mini-icon">${e.icon}</span>
+          <span class="mini-name">${e.name}</span>
+          <span class="mini-tag">${e.tagline}</span>
+        </div>`).join('')}
+    </div>
+    <div class="note reveal" style="margin-top:40px">
+      Не знаете, с чего начать? <span style="color:var(--accent);cursor:pointer;font-weight:600" data-nav-home2>Пройдите тест →</span>
+    </div>
+  `;
+
+  bindOpenCard(mount);
+  const link = mount.querySelector('[data-nav-home2]');
+  if(link) link.onclick = () => showScreen('home');
+  observeReveal();
+}
+
+/* ============ ПРИВЯЗКА СОБЫТИЙ ============ */
+function bindOpenCard(root){
+  $$('[data-open-card]', root).forEach(el => {
+    el.onclick = () => showScreen('card', { id: el.dataset.openCard });
+  });
+}
+function bindNavHome(root){
+  $$('[data-nav-home]', root).forEach(el => {
+    el.onclick = () => showScreen('home');
+  });
+}
+
+/* ============ СТАРТ ============ */
+document.addEventListener('DOMContentLoaded', () => {
+  initTheme();
+
+  $('#themeBtn').onclick = toggleTheme;
+  $('#start-btn').onclick = startTest;
+
+  $$('.nav-links a').forEach(a => {
+    a.onclick = () => {
+      const target = a.dataset.nav;
+      if(target === 'home')   showScreen('home');
+      if(target === 'result') showScreen('result');
+      if(target === 'deck')   showScreen('deck');
+    };
+  });
+
+  $('.brand').onclick = () => showScreen('home');
+
+  // Стартовый экран
+  showScreen('home');
+
+  // Хоткеи не нужны — но Escape возвращает домой
+  document.addEventListener('keydown', e => {
+    if(e.key === 'Escape' && currentScreen.name !== 'home') showScreen('home');
+  });
+});
+</script>
+
+<!-- ПОДКЛЮЧАЕМ НАШИ ГЛОБАЛЬНЫЕ СКРИПТЫ -->
+<script src="ui-upgrade.js"></script>
+<script src="bottom-menu.js"></script>
+</body>
+</html>
