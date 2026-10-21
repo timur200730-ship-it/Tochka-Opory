@@ -31,47 +31,44 @@
   .page-head h1{font-size:clamp(26px,4vw,36px);font-weight:800;margin-bottom:12px}
   .page-head p{color:var(--muted);font-size:15px;max-width:500px;margin:0 auto}
 
-  /* Вкладки */
   .tabs{display:flex;gap:8px;justify-content:center;margin-bottom:24px;flex-wrap:wrap}
   .tab-btn{padding:12px 20px;border-radius:12px;font-size:14.5px;font-weight:600;background:var(--card);border:1px solid var(--stroke);color:var(--muted);transition:.2s;cursor:pointer;display:flex;align-items:center;gap:8px}
   .tab-btn:hover{background:rgba(255,255,255,.08)}
   .tab-btn.active{background:rgba(124,92,255,.2);border-color:var(--accent);color:var(--text);box-shadow:0 0 15px rgba(124,92,255,.2)}
+  .tab-btn .icon { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; }
+  .tab-btn .icon svg { width: 18px; height: 18px; stroke-width: 2; fill: none; }
+  .tab-btn.active .icon svg { stroke: var(--accent-2); }
 
-  /* Карточка челленджа */
   .challenge-card{background:var(--card); border:1px solid var(--stroke); border-radius:var(--radius); padding:30px; margin-bottom:30px; display:none; animation:fadeIn .4s ease;}
   .challenge-card.active{display:block}
   @keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
   .chal-header{display:flex;align-items:center;gap:16px;margin-bottom:20px}
   .chal-icon{width:60px;height:60px;border-radius:16px;background:rgba(255,255,255,.05);border:1px solid var(--stroke);display:grid;place-items:center;font-size:30px;flex-shrink:0;}
+  .chal-icon svg { width: 32px; height: 32px; stroke-width: 2; fill: none; }
   .chal-header h2{font-size:22px;font-weight:800;margin-bottom:4px}
   .chal-header p{color:var(--muted);font-size:14px;line-height:1.4}
 
   .desc-box{background:rgba(0,0,0,.2);border:1px solid var(--stroke);border-radius:14px;padding:16px;margin-bottom:24px;font-size:14px;color:var(--muted);line-height:1.6}
   .desc-box b{color:var(--text)}
 
-  /* Поле ввода для благодарности */
   .gratitude-input-wrap { margin-bottom: 24px; }
   .gratitude-input-wrap textarea { width: 100%; padding: 16px; border-radius: 14px; background: rgba(0,0,0,.3); border: 1px solid var(--stroke); color: var(--text); font-size: 15px; font-family: inherit; resize: none; height: 100px; margin-bottom: 12px; }
   .gratitude-input-wrap textarea:focus { outline: none; border-color: var(--accent-2); }
 
-  /* Кнопка */
   .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:16px 24px;border-radius:14px;font-size:16px;font-weight:700;transition:.2s;border:1px solid transparent;width:100%;cursor:pointer}
   .btn-primary{background:linear-gradient(135deg,var(--accent-2),#2fbfae);color:#08110f;box-shadow:0 10px 30px rgba(74,214,200,.3)}
   .btn-primary:hover{transform:translateY(-2px);opacity:.95}
   .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
 
-  /* Сетка дней (история) */
   .days-history{display:flex;gap:8px;margin-top:24px;justify-content:center}
   .day-dot{width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.05);border:1px solid var(--stroke);display:grid;place-items:center;font-size:14px;font-weight:700;color:var(--muted);transition:.3s}
   .day-dot.done{background:linear-gradient(135deg,rgba(74,214,200,.2),rgba(46,139,87,.3));border-color:var(--accent-2);color:var(--accent-2);box-shadow:0 0 10px rgba(74,214,200,.2)}
 
-  /* Таймер (для фокуса) */
   .timer-box{text-align:center;margin-bottom:24px}
   .timer-display{font-size:56px;font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:-2px;color:var(--text);margin-bottom:10px;line-height:1}
   .timer-display.running{color:var(--accent-2)}
 
-  /* Экран успеха */
   .success-screen { text-align: center; padding: 20px 0; display: none; }
   .success-screen .big { font-size: 64px; margin-bottom: 16px; }
   .success-screen h3 { font-size: 22px; margin-bottom: 8px; color: var(--accent-2); }
@@ -99,9 +96,15 @@
   </div>
 
   <div class="tabs">
-    <button class="tab-btn" data-target="finance" onclick="switchTab('finance')">💰 Финансы</button>
-    <button class="tab-btn active" data-target="gratitude" onclick="switchTab('gratitude')">🧠 Благодарность</button>
-    <button class="tab-btn" data-target="focus" onclick="switchTab('focus')">⚡ Фокус</button>
+    <button class="tab-btn" data-target="finance" onclick="switchTab('finance')">
+      <span class="icon">💰</span> Финансы
+    </button>
+    <button class="tab-btn active" data-target="gratitude" onclick="switchTab('gratitude')">
+      <span class="icon">🧠</span> Благодарность
+    </button>
+    <button class="tab-btn" data-target="focus" onclick="switchTab('focus')">
+      <span class="icon">⚡</span> Фокус
+    </button>
   </div>
 
   <!-- ЧЕЛЛЕНДЖ 1: ФИНАНСЫ -->
