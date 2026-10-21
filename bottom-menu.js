@@ -4,11 +4,17 @@
     body { padding-bottom: calc(100px + env(safe-area-inset-bottom)) !important; }
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(11, 11, 18, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); z-index: 9999; font-family: 'Inter', sans-serif; }
     .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #a1a1b5; text-decoration: none; font-size: 10px !important; font-weight: 600; transition: .2s; background: none; border: none; cursor: pointer; flex: 1; padding: 4px 0; white-space: nowrap !important; }
-    .nav-item:hover, .nav-item.active { color: #4ad6c8; }
     .nav-item .icon { font-size: 20px; transition: .2s; display: flex; align-items: center; justify-content: center; height: 24px; }
-    .nav-item .icon svg { width: 22px; height: 22px; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
-    .nav-item.active .icon { transform: translateY(-2px) scale(1.1); filter: drop-shadow(0 0 8px rgba(74,214,200,0.5)); }
-    .nav-item.active .icon svg { stroke: #4ad6c8; }
+    .nav-item .icon svg { width: 24px; height: 24px; fill: currentColor; transition: .3s; }
+    
+    /* Активное состояние (бирюзовое свечение) */
+    .nav-item.active { color: #4ad6c8; }
+    .nav-item.active .icon { transform: translateY(-2px); }
+    .nav-item.active .icon svg { filter: drop-shadow(0 0 8px rgba(74,214,200,0.6)); }
+    
+    /* Особое свечение для кнопки Помощь (сердечко) */
+    .nav-item.help-btn { color: #ff5c8a; }
+    .nav-item.help-btn .icon svg { filter: drop-shadow(0 0 8px rgba(255,92,138,0.4)); }
     
     .tools-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); z-index: 9997; opacity: 0; pointer-events: none; transition: .3s; }
     .tools-backdrop.show { opacity: 1; pointer-events: auto; }
@@ -34,31 +40,31 @@
   const isModules = path.includes('module-') || path.includes('lesson.html');
   const isNotebook = path.includes('notebook.html');
 
-  // ИКОНКИ ДЛЯ НИЖНЕГО МЕНЮ (SVG)
+  // НОВЫЕ ЗАЛИВНЫЕ ИКОНКИ (SVG)
   const navIcons = {
-    home: '<svg viewBox="0 0 24 24" stroke="#a1a1b5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
-    modules: '<svg viewBox="0 0 24 24" stroke="#a1a1b5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
-    services: '<svg viewBox="0 0 24 24" stroke="#a1a1b5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
-    notebook: '<svg viewBox="0 0 24 24" stroke="#a1a1b5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>',
-    help: '<svg viewBox="0 0 24 24" stroke="#ff5c8a"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+    home: '<svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>',
+    modules: '<svg viewBox="0 0 24 24"><path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/></svg>',
+    services: '<svg viewBox="0 0 24 24"><path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.06-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.73,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.06,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.49-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/></svg>',
+    notebook: '<svg viewBox="0 0 24 24"><path d="M18 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 4h5v8l-2.5-1.5L6 12V4z"/></svg>',
+    help: '<svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>'
   };
 
   const nav = document.createElement('nav');
   nav.className = 'bottom-nav';
   nav.innerHTML = `
     <a href="index.html" class="nav-item ${isHome ? 'active' : ''}">
-      <span class="icon">${navIcons.home.replace('#a1a1b5', isHome ? '#4ad6c8' : '#a1a1b5')}</span><span>Главная</span>
+      <span class="icon">${navIcons.home}</span><span>Главная</span>
     </a>
     <a href="index.html#modules" class="nav-item ${isModules ? 'active' : ''}">
-      <span class="icon">${navIcons.modules.replace('#a1a1b5', isModules ? '#4ad6c8' : '#a1a1b5')}</span><span>Модули</span>
+      <span class="icon">${navIcons.modules}</span><span>Модули</span>
     </a>
     <button class="nav-item" onclick="window.toggleTools()">
       <span class="icon">${navIcons.services}</span><span>Сервисы</span>
     </button>
     <a href="notebook.html" class="nav-item ${isNotebook ? 'active' : ''}">
-      <span class="icon">${navIcons.notebook.replace('#a1a1b5', isNotebook ? '#4ad6c8' : '#a1a1b5')}</span><span>Тетрадь</span>
+      <span class="icon">${navIcons.notebook}</span><span>Тетрадь</span>
     </a>
-    <button class="nav-item" onclick="window.openSupport()">
+    <button class="nav-item help-btn" onclick="window.openSupport()">
       <span class="icon">${navIcons.help}</span><span>Помощь</span>
     </button>
   `;
