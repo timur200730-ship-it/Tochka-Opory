@@ -5,14 +5,20 @@
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: rgba(11, 11, 18, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-around; align-items: center; padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); z-index: 9999; font-family: 'Inter', sans-serif; }
     .nav-item { display: flex; flex-direction: column; align-items: center; gap: 4px; color: #a1a1b5; text-decoration: none; font-size: 10px !important; font-weight: 600; transition: .2s; background: none; border: none; cursor: pointer; flex: 1; padding: 4px 0; white-space: nowrap !important; }
     .nav-item:hover, .nav-item.active { color: #4ad6c8; }
-    .nav-item .icon { font-size: 20px; transition: .2s; }
+    .nav-item .icon { font-size: 20px; transition: .2s; display: flex; align-items: center; justify-content: center; height: 24px; }
+    .nav-item .icon svg { width: 22px; height: 22px; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
     .nav-item.active .icon { transform: translateY(-2px) scale(1.1); filter: drop-shadow(0 0 8px rgba(74,214,200,0.5)); }
+    .nav-item.active .icon svg { stroke: #4ad6c8; }
+    
     .tools-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(3px); -webkit-backdrop-filter: blur(3px); z-index: 9997; opacity: 0; pointer-events: none; transition: .3s; }
     .tools-backdrop.show { opacity: 1; pointer-events: auto; }
+    
     .tools-popup { position: fixed; bottom: calc(90px + env(safe-area-inset-bottom)); left: 50%; transform: translateX(-50%) translateY(20px); background: #1c1c24; border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 16px; width: calc(100% - 40px); max-width: 360px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); opacity: 0; pointer-events: none; transition: .3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 9998; }
     .tools-popup.show { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
     .tools-popup a { padding: 14px 12px; border-radius: 12px; background: rgba(255,255,255,0.05); color: #f2f2f7; text-decoration: none; font-size: 13px; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 8px; transition: .2s; text-align: center; }
     .tools-popup a:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+    .tools-popup a .popup-icon { width: 24px; height: 24px; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    
     .support-modal { position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(8px); display: flex; align-items: center; justify-content: center; padding: 20px; z-index: 10000; opacity: 0; pointer-events: none; transition: .3s; }
     .support-modal.show { opacity: 1; pointer-events: auto; }
     .support-card { background: linear-gradient(135deg, rgba(30,30,40,0.95), rgba(20,20,30,0.95)); border: 1px solid rgba(255,92,138,0.3); border-radius: 24px; padding: 30px; max-width: 340px; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: translateY(20px); transition: .3s; }
@@ -28,14 +34,33 @@
   const isModules = path.includes('module-') || path.includes('lesson.html');
   const isNotebook = path.includes('notebook.html');
 
+  // ИКОНКИ ДЛЯ НИЖНЕГО МЕНЮ (SVG)
+  const navIcons = {
+    home: '<svg viewBox="0 0 24 24" stroke="#a1a1b5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>',
+    modules: '<svg viewBox="0 0 24 24" stroke="#a1a1b5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+    services: '<svg viewBox="0 0 24 24" stroke="#a1a1b5"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+    notebook: '<svg viewBox="0 0 24 24" stroke="#a1a1b5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="9" y1="3" x2="9" y2="21"/></svg>',
+    help: '<svg viewBox="0 0 24 24" stroke="#ff5c8a"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>'
+  };
+
   const nav = document.createElement('nav');
   nav.className = 'bottom-nav';
   nav.innerHTML = `
-    <a href="index.html" class="nav-item ${isHome ? 'active' : ''}"><span class="icon">🏠</span><span>Главная</span></a>
-    <a href="index.html#modules" class="nav-item ${isModules ? 'active' : ''}"><span class="icon">📚</span><span>Модули</span></a>
-    <button class="nav-item" onclick="window.toggleTools()"><span class="icon">🛠</span><span>Сервисы</span></button>
-    <a href="notebook.html" class="nav-item ${isNotebook ? 'active' : ''}"><span class="icon">📓</span><span>Тетрадь</span></a>
-    <button class="nav-item" onclick="window.openSupport()"><span class="icon">🤍</span><span>Помощь</span></button>
+    <a href="index.html" class="nav-item ${isHome ? 'active' : ''}">
+      <span class="icon">${navIcons.home.replace('#a1a1b5', isHome ? '#4ad6c8' : '#a1a1b5')}</span><span>Главная</span>
+    </a>
+    <a href="index.html#modules" class="nav-item ${isModules ? 'active' : ''}">
+      <span class="icon">${navIcons.modules.replace('#a1a1b5', isModules ? '#4ad6c8' : '#a1a1b5')}</span><span>Модули</span>
+    </a>
+    <button class="nav-item" onclick="window.toggleTools()">
+      <span class="icon">${navIcons.services}</span><span>Сервисы</span>
+    </button>
+    <a href="notebook.html" class="nav-item ${isNotebook ? 'active' : ''}">
+      <span class="icon">${navIcons.notebook.replace('#a1a1b5', isNotebook ? '#4ad6c8' : '#a1a1b5')}</span><span>Тетрадь</span>
+    </a>
+    <button class="nav-item" onclick="window.openSupport()">
+      <span class="icon">${navIcons.help}</span><span>Помощь</span>
+    </button>
   `;
   document.body.appendChild(nav);
 
@@ -49,7 +74,6 @@
   toolsPopup.id = 'toolsPopup';
   toolsPopup.className = 'tools-popup';
   toolsPopup.innerHTML = `
-    <a href="panic.html">🚨 SOS Помощь</a> 
     <a href="breathing.html">🌿 Дыхание</a>
     <a href="budget.html">💰 Бюджет</a>
     <a href="balance-wheel.html">🎡 Колесо</a>
@@ -57,9 +81,8 @@
     <a href="scam-game.html">🕵️ Мошенник</a>
     <a href="habit-calculator.html">💸 Привычки</a>
     <a href="body-map.html">🧠 Карта тела</a>
+    <a href="emotion-magic.html">✨ Магия слов</a>
     <a href="survive-test.html">🌧 Пережить</a>
-    <a href="emotion-wheel.html">😡 Эмоции</a>
-    <a href="salary-simulator.html">💵 Зарплата</a>
     <a href="cbt-diary.html">📝 Дневник</a>
   `;
   document.body.appendChild(toolsPopup);
