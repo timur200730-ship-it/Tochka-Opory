@@ -152,6 +152,13 @@
       '🏆': '<svg viewBox="0 0 24 24" stroke="#ffb547"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>',
       '🕵️‍♂️': '<svg viewBox="0 0 24 24" stroke="#ff5c8a"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="M9 9h.01"/><path d="M15 15h.01"/></svg>',
       '💸': '<svg viewBox="0 0 24 24" stroke="#4ad6c8"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>'
+          '✨': '<svg viewBox="0 0 24 24" stroke="#ffb547"><path d="M12 3l1.5 5.5L19 10l-5.5 1.5L12 17l-1.5-5.5L5 10l5.5-1.5z"/><path d="M5 3l1 3 3 1-3 1-1 3-1-3-3-1 3-1z"/></svg>',
+      '⏱️': '<svg viewBox="0 0 24 24" stroke="#4ad6c8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+      '⚡': '<svg viewBox="0 0 24 24" stroke="#ffb547"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>',
+      '💵': '<svg viewBox="0 0 24 24" stroke="#4ad6c8"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>',
+      '🌟': '<svg viewBox="0 0 24 24" stroke="#ffb547"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
+      '🧠': '<svg viewBox="0 0 24 24" stroke="#7c5cff"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>',
+      '🎉': '<svg viewBox="0 0 24 24" stroke="#ff5c8a"><path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-1.04-.36a3.24 3.24 0 0 0-2.17 0l-1.07.38a2.02 2.02 0 0 1-2.34-.83l-.82-1.23a2.02 2.02 0 0 0-1.68-.88h-1.13"/></svg>'
     };
 
     const targets = document.querySelectorAll('.state .emoji, .module .icn, .tool-card .icon, .pill, .nav-item .icon, .tip-emoji, .chal-icon, .step-pill .ico');
