@@ -332,6 +332,15 @@ Store.load();
 let currentStage = Store.getStage(LESSON_ID);
 if (lesson.isPlaceholder) currentStage = 'theory';
 
+if (RESTART) {
+  currentStage = 'theory';
+  Store.setStage(LESSON_ID, 'theory');
+  if (Store.data.testResults[LESSON_ID]) {
+    delete Store.data.testResults[LESSON_ID];
+    Store.save();
+  }
+}
+
 /* ============================================================
    УТИЛИТЫ
    ============================================================ */
@@ -590,10 +599,11 @@ function renderFinish(){
           <div class="st">Урок ${lesson.order}</div>
           ${hasTest ? `<div class="st">Тест: <b>${testRes.correct} / ${testRes.total}</b></div>` : ''}
         </div>
-        <div class="actions">
+                <div class="actions">
           ${nextLesson
             ? `<a href="lesson.html?id=${nextLesson}" class="btn btn-primary">Следующий урок →</a>`
             : `<a href="module-${lesson.moduleId}.html" class="btn btn-primary">Вернуться к модулю →</a>`}
+          <a href="lesson.html?id=${LESSON_ID}&restart=true" class="btn btn-ghost">↻ Пройти заново</a>
           <a href="module-${lesson.moduleId}.html" class="btn btn-ghost">К списку уроков</a>
           <a href="notebook.html" class="btn btn-ghost">📓 В тетрадь</a>
         </div>
