@@ -3,15 +3,13 @@
    ============================================================ */
 
 (function(){
-  // 1. ПРИМЕНЯЕМ СОХРАНЁННУЮ ТЕМУ СРАЗУ ПРИ ЗАГРУЗКЕ (чтобы не было мигания)
+  // 1. ПРИМЕНЯЕМ СОХРАНЁННУЮ ТЕМУ СРАЗУ ПРИ ЗАГРУЗКЕ
   const savedTheme = localStorage.getItem('global_theme') || 'dark';
   document.documentElement.setAttribute('data-theme', savedTheme);
 
   const style = document.createElement('style');
   style.textContent = `
-    /* =========================================
-       СВЕТЛАЯ ТЕМА (Глобальные переопределения)
-       ========================================= */
+    /* СВЕТЛАЯ ТЕМА */
     [data-theme="light"] {
       --bg: #F6F4FB !important;
       --bg-2: #EDE9F7 !important;
@@ -21,8 +19,6 @@
       --card-2: rgba(255, 255, 255, 1) !important;
       --stroke: rgba(20, 10, 50, 0.1) !important;
     }
-    
-    /* Фон страницы */
     [data-theme="light"] body {
       background: 
         radial-gradient(circle at 10% 10%, rgba(124,92,255,0.1) 0%, transparent 50%),
@@ -30,8 +26,6 @@
         #F6F4FB !important;
       color: #171233 !important;
     }
-    
-    /* Шапка */
     [data-theme="light"] header,
     [data-theme="light"] .bottom-nav {
       background: rgba(246, 244, 251, 0.9) !important;
@@ -41,8 +35,6 @@
       border-top: 1px solid rgba(20, 10, 50, 0.1) !important;
       border-bottom: none !important;
     }
-    
-    /* Текст */
     [data-theme="light"] h1, 
     [data-theme="light"] h2, 
     [data-theme="light"] h3, 
@@ -53,8 +45,6 @@
     [data-theme="light"] .close-link:hover {
       color: #171233 !important; 
     }
-    
-    /* Карточки, панели, уроки */
     [data-theme="light"] .module, 
     [data-theme="light"] .lesson, 
     [data-theme="light"] .tcard, 
@@ -74,8 +64,6 @@
       border-color: rgba(20, 10, 50, 0.1) !important;
       box-shadow: 0 4px 15px rgba(20, 10, 50, 0.05) !important;
     }
-    
-    /* Тексты внутри карточек */
     [data-theme="light"] .tcard p, 
     [data-theme="light"] .tcard ul li,
     [data-theme="light"] .module p,
@@ -83,8 +71,6 @@
     [data-theme="light"] .stat .lbl {
       color: #4A426E !important;
     }
-
-    /* Инпуты и поля ввода */
     [data-theme="light"] textarea,
     [data-theme="light"] input[type="text"],
     [data-theme="light"] input[type="number"],
@@ -94,8 +80,6 @@
       color: #171233 !important;
       border-color: rgba(20, 10, 50, 0.15) !important;
     }
-
-    /* Кнопки */
     [data-theme="light"] .btn-ghost,
     [data-theme="light"] .pill,
     [data-theme="light"] .back-btn,
@@ -104,36 +88,29 @@
       border-color: rgba(20, 10, 50, 0.1) !important;
       color: #171233 !important;
     }
-    
-    /* Нижнее меню (иконки) */
-    [data-theme="light"] .nav-item {
-      color: #6B6390 !important;
-    }
-    [data-theme="light"] .nav-item.active {
-      color: #7c5cff !important; /* Фиолетовый в светлой теме */
-    }
+    [data-theme="light"] .nav-item { color: #6B6390 !important; }
+    [data-theme="light"] .nav-item.active { color: #7c5cff !important; }
     [data-theme="light"] .nav-item.active .icon svg {
       stroke: #7c5cff !important;
       filter: drop-shadow(0 0 8px rgba(124,92,255,0.4)) !important;
     }
-    [data-theme="light"] .nav-item .icon svg {
-      stroke: #6B6390 !important;
-    }
+    [data-theme="light"] .nav-item .icon svg { stroke: #6B6390 !important; }
 
     /* Кнопка переключения темы */
     .theme-toggle-btn {
-      width: 36px; height: 36px; border-radius: 50%;
+      width: 38px; height: 38px; border-radius: 50%;
       background: var(--card); border: 1px solid var(--stroke);
       color: var(--text); display: grid; place-items: center;
-      cursor: pointer; font-size: 16px; transition: 0.3s;
+      cursor: pointer; font-size: 18px; transition: 0.3s;
       margin-left: 8px; flex-shrink: 0;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
     }
     .theme-toggle-btn:hover {
       transform: rotate(15deg) scale(1.1);
       background: var(--card-2);
     }
 
-    /* Анимированный живой фон */
+    /* Фон и скроллбар */
     body::before {
       content: ""; position: fixed; top: -20%; left: -10%;
       width: 60vw; height: 60vw;
@@ -155,14 +132,11 @@
       50% { transform: translate(5vw, 5vh) scale(1.1); }
       100% { transform: translate(-5vw, -5vh) scale(0.9); }
     }
-
-    /* Кастомный скроллбар */
     ::-webkit-scrollbar { width: 8px; }
     ::-webkit-scrollbar-track { background: var(--bg); }
     ::-webkit-scrollbar-thumb { background: var(--stroke); border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: var(--accent-2); }
 
-    /* Иконки */
     .ui-svg-icon { width: 24px; height: 24px; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
     .module .icn .ui-svg-icon { width: 28px; height: 28px; }
     .state .emoji .ui-svg-icon { width: 26px; height: 26px; }
@@ -172,10 +146,13 @@
 
   // 2. ДОБАВЛЯЕМ КНОПКУ ПЕРЕКЛЮЧЕНИЯ ТЕМЫ В ШАПКУ
   document.addEventListener('DOMContentLoaded', () => {
-    // Ищем, куда вставить кнопку
-    const navUser = document.querySelector('.nav-user') || document.querySelector('.nav') || document.querySelector('.nav-links');
+    // Ищем шапку (разные страницы могут иметь разную структуру)
+    const headerNav = document.querySelector('.nav-user') || 
+                      document.querySelector('.nav') || 
+                      document.querySelector('header .container');
     
-    if (navUser && !document.getElementById('globalThemeBtn')) {
+    // Проверяем, нет ли уже кнопки
+    if (headerNav && !document.getElementById('globalThemeBtn')) {
       const btn = document.createElement('button');
       btn.id = 'globalThemeBtn';
       btn.className = 'theme-toggle-btn';
@@ -191,20 +168,20 @@
         btn.innerHTML = next === 'dark' ? '☀️' : '🌙';
       };
       
-      // Если это .nav-user, просто добавляем в конец. Если .nav, тоже.
-      if (navUser.classList.contains('nav-user')) {
-        navUser.appendChild(btn);
+      // Если это контейнер с юзером (как на главной), просто добавляем в конец
+      if (headerNav.classList.contains('nav-user')) {
+        headerNav.appendChild(btn);
       } else {
-        // Если это просто nav (как на некоторых страницах), вставляем перед последним элементом
+        // Если это просто nav, оборачиваем в div для выравнивания
         const wrapper = document.createElement('div');
         wrapper.style.display = 'flex';
         wrapper.style.alignItems = 'center';
         wrapper.appendChild(btn);
-        navUser.appendChild(wrapper);
+        headerNav.appendChild(wrapper);
       }
     }
 
-    // 3. ЗАМЕНА ЭМОДЗИ НА SVG (только для контента, без меню)
+    // 3. ЗАМЕНА ЭМОДЗИ НА SVG
     const iconMap = {
       '💰': '<svg viewBox="0 0 24 24" stroke="#4ad6c8"><circle cx="12" cy="12" r="10"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 18V6"/></svg>',
       '🧠': '<svg viewBox="0 0 24 24" stroke="#7c5cff"><path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 1.98-3A2.5 2.5 0 0 1 9.5 2Z"/><path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-1.98-3A2.5 2.5 0 0 0 14.5 2Z"/></svg>',
@@ -220,37 +197,11 @@
     };
 
     const targets = document.querySelectorAll('.state .emoji, .module .icn, .tool-card .icon, .pill, .tip-emoji, .chal-icon, .step-pill .ico');
-    
     targets.forEach(el => {
       const text = el.textContent.trim();
       if (iconMap[text]) {
         el.innerHTML = iconMap[text].replace('<svg ', '<svg class="ui-svg-icon" ');
       }
     });
-  });
-  // СБОР СТАТИСТИКИ (ЯНДЕКС.МЕТРИКА)
-  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-  m[i].l=1*new Date();
-  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
-
-  ym(<!-- Yandex.Metrika counter -->
-<script type="text/javascript">
-    (function(m,e,t,r,i,k,a){
-        m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-    })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=113729231', 'ym');
-
-    ym(113729231, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", referrer: document.referrer, url: location.href, accurateTrackBounce:true, trackLinks:true});
-</script>
-<noscript><div><img src="https://mc.yandex.ru/watch/113729231" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
-<!-- /Yandex.Metrika counter -->, "init", {
-       clickmap:true,
-       trackLinks:true,
-       accurateTrackBounce:true,
-       webvisor:true
   });
 })();
