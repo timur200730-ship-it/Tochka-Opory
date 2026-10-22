@@ -284,7 +284,7 @@ function renderLessons(){
         <div class="meta"><span>⏱ ${lesson.minutes} мин</span><span>✏️ ${lesson.practice}</span></div>
       </div>
       <div class="actions">
-        <a href="lesson.html?id=${lesson.id}" class="link-go">${done ? 'Повторить' : 'Начать'} →</a>
+        <a href="lesson.html?id=${lesson.id}${done ? '&restart=true' : ''}" class="link-go">${done ? 'Пройти заново' : 'Начать'} →</a>
         <button class="mark-done" onclick="toggleLesson('${lesson.id}', event)">${done ? '↺ Сбросить' : '+ Отметить'}</button>
       </div>`;
     list.appendChild(el);
