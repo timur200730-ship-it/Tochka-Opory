@@ -206,6 +206,12 @@
     <span>© 2026 Точка опоры · Бесплатно для студентов.</span>
     <span>Авторы: Елена Осинцева, Тимур Хайретдинов</span>
   </div>
+    <!-- БЛОК СБРОСА ПРОГРЕССА -->
+  <div class="danger-zone" id="dangerZone" style="display: none;">
+    <h3>⚠️ Опасная зона</h3>
+    <p>Это действие навсегда удалит весь твой прогресс: XP, пройденные уроки, записи в тетради, челленджи и достижения. Отменить это будет невозможно.</p>
+    <button class="btn-danger" onclick="resetAllProgress()">🗑 Сбросить весь прогресс</button>
+  </div>
 </footer>
 
 <div class="toast" id="toast"></div>
@@ -392,7 +398,30 @@ function renderEntry(e){
 function render(){
   const container = document.getElementById('entries');
   const filtered = currentFilter === 'all' ? allEntries : allEntries.filter(e=>e.module===currentFilter);
+  // Функция сброса
+  window.resetAllProgress = function() {
+    if (!confirm('Ты уверен(а), что хочешь удалить весь прогресс? Это действие нельзя отменить.')) return;
+    if (!confirm('Точно? Все записи, XP и достижения будут стерты навсегда.')) return;
+    
+    // Очищаем основное хранилище
+    localStorage.removeItem('tochka_opory_v1');
+    // Очищаем онбординг (чтобы показался заново)
+    localStorage.removeItem('onboarded_v1');
+    // Очищаем выбранную тему (чтобы вернулась темная по умолчанию)
+    localStorage.removeItem('global_theme');
+    
+    // Перезагружаем страницу, чтобы применить изменения
+    window.location.href = 'index.html';
+  };
 
+  // В функции render() или после неё проверяем, есть ли данные, чтобы показать кнопку
+  function checkDangerZone() {
+    const hasData = allEntries.length > 0 || (Store.data.xp > 0) || (Store.data.challenges && Object.values(Store.data.challenges).some(c => c.days.some(d => d)));
+    const dz = document.getElementById('dangerZone');
+    if (dz) {
+      dz.style.display = hasData ? 'block' : 'none';
+    }
+  }
   if (!allEntries.length){
     container.innerHTML = `<div class="empty">
       <div class="big">📓</div>
