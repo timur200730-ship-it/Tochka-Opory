@@ -161,7 +161,7 @@
       '🎉': '<svg viewBox="0 0 24 24" stroke="#ff5c8a"><path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01"/><path d="M22 8h.01"/><path d="M15 2h.01"/><path d="M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="m22 13-1.04-.36a3.24 3.24 0 0 0-2.17 0l-1.07.38a2.02 2.02 0 0 1-2.34-.83l-.82-1.23a2.02 2.02 0 0 0-1.68-.88h-1.13"/></svg>'
     };
 
-    const targets = document.querySelectorAll('.state .emoji, .module .icn, .tool-card .icon, .pill, .nav-item .icon, .tip-emoji, .chal-icon, .step-pill .ico');
+    const targets = document.querySelectorAll('.state .emoji, .module .icn, .tool-card .icon, .pill, .tip-emoji, .chal-icon, .step-pill .ico');
     
     targets.forEach(el => {
       const text = el.textContent.trim();
